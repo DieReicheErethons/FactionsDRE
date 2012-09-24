@@ -24,6 +24,7 @@ public class Faction extends Entity implements EconomyParticipator
 	// FIELD: relationWish
 	private Map<String, Relation> relationWish;
 	
+	
 	// FIELD: claimOwnership
 	private Map<FLocation, Set<String>> claimOwnership = new ConcurrentHashMap<FLocation, Set<String>>();
 
