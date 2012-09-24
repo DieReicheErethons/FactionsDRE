@@ -9,7 +9,7 @@ import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.struct.Permission;
 
 public class CmdWar extends FCommand{
-	
+	//Befehl um einen Krieg zu starten mit Forderungen
 	
 	public CmdWar()
 	{
