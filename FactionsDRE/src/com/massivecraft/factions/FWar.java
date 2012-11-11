@@ -5,57 +5,53 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import com.massivecraft.factions.integration.Econ;
 
 public class FWar{
-	public static Set<FWar> wars = new HashSet<FWar>();
+	private static Set<FWar> wars = new HashSet<FWar>();
+	
+	public Set<InventoryView> tempInvs = new HashSet<InventoryView>();
 	
 	public Map<Material,Integer> items = new HashMap<Material,Integer>();
-	public Set<Chest> chests;
 	public int money;
 	
-	public Faction attacker,target;
+	public Faction attackerFaction, targetFaction;
 	
+	public boolean isStarted;
 	public long time;
 	
 	
-	public FWar(Faction attacker, Faction target, Set<Chest> chests, int money){
+	public FWar(Faction attacker, Faction target){
 		wars.add(this);
 		
-		this.attacker=attacker;
-		this.target=target;
+		this.attackerFaction=attacker;
+		this.targetFaction=target;
 		
-		this.chests=chests;
-		
-		for(Chest chest:chests){
-			for(ItemStack istack:chest.getInventory().getContents()){
-				if(istack!=null){
-					if(items.get(istack.getType())==null){
-						items.put(istack.getType(), istack.getAmount());
-					}
-					
-					else{
-						items.put(istack.getType(), items.get(istack.getType())+istack.getAmount());
-					}
-				}
-			}
-		}
-		
-		this.money=money;
-		
-		this.time=System.currentTimeMillis();
-		
-		target.sendMessage("Eurer Fraktion wurde eine Forderung gestellt, in höhe von "+getItemsAsString());
-		target.sendMessage("Die Forderung kam von "+attacker.getTag()+" und falls ihr nicht innerhalb "+getTimeToWar()+" bezahlt, werden sie angreifen!");
-		
-		attacker.sendMessage("Eure Fraktion hat "+target.getTag()+" Forderungen in höhe von "+getItemsAsString()+" gestellt");
-		attacker.sendMessage("Falls sie nicht innerhalb "+getTimeToWar()+" zahlen, kommt es zum Krieg!");
+		this.isStarted = false; // Obviously the war isn't started yet
 	}
 	
-	public String getItemsAsString(){
+	public void startWar(){
+		this.isStarted = true;
+		
+		/* Set the relation to enemy */
+		//attackerFaction.setRelationWish(targetFaction, Relation.ENEMY);
+		
+		/* Set time */
+		this.time = System.currentTimeMillis();
+		
+		/* Send the messages to both of the factions */
+		targetFaction.sendMessage("Eurer Fraktion wurde eine Forderung gestellt, in höhe von "+getDemandsAsString());
+		targetFaction.sendMessage("Die Forderung kam von "+attackerFaction.getTag()+" und falls ihr nicht innerhalb "+getTimeToWar()+" bezahlt, werden sie angreifen!");
+		
+		attackerFaction.sendMessage("Eure Fraktion hat "+targetFaction.getTag()+" Forderungen in höhe von "+getDemandsAsString()+" gestellt");
+		attackerFaction.sendMessage("Falls sie nicht innerhalb "+getTimeToWar()+" zahlen, kommt es zum Krieg!");
+		
+	}
+	
+	public String getDemandsAsString(){
 		String ausgabe="";
 		
 		if(Conf.econEnabled){
@@ -82,9 +78,51 @@ public class FWar{
 		return (int)Math.floor(timeToWar/(60*60*1000))+"h "+(int)Math.floor(timeToWar%(60*60*1000)/(60*1000))+"min";
 	}
 	
+	public void addTempInventory(InventoryView inv){
+		tempInvs.add(inv);
+	}
+	
+	public void removeTempInventory(InventoryView inv){
+		if(tempInvs.contains(inv)){
+			for(ItemStack istack:inv.getTopInventory().getContents()){
+				if(istack!=null){
+					if(items.get(istack.getType())==null){
+						items.put(istack.getType(), istack.getAmount());
+					}
+					else{
+						items.put(istack.getType(), items.get(istack.getType())+istack.getAmount());
+					}
+				}
+			}
+			inv.getTopInventory().clear();
+			tempInvs.remove(inv);
+		}
+	}
+	
+	public void remove(){
+		wars.remove(this);
+	}
+	
+	// Get functions
+	public static Set<FWar> get(){
+		return wars;
+	}
+	
+	public static FWar get(Faction attackerFaction, Faction targetFaction){
+		for(FWar war:wars){
+			if(war.attackerFaction==attackerFaction){
+				if(war.targetFaction==targetFaction){
+					return war;
+				}
+			}
+		}
+		
+		return null;
+	}
+	
 	public static FWar getAsAttacker(Faction faction){
 		for(FWar war:wars){
-			if(war.attacker==faction){
+			if(war.attackerFaction==faction){
 				return war;
 			}
 		}
@@ -93,17 +131,18 @@ public class FWar{
 	
 	public static FWar getAsTarget(Faction faction){
 		for(FWar war:wars){
-			if(war.target==faction){
+			if(war.targetFaction==faction){
 				return war;
 			}
 		}
 		return null;
 	}
 	
-	//Statics
+	// Other static functions
+	
 	public static void removeFactionWars(Faction faction){
 		for(FWar war:wars){
-			if(war.attacker==faction || war.target == faction){
+			if(war.attackerFaction==faction || war.targetFaction == faction){
 				wars.remove(war);
 			}
 		}
@@ -111,22 +150,11 @@ public class FWar{
 	
 	public static FWar getWar(Faction attacker, Faction target){
 		for(FWar war:wars){
-			if(war.attacker==attacker && war.target == target){
+			if(war.attackerFaction==attacker && war.targetFaction == target){
 				return war;
 			}
 		}
 		
 		return null;
-	}
-	
-	public static boolean isWarChest(Chest chest){
-		for(FWar war:wars){
-			for(Chest warChest:war.chests){
-				if(warChest.equals(chest)){
-					return true;
-				}
-			}
-		}
-		return false;
 	}
 }

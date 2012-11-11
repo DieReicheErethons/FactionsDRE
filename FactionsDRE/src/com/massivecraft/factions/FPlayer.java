@@ -6,7 +6,6 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -214,12 +213,6 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	private transient Block firstclaimblock=null;
 	private transient Block secondclaimblock=null;
 	
-	//FIELD: Create War Forderungen
-	public transient boolean isMakingForderungen=false;
-	public transient Set<Chest> ForderungsKisten=new HashSet<Chest>();
-	public transient int ForderungsMoney;
-	public transient Faction ForderungsFraktion;
-	
 	//Getter and Setter by Frank
 	public Set<Block> getChangedBlock() {return changedBlock;}
 	public void setChangedBlock(Set<Block> changedBlock) {this.changedBlock = changedBlock;}
@@ -285,9 +278,6 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 		this.role = Role.NORMAL;
 		this.title = "";
 		this.autoClaimFor = null;
-		
-		//Remove their isMakingForderungen status by Frank
-		this.isMakingForderungen=false;
 		
 		//Taxation  by Frank
 		this.tax=0;

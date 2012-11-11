@@ -10,12 +10,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -25,6 +25,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.InventoryView;
 import org.getspout.spoutapi.SpoutManager;
 
 import com.massivecraft.factions.Board;
@@ -157,30 +158,24 @@ public class FactionsPlayerListener implements Listener
 		// Update the lastLoginTime for this fplayer
 		me.setLastLoginTime(System.currentTimeMillis());
 		
-		//Taxation  by Frank
+		// Taxation  by Frank
 		me.taxoldtime=0;
 		me.getTax();
 		
-		//Spout  by Frank
+		// Spout  by Frank
 		if(SpoutFeatures.enabled()){
 			me.setsPlayer(SpoutManager.getPlayer(event.getPlayer()));
 			me.initSpoutMenu();
 		}
 		
-		//Forderungskisten by Frank
+		// FWar by Frank
 		if(me.getFaction()!=null){
 			FWar war=FWar.getAsTarget(me.getFaction());
 			if(war!=null){
-				me.sendMessage("Eurer Fraktion wurde eine Forderung gestellt, in höhe von "+war.getItemsAsString());
-				me.sendMessage("Die Forderung kam von "+war.attacker.getTag()+" und falls ihr nicht innerhalb "+war.getTimeToWar()+" bezahlt, werden sie angreifen!");
+				me.sendMessage("Eurer Fraktion wurde eine Forderung gestellt, in höhe von "+war.getDemandsAsString());
+				me.sendMessage("Die Forderung kam von "+war.attackerFaction.getTag()+" und falls ihr nicht innerhalb "+war.getTimeToWar()+" bezahlt, werden sie angreifen!");
 			}
 		}
-		
-/*		This is now done in a separate task which runs every few minutes
-		// Run the member auto kick routine. Twice to get to the admins...
-		FPlayers.i.autoLeaveOnInactivityRoutine();
-		FPlayers.i.autoLeaveOnInactivityRoutine();
- */
 
 		SpoutFeatures.updateAppearancesShortly(event.getPlayer());
 	}
@@ -192,10 +187,9 @@ public class FactionsPlayerListener implements Listener
 
 		// Make sure player's power is up to date when they log off.
 		me.getPower();
+		
 		// and update their last login time to point to when the logged off, for auto-remove routine
 		me.setLastLoginTime(System.currentTimeMillis());
-		//Remove their isMakingForderungen status
-		me.isMakingForderungen=false;
 		
 		Faction myFaction = me.getFaction();
 		if (myFaction != null)
@@ -423,7 +417,6 @@ public class FactionsPlayerListener implements Listener
 
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
-		FPlayer fplayer = FPlayers.i.get(player);
 
 		if (block == null)
 		{
@@ -435,67 +428,6 @@ public class FactionsPlayerListener implements Listener
 			event.setCancelled(true);
 			return;
 		}
-		
-		//Forderungen erstellen / Kisten definieren by Frank
-		if(fplayer.isMakingForderungen){
-			FLocation loc = new FLocation(block.getLocation());
-			Faction otherFaction = Board.getFactionAt(loc);
-			
-			if(otherFaction==fplayer.getFaction()){
-				if(event.getAction()==Action.LEFT_CLICK_BLOCK){
-					if(block.getState() instanceof Chest){
-						Chest chest=(Chest)event.getClickedBlock().getState();
-						
-						for(Chest existingChest:fplayer.ForderungsKisten){
-							if(existingChest.equals(chest)){
-								fplayer.ForderungsKisten.remove(existingChest);
-								
-								//Doublechest
-								if(chest.getBlock().getRelative(BlockFace.EAST).getState() instanceof Chest)
-									fplayer.ForderungsKisten.remove((Chest) chest.getBlock().getRelative(BlockFace.EAST).getState());
-								
-								if(chest.getBlock().getRelative(BlockFace.NORTH).getState() instanceof Chest)
-									fplayer.ForderungsKisten.remove((Chest) chest.getBlock().getRelative(BlockFace.NORTH).getState());
-								
-								if(chest.getBlock().getRelative(BlockFace.WEST).getState() instanceof Chest)
-									fplayer.ForderungsKisten.remove((Chest) chest.getBlock().getRelative(BlockFace.WEST).getState());		
-								
-								if(chest.getBlock().getRelative(BlockFace.SOUTH).getState() instanceof Chest)
-									fplayer.ForderungsKisten.remove((Chest) chest.getBlock().getRelative(BlockFace.SOUTH).getState());									
-								
-								
-								fplayer.msg(ChatColor.GOLD+"Kiste aus den Forderungen entfernt");
-								
-								event.setCancelled(true);
-								return;
-							}
-						}
-						
-						fplayer.ForderungsKisten.add(chest);
-						
-						//Doublechest
-						if(chest.getBlock().getRelative(BlockFace.EAST).getState() instanceof Chest)
-							fplayer.ForderungsKisten.add((Chest) chest.getBlock().getRelative(BlockFace.EAST).getState());
-						
-						if(chest.getBlock().getRelative(BlockFace.NORTH).getState() instanceof Chest)
-							fplayer.ForderungsKisten.add((Chest) chest.getBlock().getRelative(BlockFace.NORTH).getState());
-						
-						if(chest.getBlock().getRelative(BlockFace.WEST).getState() instanceof Chest)
-							fplayer.ForderungsKisten.add((Chest) chest.getBlock().getRelative(BlockFace.WEST).getState());		
-						
-						if(chest.getBlock().getRelative(BlockFace.SOUTH).getState() instanceof Chest)
-							fplayer.ForderungsKisten.add((Chest) chest.getBlock().getRelative(BlockFace.SOUTH).getState());									
-						
-						
-						fplayer.msg(ChatColor.GOLD+"Neue Kiste zu den Forderungen hinzugefügt. Um sie wieder aus den Forderungen zu entfernen nochmals draufklicken.");
-						
-						event.setCancelled(true);
-						return;
-					}
-				}
-			}
-		}
-		
 		
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
 		{
@@ -842,6 +774,30 @@ public class FactionsPlayerListener implements Listener
 
 			badGuy.leave(false);
 			badGuy.detach();
+		}
+	}
+	
+	/* Inventory Events */
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onInventoryClose(InventoryCloseEvent event){
+		InventoryView inv=event.getView();
+		Player player=(Player) event.getPlayer();
+		
+		p.log("TEST");
+		
+		for(FWar fwar:FWar.get()){
+			p.log("TEST2");
+			for(InventoryView inv2:fwar.tempInvs){
+				p.log("TEST4");
+				if(inv2.equals(inv)){
+					p.log("TEST5");
+				}
+			}
+			if(fwar.tempInvs.contains(inv)){
+				p.log("TEST3");
+				fwar.removeTempInventory(inv);
+				player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
+			}
 		}
 	}
 }
