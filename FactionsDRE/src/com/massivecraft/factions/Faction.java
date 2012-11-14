@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.iface.RelationParticipator;
@@ -155,6 +156,12 @@ public class Faction extends Entity implements EconomyParticipator
 	private double powerBoost;
 	public double getPowerBoost() { return this.powerBoost; }
 	public void setPowerBoost(double powerBoost) { this.powerBoost = powerBoost; }
+	
+	
+	
+	// FIELD: Faction Inventory
+	public Map<Material,Integer[]> factionInventory = new HashMap<Material,Integer[]>();
+	
 
 	//Taxation functions  by Frank
 	public double tax;
@@ -764,5 +771,11 @@ public class Faction extends Entity implements EconomyParticipator
 		// Clean the fplayers
 		FPlayers.i.clean();
 	}
+	
+	
 
+	
+	
+	
+	
 }

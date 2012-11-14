@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -26,6 +27,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.SpoutManager;
 
 import com.massivecraft.factions.Board;
@@ -799,5 +801,28 @@ public class FactionsPlayerListener implements Listener
 				player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
 			}
 		}
+	}
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onInventoryClick(InventoryClickEvent event){
+		InventoryView inv=event.getView();
+		//Player player=(Player) event.getWhoClicked();
+		for(FPlayer fpl:FPlayers.i.get()){
+			if(fpl.playerInventoryView.equals(inv)){
+				
+				ItemStack istack=event.getCurrentItem();
+				for(Material mat:fpl.getFaction().factionInventory.keySet()){
+					Integer[] args=fpl.getFaction().factionInventory.get(mat);
+					if(mat.equals(istack.getType())){
+						args[1]=args[1]-istack.getAmount();
+						fpl.getFaction().factionInventory.put(mat, args);
+					}
+									 
+				}
+				
+				
+			}
+		}
+		
+		
 	}
 }

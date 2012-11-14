@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryView;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 import com.massivecraft.factions.buildings.BuildingType;
@@ -84,6 +85,11 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	
 	// FIELD: autoClaimEnabled
 	private transient Faction autoClaimFor;
+	
+	
+	// FIELD: InventoryView
+	public InventoryView playerInventoryView;
+	
 	public Faction getAutoClaimFor()
 	{
 		return autoClaimFor;
