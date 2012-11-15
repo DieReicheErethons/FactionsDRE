@@ -36,6 +36,7 @@ import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.FWar;
+import com.massivecraft.factions.FWars;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.P;
@@ -175,7 +176,7 @@ public class FactionsPlayerListener implements Listener
 			FWar war=FWar.getAsTarget(me.getFaction());
 			if(war!=null){
 				me.sendMessage("Eurer Fraktion wurde eine Forderung gestellt, in höhe von "+war.getDemandsAsString());
-				me.sendMessage("Die Forderung kam von "+war.attackerFaction.getTag()+" und falls ihr nicht innerhalb "+war.getTimeToWar()+" bezahlt, werden sie angreifen!");
+				me.sendMessage("Die Forderung kam von "+war.getAttackerFaction().getTag()+" und falls ihr nicht innerhalb "+war.getTimeToWar()+" bezahlt, werden sie angreifen!");
 			}
 		}
 
@@ -787,7 +788,7 @@ public class FactionsPlayerListener implements Listener
 		
 		p.log("TEST");
 		
-		for(FWar fwar:FWar.get()){
+		for(FWar fwar:FWars.i.get()){
 			p.log("TEST2");
 			for(InventoryView inv2:fwar.tempInvs){
 				p.log("TEST4");

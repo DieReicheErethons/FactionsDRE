@@ -94,6 +94,7 @@ public class P extends MPlugin
 		// Load Saved Data
 		FPlayers.i.loadFromDisc();
 		Factions.i.loadFromDisc();
+		FWars.i.loadFromDisc();
 		Board.load();
 		
 		
