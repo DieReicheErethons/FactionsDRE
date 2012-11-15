@@ -20,8 +20,10 @@ import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.P;
+import com.massivecraft.factions.integration.LWCFeatures;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
+import com.massivecraft.factions.struct.Role;
 
 
 public class FactionsBlockListener implements Listener
@@ -60,6 +62,31 @@ public class FactionsBlockListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event)
 	{
+		
+		Block block = event.getBlock();
+		Player player = event.getPlayer();
+		if(block!=null){
+			
+			
+			if(LWCFeatures.getEnabled()){
+				FPlayer me = FPlayers.i.get(player);
+				
+				FLocation loc = new FLocation(block);
+				Faction otherFaction = Board.getFactionAt(loc);
+				
+				if(me.getFaction()==otherFaction){
+					if(me.getRole()==Role.ADMIN){
+						if(event.isCancelled()){
+							event.setCancelled(false);
+							LWCFeatures.get().findProtection(block).remove();
+						}
+						p.log("LWC-Bypass for factions-Admin");
+						//LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
+					}
+				}
+			}
+		}
+		
 		if (event.isCancelled()) return;
 
 		if ( ! playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock(), "destroy", false))

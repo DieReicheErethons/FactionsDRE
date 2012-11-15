@@ -41,6 +41,7 @@ import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.P;
 import com.massivecraft.factions.buildings.BuildingType;
+import com.massivecraft.factions.integration.LWCFeatures;
 import com.massivecraft.factions.integration.spout.SpoutFeatures;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
@@ -416,10 +417,35 @@ public class FactionsPlayerListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-		if (event.isCancelled()) return;
-
+		
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
+		if(block!=null){
+			
+			
+			if(LWCFeatures.getEnabled()){
+				FPlayer me = FPlayers.i.get(player);
+				
+				FLocation loc = new FLocation(block);
+				Faction otherFaction = Board.getFactionAt(loc);
+				
+				if(me.getFaction()==otherFaction){
+					if(me.getRole()==Role.ADMIN){
+						if(event.isCancelled()){
+							event.setCancelled(false);
+							
+						}
+						p.log("LWC-Bypass for factions-Admin");
+						//LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
+					}
+				}
+			}
+		}
+		
+		
+		if (event.isCancelled()) return;
+
+		
 
 		if (block == null)
 		{
@@ -431,6 +457,13 @@ public class FactionsPlayerListener implements Listener
 			event.setCancelled(true);
 			return;
 		}
+		
+		
+		
+		
+		
+		
+		
 		
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
 		{
@@ -596,6 +629,21 @@ public class FactionsPlayerListener implements Listener
 			
 			return false;
 		}
+		
+		
+		/*if(LWCFeatures.getEnabled()){
+			if(myFaction==otherFaction){
+				if(me.getRole()==Role.ADMIN){
+					//if(event.isCancelled()){
+					//	event.setCancelled(false);
+					//}
+					
+					LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
+				}
+			}
+		}*/
+		
+		
 
 		return true;
 	}

@@ -87,4 +87,8 @@ public class LWCFeatures
 			}
 		}
 	}
+	
+	public static LWC get(){
+		return lwc;
+	}
 }
