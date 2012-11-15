@@ -53,7 +53,8 @@ public class FCmdRoot extends FCommand
 	public CmdWarunclaimall cmdWarunclaimall = new CmdWarunclaimall();
 	public CmdTaxation cmdTaxation = new CmdTaxation();
 	public CmdSaveBuilding cmdSaveBuilding = new CmdSaveBuilding();	
-	public CmdWar cmdWar = new CmdWar();	
+	public CmdWar cmdWar = new CmdWar();
+	public CmdInventory cmdInventory = new CmdInventory();
 	
 	public FCmdRoot()
 	{
@@ -125,6 +126,7 @@ public class FCmdRoot extends FCommand
 		this.addSubCommand(this.cmdTaxation);
 		this.addSubCommand(this.cmdSaveBuilding);
 		this.addSubCommand(this.cmdWar);
+		this.addSubCommand(this.cmdInventory);
 	}
 	
 	@Override

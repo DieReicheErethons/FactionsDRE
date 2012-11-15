@@ -808,7 +808,7 @@ public class FactionsPlayerListener implements Listener
 		InventoryView inv=event.getView();
 		//Player player=(Player) event.getWhoClicked();
 		for(FPlayer fpl:FPlayers.i.get()){
-			if(fpl.playerInventoryView.equals(inv)){
+			if(inv.equals(fpl.playerInventoryView)){
 				
 				ItemStack istack=event.getCurrentItem();
 				for(Material mat:fpl.getFaction().factionInventory.keySet()){
