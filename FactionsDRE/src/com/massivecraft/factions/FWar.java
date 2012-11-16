@@ -9,6 +9,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 
 import com.massivecraft.factions.integration.Econ;
+import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.zcore.persist.Entity;
 
 public class FWar extends Entity{	
@@ -22,6 +23,7 @@ public class FWar extends Entity{
 	public Faction getTargetFaction(){ return Factions.i.get(targetFactionID);}
 	
 	public boolean isStarted;
+	public boolean isWar;
 	public long time;
 	
 	
@@ -32,6 +34,7 @@ public class FWar extends Entity{
 		this.targetFactionID=target.getId();
 		
 		this.isStarted = false; // Obviously the war isn't started yet
+		this.isWar = false;//No War until time passed
 		
 		this.tempInvs = new HashSet<InventoryView>();
 	}
@@ -81,6 +84,25 @@ public class FWar extends Entity{
 		return (int)Math.floor(timeToWar/(60*60*1000))+"h "+(int)Math.floor(timeToWar%(60*60*1000)/(60*1000))+"min";
 	}
 	
+	
+	public long getMilliTimeToWar(){
+		long timeToWar=(24*60*60*1000)-(System.currentTimeMillis()-this.time);
+		
+		return timeToWar;
+	}
+	
+	public static void setRelationshipWhenTimeToWarIsOver(){
+		for(FWar war:FWars.i.get()){
+			if(!war.isWar){
+				if(war.getMilliTimeToWar()<=0){
+					war.isWar=true;
+					war.getAttackerFaction().setRelationWish(war.getTargetFaction(), Relation.ENEMY);
+					war.getTargetFaction().setRelationWish(war.getAttackerFaction(), Relation.ENEMY);
+				}
+			}
+		}
+	}
+	
 	public void addTempInventory(InventoryView inv){
 		tempInvs.add(inv);
 	}
@@ -123,6 +145,8 @@ public class FWar extends Entity{
 				
 			}
 		}
+		getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
+		getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
 		
 		
 	}

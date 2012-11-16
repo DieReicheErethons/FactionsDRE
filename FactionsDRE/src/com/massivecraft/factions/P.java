@@ -145,6 +145,7 @@ public class P extends MPlugin
 		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	Factions.i.updateBeginnersProtection();
+		    	FWar.setRelationshipWhenTimeToWarIsOver();
 		    }
 		}, 0L, 72000L);
 		
