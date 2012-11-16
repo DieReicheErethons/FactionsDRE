@@ -81,7 +81,7 @@ public class CmdWar extends FCommand{
 						/* Check the commands */
 						if(argCmd!=null){
 							if(argCmd.equalsIgnoreCase("additems")){
-								Inventory inv=Bukkit.createInventory(me, 108);
+								Inventory inv=Bukkit.createInventory(me, 54);
 								InventoryView view=me.openInventory(inv);
 								fwar.addTempInventory(view);
 							}

@@ -88,7 +88,7 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	
 	
 	// FIELD: InventoryView
-	public InventoryView playerInventoryView;
+	public transient InventoryView playerInventoryView;
 	
 	public Faction getAutoClaimFor()
 	{

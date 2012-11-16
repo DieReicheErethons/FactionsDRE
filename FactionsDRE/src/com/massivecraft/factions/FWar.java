@@ -14,7 +14,7 @@ import com.massivecraft.factions.zcore.persist.Entity;
 public class FWar extends Entity{	
 	public transient Set<InventoryView> tempInvs;
 	
-	public Map<Material,Integer> items = new HashMap<Material,Integer>();
+	public Map<Material,Integer[]> items = new HashMap<Material,Integer[]>();
 	public int money;
 	
 	private String attackerFactionID, targetFactionID;
@@ -89,11 +89,17 @@ public class FWar extends Entity{
 		if(tempInvs.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
+					Integer[] args= new Integer[2];
 					if(items.get(istack.getType())==null){
-						items.put(istack.getType(), istack.getAmount());
+						args[0]=(int) istack.getData().getData();
+						args[1]=istack.getAmount();
+						items.put(istack.getType(), args);
 					}
 					else{
-						items.put(istack.getType(), items.get(istack.getType())+istack.getAmount());
+						args[0]=(int) istack.getData().getData();
+						Integer[] argsOLD = items.get(istack.getType());
+						args[1]=argsOLD[1]+istack.getAmount();
+						items.put(istack.getType(), args);
 					}
 				}
 			}
@@ -104,6 +110,21 @@ public class FWar extends Entity{
 	
 	public void remove(){
 		FWars.i.detach(this);
+		
+		for(Material mat:items.keySet()){
+			Integer[] args= new Integer[2];
+			if(getAttackerFaction().factionInventory.get(mat)==null){
+				getAttackerFaction().factionInventory.put(mat, items.get(mat));
+			}else{
+				args=items.get(mat);
+				Integer[] argsOLD=getAttackerFaction().factionInventory.get(mat);
+				args[1]=args[1]+ argsOLD[1];
+				getAttackerFaction().factionInventory.put(mat, args);
+				
+			}
+		}
+		
+		
 	}
 	
 	// Get functions

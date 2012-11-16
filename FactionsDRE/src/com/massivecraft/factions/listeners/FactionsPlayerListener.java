@@ -854,21 +854,33 @@ public class FactionsPlayerListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryClick(InventoryClickEvent event){
 		InventoryView inv=event.getView();
-		//Player player=(Player) event.getWhoClicked();
+		Player player=(Player) event.getWhoClicked();
+		ItemStack istack=event.getCurrentItem();
+		
 		for(FPlayer fpl:FPlayers.i.get()){
 			if(inv.equals(fpl.playerInventoryView)){
+				event.setCancelled(true);
 				
-				ItemStack istack=event.getCurrentItem();
-				for(Material mat:fpl.getFaction().factionInventory.keySet()){
-					Integer[] args=fpl.getFaction().factionInventory.get(mat);
-					if(mat.equals(istack.getType())){
-						args[1]=args[1]-istack.getAmount();
-						fpl.getFaction().factionInventory.put(mat, args);
+				if(event.getRawSlot()<54){
+					ItemStack dataStack=istack.clone();
+					
+					ItemStack lostItems= player.getInventory().addItem(istack).get(0);
+					event.setCurrentItem(lostItems);
+					
+					for(Material mat:fpl.getFaction().factionInventory.keySet()){
+						Integer[] args=fpl.getFaction().factionInventory.get(mat);
+						
+						if(mat==dataStack.getType()){
+							if(lostItems!=null){
+								args[1]=args[1]-(dataStack.getAmount()-lostItems.getAmount());
+							}else{
+								args[1]=args[1]-dataStack.getAmount();
+							}
+							
+							fpl.getFaction().factionInventory.put(mat, args);
+						}				 
 					}
-									 
 				}
-				
-				
 			}
 		}
 		
