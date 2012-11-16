@@ -31,9 +31,9 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.painting.PaintingBreakByEntityEvent;
-import org.bukkit.event.painting.PaintingBreakEvent;
-import org.bukkit.event.painting.PaintingPlaceEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -472,35 +472,35 @@ public class FactionsEntityListener implements Listener
 			event.setCancelled(true);
 		}
 	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPaintingBreak(PaintingBreakEvent event)
+	public void onHangingBreak(HangingBreakEvent event)
 	{
 		if (event.isCancelled()) return;
 		
-		if (! (event instanceof PaintingBreakByEntityEvent))
+		if (! (event instanceof HangingBreakByEntityEvent))
 		{
 			return;
 		}
 
-		Entity breaker = ((PaintingBreakByEntityEvent)event).getRemover();
+		Entity breaker = ((HangingBreakByEntityEvent)event).getRemover();
 		if (! (breaker instanceof Player))
 		{
 			return;
 		}
 
-		//if ( ! FactionsBlockListener.playerCanBuildDestroyBlock((Player)breaker, event.getPainting(), "remove paintings", false))
-		//{
-		//	event.setCancelled(true);
-		//}
+		if ( ! FactionsBlockListener.playerCanBuildDestroyBlock((Player)breaker, event.getEntity().getLocation().getBlock(), "remove item", false))
+		{
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPaintingPlace(PaintingPlaceEvent event)
+	public void onHangingPlace(HangingPlaceEvent event)
 	{
 		if (event.isCancelled()) return;
 
-		if ( ! FactionsBlockListener.playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock(), "place paintings", false) )
+		if ( ! FactionsBlockListener.playerCanBuildDestroyBlock(event.getPlayer(), event.getBlock(), "place item", false) )
 		{
 			event.setCancelled(true);
 		}
