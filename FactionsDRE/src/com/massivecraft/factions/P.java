@@ -146,6 +146,7 @@ public class P extends MPlugin
 		    public void run() {
 		    	Factions.i.updateBeginnersProtection();
 		    	FWar.setRelationshipWhenTimeToWarIsOver();
+		    	FWar.payForMorePlayersThenTarget();
 		    }
 		}, 0L, 72000L);
 		

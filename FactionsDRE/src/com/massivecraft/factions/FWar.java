@@ -25,6 +25,7 @@ public class FWar extends Entity{
 	public boolean isStarted;
 	public boolean isWar;
 	public long time;
+	public long timeToNextPayForMorePlayersThenTarget;
 	
 	
 	public FWar(Faction attacker, Faction target){
@@ -91,6 +92,7 @@ public class FWar extends Entity{
 		return timeToWar;
 	}
 	
+	
 	public static void setRelationshipWhenTimeToWarIsOver(){
 		for(FWar war:FWars.i.get()){
 			if(!war.isWar){
@@ -98,10 +100,42 @@ public class FWar extends Entity{
 					war.isWar=true;
 					war.getAttackerFaction().setRelationWish(war.getTargetFaction(), Relation.ENEMY);
 					war.getTargetFaction().setRelationWish(war.getAttackerFaction(), Relation.ENEMY);
+					war.timeToNextPayForMorePlayersThenTarget = System.currentTimeMillis();
 				}
 			}
 		}
 	}
+	
+	
+	public long getMilliTimeToNextPay(){
+		long timeToPay=(24*60*60*1000)-(System.currentTimeMillis()-this.timeToNextPayForMorePlayersThenTarget);
+		
+		return timeToPay;
+	}
+	
+	
+	public static void payForMorePlayersThenTarget(){
+		if(Conf.econEnabled){
+			for(FWar war:FWars.i.get()){
+				if(war.isWar){
+					if(war.getMilliTimeToNextPay()<0){
+						if(war.getAttackerFaction().getFPlayers().size()>war.getTargetFaction().getFPlayers().size()){
+							int zwischenwert=war.getAttackerFaction().getFPlayers().size()-war.getTargetFaction().getFPlayers().size();
+							if(Econ.modifyMoney(war.getAttackerFaction(), -(zwischenwert*10), "", "for paying the Playerdifference in a War")){
+								
+							}else{
+								war.remove();
+								war.getAttackerFaction().sendMessage("Der Krieg gegen "+war.getTargetFaction().getTag()+" wurde beendet da ihr kein Geld mehr habt um die Spielerdifferenz auszugleichen!");
+								war.getTargetFaction().sendMessage("Der Krieg gegen "+war.getAttackerFaction().getTag()+" wurde beendet da sie kein Geld mehr habt um die Spielerdifferenz auszugleichen!");
+							}
+						}
+						war.timeToNextPayForMorePlayersThenTarget = System.currentTimeMillis();
+					}
+				}
+			}
+		}
+	}
+	
 	
 	public void addTempInventory(InventoryView inv){
 		tempInvs.add(inv);
@@ -145,8 +179,10 @@ public class FWar extends Entity{
 				
 			}
 		}
-		getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
-		getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
+		if(getAttackerFaction().getRelationTo(getTargetFaction())==Relation.ENEMY){
+			getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
+			getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
+		}
 		
 		
 	}
