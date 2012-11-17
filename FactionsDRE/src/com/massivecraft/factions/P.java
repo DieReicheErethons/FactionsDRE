@@ -132,6 +132,7 @@ public class P extends MPlugin
 		    public void run() {
 		    	Board.updateNZone();
 		    	
+		    	FWar.checkForDeleteFWars();
 		    	//Taxation Update
 				for(FPlayer fplayer:FPlayers.i.getOnline()){
 					fplayer.getTax();
