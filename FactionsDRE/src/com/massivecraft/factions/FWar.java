@@ -31,6 +31,8 @@ public class FWar extends Entity{
 	public long time;
 	public long timeToNextPayForMorePlayersThenTarget;
 	
+	public long timeToDeleteFWar;
+	
 	
 	public FWar(Faction attacker, Faction target){
 		this.attach();
@@ -96,6 +98,26 @@ public class FWar extends Entity{
 		
 		return timeToWar;
 	}
+	
+	
+	public long getMilliTimeToDeleteFWar(){
+		long timeToDeleteFWar=(30*60*1000)-(System.currentTimeMillis()-this.timeToDeleteFWar);
+		
+		return timeToDeleteFWar;
+	}
+	
+	
+	public static void checkForDeleteFWars(){
+		for(FWar war:FWars.i.get()){
+			if(war.isStarted==false){
+				if(war.getMilliTimeToDeleteFWar()<0){
+					war.remove();
+					war.getAttackerFaction().sendMessage("Kriegserklärungen gegen "+war.getTargetFaction().getTag()+" wurden abgebrochen da ihr länger als 30 Minuten gebraucht habt diese auszuarbeiten!");
+				}
+			}
+		}
+	}
+	
 	
 	
 	public static void setRelationshipWhenTimeToWarIsOver(){
@@ -273,4 +295,6 @@ public class FWar extends Entity{
 		
 		return null;
 	}
+	
+	
 }

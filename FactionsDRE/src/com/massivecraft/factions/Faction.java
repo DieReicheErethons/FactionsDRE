@@ -162,6 +162,23 @@ public class Faction extends Entity implements EconomyParticipator
 	// FIELD: Faction Inventory
 	public Map<Material,Integer[]> factionInventory = new HashMap<Material,Integer[]>();
 	
+	// FIELD: AfterWar Protection
+	public Map<Faction, Long> factionsAfterWarProtection = new HashMap<Faction, Long>();
+	
+	public static void checkAfterWarProtections(){
+		for(Faction faction:Factions.i.get()){
+			for(Faction factionFromList:faction.factionsAfterWarProtection.keySet()){
+				long time=faction.factionsAfterWarProtection.get(factionFromList);
+				long timeleft=(10*24*60*60*1000)-(System.currentTimeMillis()-time);
+				if(timeleft<0){
+					faction.factionsAfterWarProtection.remove(factionFromList);
+				}
+			}
+		}
+	}
+	
+	
+	
 
 	//Taxation functions  by Frank
 	public double tax;

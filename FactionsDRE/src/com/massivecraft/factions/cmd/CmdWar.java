@@ -54,21 +54,25 @@ public class CmdWar extends FCommand{
 					if(fme.getFaction()==argFaction){
 						if(argCmd==null){ // Check that the cmd parameter is empty
 							if(argFaction.getRelationTo(fme.getFaction())!=Relation.ALLY){
-								/* Start the demands */
-								new FWar(fme.getFaction(),argFaction);
-								
-								/* Send help messages */
-								me.sendMessage(ChatColor.GOLD+"Du bist dabei einen Krieg gegen die Fraktion "+ChatColor.GREEN+argFaction.getTag()+ChatColor.GOLD+" zu starten!");
-								
-								me.sendMessage(ChatColor.GOLD+"Folgende Befehle brauchst Du:");
-								me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" additems"+ChatColor.GOLD+" - Füge Items zu den Forderungen hinzu");
-								if(Conf.econEnabled){
-									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" addmoney  [money]"+ChatColor.GOLD+" - Füge Geld zu den Forderungen hinzu");
+								if(argFaction.factionsAfterWarProtection.containsKey(fme.getFaction())==false){
+									/* Start the demands */
+									new FWar(fme.getFaction(),argFaction);
+									
+									/* Send help messages */
+									me.sendMessage(ChatColor.GOLD+"Du bist dabei einen Krieg gegen die Fraktion "+ChatColor.GREEN+argFaction.getTag()+ChatColor.GOLD+" zu starten!");
+									
+									me.sendMessage(ChatColor.GOLD+"Folgende Befehle brauchst Du:");
+									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" additems"+ChatColor.GOLD+" - Füge Items zu den Forderungen hinzu");
+									if(Conf.econEnabled){
+										me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" addmoney  [money]"+ChatColor.GOLD+" - Füge Geld zu den Forderungen hinzu");
+									}
+									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" cancel"+ChatColor.GOLD+" - Bricht die Forderungen/Krieg ab");
+									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" confirm"+ChatColor.GOLD+" - Bestätigt die Forderungen und informiert die gegnerische Fraktion");
+									
+									me.sendMessage(ChatColor.GOLD+"Alle Items die Du zu den Forderungen hinzufügst werden eurer Fraktion abgezogen. Nach dem Krieg erhaltet ihr diese zurück.");
+								}else{
+									me.sendMessage(ChatColor.RED+"Ihr müsst nach einem durch Forderungen beendeten Krieg 10 Tage warten bis ihr sie wieder angreifen könnt!");
 								}
-								me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" cancel"+ChatColor.GOLD+" - Bricht die Forderungen/Krieg ab");
-								me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" confirm"+ChatColor.GOLD+" - Bestätigt die Forderungen und informiert die gegnerische Fraktion");
-								
-								me.sendMessage(ChatColor.GOLD+"Alle Items die Du zu den Forderungen hinzufügst werden eurer Fraktion abgezogen. Nach dem Krieg erhaltet ihr diese zurück.");
 							} else {
 								me.sendMessage(ChatColor.RED+"Ihr seid mit "+ChatColor.GOLD+this.argAsString(0)+ChatColor.RED+" verbündet!");
 							}
@@ -245,7 +249,7 @@ public class CmdWar extends FCommand{
 									}
 									
 									
-									
+									fwar.getTargetFaction().factionsAfterWarProtection.put(fwar.getAttackerFaction(), System.currentTimeMillis());
 									
 									fwar.remove();
 								}
