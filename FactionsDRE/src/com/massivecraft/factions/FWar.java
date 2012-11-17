@@ -14,9 +14,13 @@ import com.massivecraft.factions.zcore.persist.Entity;
 
 public class FWar extends Entity{	
 	public transient Set<InventoryView> tempInvs;
+	public transient Set<InventoryView> tempInvsFromTarget;
 	
 	public Map<Material,Integer[]> items = new HashMap<Material,Integer[]>();
 	public int money;
+	
+	public Map<Material,Integer[]> itemsFromTarget = new HashMap<Material,Integer[]>();
+	public int moneyFromTarget;
 	
 	private String attackerFactionID, targetFactionID;
 	public Faction getAttackerFaction(){ return Factions.i.get(attackerFactionID);}
@@ -38,6 +42,7 @@ public class FWar extends Entity{
 		this.isWar = false;//No War until time passed
 		
 		this.tempInvs = new HashSet<InventoryView>();
+		this.tempInvsFromTarget = new HashSet<InventoryView>();
 	}
 	
 	public void startWar(){
@@ -164,6 +169,33 @@ public class FWar extends Entity{
 		}
 	}
 	
+	public void addTempInventoryFromTarget(InventoryView inv){
+		tempInvsFromTarget.add(inv);
+	}
+	
+	public void removeTempInventoryFromTarget(InventoryView inv){
+		if(tempInvsFromTarget.contains(inv)){
+			for(ItemStack istack:inv.getTopInventory().getContents()){
+				if(istack!=null){
+					Integer[] args= new Integer[2];
+					if(itemsFromTarget.get(istack.getType())==null){
+						args[0]=(int) istack.getData().getData();
+						args[1]=istack.getAmount();
+						itemsFromTarget.put(istack.getType(), args);
+					}
+					else{
+						args[0]=(int) istack.getData().getData();
+						Integer[] argsOLD = itemsFromTarget.get(istack.getType());
+						args[1]=argsOLD[1]+istack.getAmount();
+						itemsFromTarget.put(istack.getType(), args);
+					}
+				}
+			}
+			inv.getTopInventory().clear();
+			tempInvsFromTarget.remove(inv);
+		}
+	}
+	
 	public void remove(){
 		FWars.i.detach(this);
 		
@@ -179,6 +211,9 @@ public class FWar extends Entity{
 				
 			}
 		}
+		
+		
+		
 		if(getAttackerFaction().getRelationTo(getTargetFaction())==Relation.ENEMY){
 			getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
 			getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);

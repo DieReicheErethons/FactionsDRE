@@ -849,6 +849,11 @@ public class FactionsPlayerListener implements Listener
 				fwar.removeTempInventory(inv);
 				player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
 			}
+			if(fwar.tempInvsFromTarget.contains(inv)){
+				p.log("TEST3");
+				fwar.removeTempInventoryFromTarget(inv);
+				player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
+			}
 		}
 	}
 	@EventHandler(priority = EventPriority.NORMAL)
