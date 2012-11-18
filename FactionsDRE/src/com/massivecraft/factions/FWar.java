@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.bukkit.Material;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 
 import com.massivecraft.factions.integration.Econ;
 import com.massivecraft.factions.struct.Relation;
@@ -16,10 +16,10 @@ public class FWar extends Entity{
 	public transient Set<InventoryView> tempInvs;
 	public transient Set<InventoryView> tempInvsFromTarget;
 	
-	public Map<Material,Integer[]> items = new HashMap<Material,Integer[]>();
+	public Map<MaterialData,Integer> items = new HashMap<MaterialData,Integer>();
 	public int money;
 	
-	public Map<Material,Integer[]> itemsFromTarget = new HashMap<Material,Integer[]>();
+	public Map<MaterialData,Integer> itemsFromTarget = new HashMap<MaterialData,Integer>();
 	public int moneyFromTarget;
 	
 	private String attackerFactionID, targetFactionID;
@@ -45,6 +45,8 @@ public class FWar extends Entity{
 		
 		this.tempInvs = new HashSet<InventoryView>();
 		this.tempInvsFromTarget = new HashSet<InventoryView>();
+		
+		this.timeToDeleteFWar = System.currentTimeMillis();
 	}
 	
 	public void startWar(){
@@ -74,13 +76,15 @@ public class FWar extends Entity{
 		}
 		
 		int i=0;
-		for(Material item:items.keySet()){
+		for(MaterialData item:items.keySet()){
 			i++;
 			if(i>1 && i < items.size()) ausgabe=ausgabe+", ";
 			
 			if(i==items.size()) ausgabe=ausgabe+" und ";
 			
-			ausgabe=ausgabe+items.get(item)+" "+item.name();
+			Integer args=items.get(item);
+			
+			ausgabe=ausgabe+args+" "+item;
 		}
 		
 		return ausgabe;
@@ -172,17 +176,15 @@ public class FWar extends Entity{
 		if(tempInvs.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
-					Integer[] args= new Integer[2];
-					if(items.get(istack.getType())==null){
-						args[0]=(int) istack.getData().getData();
-						args[1]=istack.getAmount();
-						items.put(istack.getType(), args);
+					Integer args;
+					if(items.get(istack.getData())==null){
+						args=istack.getAmount();
+						items.put(istack.getData(), args);
 					}
 					else{
-						args[0]=(int) istack.getData().getData();
-						Integer[] argsOLD = items.get(istack.getType());
-						args[1]=argsOLD[1]+istack.getAmount();
-						items.put(istack.getType(), args);
+						Integer argsOLD = items.get(istack.getType());
+						args=argsOLD+istack.getAmount();
+						items.put(istack.getData(), args);
 					}
 				}
 			}
@@ -199,17 +201,15 @@ public class FWar extends Entity{
 		if(tempInvsFromTarget.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
-					Integer[] args= new Integer[2];
-					if(itemsFromTarget.get(istack.getType())==null){
-						args[0]=(int) istack.getData().getData();
-						args[1]=istack.getAmount();
-						itemsFromTarget.put(istack.getType(), args);
+					Integer args;
+					if(itemsFromTarget.get(istack.getData())==null){
+						args=istack.getAmount();
+						itemsFromTarget.put(istack.getData(), args);
 					}
 					else{
-						args[0]=(int) istack.getData().getData();
-						Integer[] argsOLD = itemsFromTarget.get(istack.getType());
-						args[1]=argsOLD[1]+istack.getAmount();
-						itemsFromTarget.put(istack.getType(), args);
+						Integer argsOLD = itemsFromTarget.get(istack.getType());
+						args=argsOLD+istack.getAmount();
+						itemsFromTarget.put(istack.getData(), args);
 					}
 				}
 			}
@@ -221,14 +221,14 @@ public class FWar extends Entity{
 	public void remove(){
 		FWars.i.detach(this);
 		
-		for(Material mat:items.keySet()){
-			Integer[] args= new Integer[2];
+		for(MaterialData mat:items.keySet()){
+			Integer args;
 			if(getAttackerFaction().factionInventory.get(mat)==null){
 				getAttackerFaction().factionInventory.put(mat, items.get(mat));
 			}else{
 				args=items.get(mat);
-				Integer[] argsOLD=getAttackerFaction().factionInventory.get(mat);
-				args[1]=args[1]+ argsOLD[1];
+				Integer argsOLD=getAttackerFaction().factionInventory.get(mat);
+				args=args+ argsOLD;
 				getAttackerFaction().factionInventory.put(mat, args);
 				
 			}

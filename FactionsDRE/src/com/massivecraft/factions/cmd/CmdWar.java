@@ -2,7 +2,6 @@ package com.massivecraft.factions.cmd;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.material.MaterialData;
@@ -29,9 +28,9 @@ public class CmdWar extends FCommand{
 		this.permission = Permission.MOD.node;
 		this.disableOnLock = true;
 		
-		senderMustBePlayer = false;
-		senderMustBeMember = false;
-		senderMustBeModerator = false;
+		senderMustBePlayer = true;
+		senderMustBeMember = true;
+		senderMustBeModerator = true;
 		senderMustBeAdmin = false;
 	}
 	
@@ -51,36 +50,32 @@ public class CmdWar extends FCommand{
 				boolean isTarget = FWar.get(argFaction,fme.getFaction())!=null;
 				
 				if(!isAttacker && !isTarget){ // If the faction doesn't have a war with the other faction
-					if(fme.getFaction()==argFaction){
-						if(argCmd==null){ // Check that the cmd parameter is empty
-							if(argFaction.getRelationTo(fme.getFaction())!=Relation.ALLY){
-								if(argFaction.factionsAfterWarProtection.containsKey(fme.getFaction())==false){
-									/* Start the demands */
-									new FWar(fme.getFaction(),argFaction);
-									
-									/* Send help messages */
-									me.sendMessage(ChatColor.GOLD+"Du bist dabei einen Krieg gegen die Fraktion "+ChatColor.GREEN+argFaction.getTag()+ChatColor.GOLD+" zu starten!");
-									
-									me.sendMessage(ChatColor.GOLD+"Folgende Befehle brauchst Du:");
-									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" additems"+ChatColor.GOLD+" - Füge Items zu den Forderungen hinzu");
-									if(Conf.econEnabled){
-										me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" addmoney  [money]"+ChatColor.GOLD+" - Füge Geld zu den Forderungen hinzu");
-									}
-									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" cancel"+ChatColor.GOLD+" - Bricht die Forderungen/Krieg ab");
-									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" confirm"+ChatColor.GOLD+" - Bestätigt die Forderungen und informiert die gegnerische Fraktion");
-									
-									me.sendMessage(ChatColor.GOLD+"Alle Items die Du zu den Forderungen hinzufügst werden eurer Fraktion abgezogen. Nach dem Krieg erhaltet ihr diese zurück.");
-								}else{
-									me.sendMessage(ChatColor.RED+"Ihr müsst nach einem durch Forderungen beendeten Krieg 10 Tage warten bis ihr sie wieder angreifen könnt!");
+					if(argCmd==null){ // Check that the cmd parameter is empty
+						if(argFaction.getRelationTo(fme.getFaction())!=Relation.ALLY){
+							if(argFaction.factionsAfterWarProtection.containsKey(fme.getFaction())==false){
+								/* Start the demands */
+								new FWar(fme.getFaction(),argFaction);
+								
+								/* Send help messages */
+								me.sendMessage(ChatColor.GOLD+"Du bist dabei einen Krieg gegen die Fraktion "+ChatColor.GREEN+argFaction.getTag()+ChatColor.GOLD+" zu starten!");
+								
+								me.sendMessage(ChatColor.GOLD+"Folgende Befehle brauchst Du:");
+								me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" additems"+ChatColor.GOLD+" - Füge Items zu den Forderungen hinzu");
+								if(Conf.econEnabled){
+									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" addmoney  [money]"+ChatColor.GOLD+" - Füge Geld zu den Forderungen hinzu");
 								}
-							} else {
-								me.sendMessage(ChatColor.RED+"Ihr seid mit "+ChatColor.GOLD+this.argAsString(0)+ChatColor.RED+" verbündet!");
+								me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" cancel"+ChatColor.GOLD+" - Bricht die Forderungen/Krieg ab");
+								me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" confirm"+ChatColor.GOLD+" - Bestätigt die Forderungen und informiert die gegnerische Fraktion");
+								
+								me.sendMessage(ChatColor.GOLD+"Alle Items die Du zu den Forderungen hinzufügst werden eurer Fraktion abgezogen. Nach dem Krieg erhaltet ihr diese zurück.");
+							}else{
+								me.sendMessage(ChatColor.RED+"Ihr müsst nach einem durch Forderungen beendeten Krieg 10 Tage warten bis ihr sie wieder angreifen könnt!");
 							}
 						} else {
-							me.sendMessage(ChatColor.RED+"Du hast noch keine Forderungen gegen "+ChatColor.GOLD+this.argAsString(0)+ChatColor.RED+" gestartet!");
+							me.sendMessage(ChatColor.RED+"Ihr seid mit "+ChatColor.GOLD+this.argAsString(0)+ChatColor.RED+" verbündet!");
 						}
-					}else{
-						me.sendMessage(ChatColor.RED+"Bist du suizid Gefährdet??");
+					} else {
+						me.sendMessage(ChatColor.RED+"Du hast noch keine Forderungen gegen "+ChatColor.GOLD+this.argAsString(0)+ChatColor.RED+" gestartet!");
 					}
 				}
 				
@@ -125,7 +120,29 @@ public class CmdWar extends FCommand{
 								fwar.startWar();
 							}
 							
-							else if(argCmd.equalsIgnoreCase("cancelwar")){
+							
+							
+							else{
+								me.sendMessage(ChatColor.RED+"Dieser Befehl existiert nicht!");
+							}
+							
+						} else {
+							me.sendMessage(ChatColor.RED+"Du hast bereits eine Forderung gestartet!");
+							me.sendMessage(ChatColor.RED+"Die Kriegserklärung gegen: "+fwar.getTargetFaction().getTag()+" startet in "+fwar.getTimeToWar());
+						}
+						
+						
+						
+					
+						
+						
+					}
+					
+					if(fwar.isStarted){ //If the war isn't started yet
+						/* Check the commands */
+						if(argCmd!=null){
+							
+							if(argCmd.equalsIgnoreCase("cancelwar")){
 								if(Conf.econEnabled){
 									Econ.modifyMoney(fme.getFaction(), fwar.money, "for cancelling a war", "");
 								}
@@ -137,14 +154,14 @@ public class CmdWar extends FCommand{
 									Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
 								}
 								
-								for(Material mat:fwar.itemsFromTarget.keySet()){
-									Integer[] args= new Integer[2];
+								for(MaterialData mat:fwar.itemsFromTarget.keySet()){
+									Integer args;
 									if(fwar.getTargetFaction().factionInventory.get(mat)==null){
 										fwar.getTargetFaction().factionInventory.put(mat, fwar.itemsFromTarget.get(mat));
 									}else{
 										args=fwar.itemsFromTarget.get(mat);
-										Integer[] argsOLD=fwar.getTargetFaction().factionInventory.get(mat);
-										args[1]=args[1]+ argsOLD[1];
+										Integer argsOLD=fwar.getTargetFaction().factionInventory.get(mat);
+										args=args+ argsOLD;
 										fwar.getTargetFaction().factionInventory.put(mat, args);
 										
 									}
@@ -153,19 +170,7 @@ public class CmdWar extends FCommand{
 								
 							}
 							
-							else{
-								me.sendMessage(ChatColor.RED+"Dieser Befehl existiert nicht!");
-							}
-							
-						} else {
-							me.sendMessage(ChatColor.RED+"Du hast bereits eine Forderung gestartet!");
 						}
-						
-						
-						
-					}else{
-						me.sendMessage(ChatColor.RED+"Die Kriegserklärung gegen: "+fwar.getTargetFaction().getTag()+" startet in "+fwar.getTimeToWar());
-						
 					}
 					
 				}
@@ -203,14 +208,14 @@ public class CmdWar extends FCommand{
 									Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
 								}
 								
-								for(Material mat:fwar.itemsFromTarget.keySet()){
-									Integer[] args= new Integer[2];
+								for(MaterialData mat:fwar.itemsFromTarget.keySet()){
+									Integer args;
 									if(fwar.getTargetFaction().factionInventory.get(mat)==null){
 										fwar.getTargetFaction().factionInventory.put(mat, fwar.itemsFromTarget.get(mat));
 									}else{
 										args=fwar.itemsFromTarget.get(mat);
-										Integer[] argsOLD=fwar.getTargetFaction().factionInventory.get(mat);
-										args[1]=args[1]+ argsOLD[1];
+										Integer argsOLD=fwar.getTargetFaction().factionInventory.get(mat);
+										args=args+ argsOLD;
 										fwar.getTargetFaction().factionInventory.put(mat, args);
 										
 									}
@@ -225,32 +230,27 @@ public class CmdWar extends FCommand{
 							
 							else if(argCmd.equalsIgnoreCase("confirmpay")){
 								boolean passed=true;
-								for(Material mat:fwar.items.keySet()){
+								for(MaterialData mat:fwar.items.keySet()){
 									boolean found=false;
-									for(Material matFromTarget:fwar.itemsFromTarget.keySet()){
-										if((matFromTarget.compareTo(mat)==0)){
+									for(MaterialData matFromTarget:fwar.itemsFromTarget.keySet()){
+										if((matFromTarget.equals(mat))){
 											found=true;
 											
-											Integer[] args=fwar.items.get(mat);
-											Integer[] argsFromTarget=fwar.itemsFromTarget.get(mat);
+											Integer args=fwar.items.get(mat);
+											Integer argsFromTarget=fwar.itemsFromTarget.get(mat);
 											
-											if(args[0]==argsFromTarget[0]){
-												found=false;
-											}
 											
-											if(argsFromTarget[1]<args[1]){
+											if(argsFromTarget<args){
 												passed=false;
-												MaterialData matdata=new MaterialData(args[0]);
-												me.sendMessage(ChatColor.RED+"Es fehlen noch "+(argsFromTarget[1]-args[1])+" "+matdata.toString()+" um die Forderungen zu erfüllen!");
+												me.sendMessage(ChatColor.RED+"Es fehlen noch "+(argsFromTarget-args)+" "+mat.toString()+" um die Forderungen zu erfüllen!");
 											}
 											
 										}
 									}
 									if(found==false){
 										passed=false;
-										Integer[] args=fwar.items.get(mat);
-										MaterialData matdata=new MaterialData(args[0]);
-										me.sendMessage(ChatColor.RED+"Es fehlen noch "+(args[1])+" "+matdata.toString()+" um die Forderungen zu erfüllen!");
+										Integer args=fwar.items.get(mat);
+										me.sendMessage(ChatColor.RED+"Es fehlen noch "+(args)+" "+mat.toString()+" um die Forderungen zu erfüllen!");
 									}
 								}
 								
@@ -264,14 +264,14 @@ public class CmdWar extends FCommand{
 								if(passed==true){
 									me.sendMessage(ChatColor.RED+"Forderungen wurden Erfüllt!");
 									
-									for(Material mat:fwar.itemsFromTarget.keySet()){
-										Integer[] args= new Integer[2];
+									for(MaterialData mat:fwar.itemsFromTarget.keySet()){
+										Integer args;
 										if(fwar.getAttackerFaction().factionInventory.get(mat)==null){
 											fwar.getAttackerFaction().factionInventory.put(mat, fwar.itemsFromTarget.get(mat));
 										}else{
 											args=fwar.itemsFromTarget.get(mat);
-											Integer[] argsOLD=fwar.getAttackerFaction().factionInventory.get(mat);
-											args[1]=args[1]+ argsOLD[1];
+											Integer argsOLD=fwar.getAttackerFaction().factionInventory.get(mat);
+											args=args+ argsOLD;
 											fwar.getAttackerFaction().factionInventory.put(mat, args);
 											
 										}

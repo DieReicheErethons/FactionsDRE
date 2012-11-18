@@ -1,7 +1,6 @@
 package com.massivecraft.factions.cmd;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
@@ -32,27 +31,33 @@ public class CmdInventory extends FCommand
 	@Override
 	public void perform() {
 		Inventory inv=Bukkit.createInventory(me, 54);
-		for(Material mat:fme.getFaction().factionInventory.keySet()){
-			 Integer[] args=fme.getFaction().factionInventory.get(mat);
-			 int data = args[0];
-			 MaterialData matdata=new MaterialData(data);
-			 int amount = args[1];
-			 ItemStack item = new ItemStack(mat);
-			 while(amount>0){
-				
-				if(mat.getMaxStackSize()<=amount){
-					item.setAmount(mat.getMaxStackSize());
-					item.setData(matdata);
+		for(MaterialData mat:fme.getFaction().factionInventory.keySet()){
+			 Integer args=fme.getFaction().factionInventory.get(mat);
+			 int amount = args;
+			 me.sendMessage("Itesmsasdf");
+			 //item.setTypeId(mat.getItemTypeId());
+			 //item.setData(mat);
+			 //while(amount>0){
+			 
+				ItemStack item = new ItemStack(mat.getItemType(),amount,mat.getData());
+				/*if(mat.getItemType().getMaxStackSize()<=amount){
+					item.setAmount(mat.getItemType().getMaxStackSize());
+					item.setData(mat);
 					
-					amount=amount-mat.getMaxStackSize();
+					amount=amount-mat.getItemType().getMaxStackSize();
+					inv.addItem(item);
 					
 				}else{
 					item.setAmount(amount);
-					item.setData(matdata);
+					item.setData(mat);
 					amount=0;
+					inv.addItem(item);
+				}*/
+				if(amount>0){
+					inv.addItem(item);
 				}
-				inv.addItem(item);
-			 }
+				
+			 //}
 			 
 			 
 		}

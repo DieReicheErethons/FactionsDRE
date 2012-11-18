@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.MaterialData;
 import org.getspout.spoutapi.SpoutManager;
 
 import com.massivecraft.factions.Board;
@@ -835,24 +836,31 @@ public class FactionsPlayerListener implements Listener
 		Player player=(Player) event.getPlayer();
 		
 		p.log("TEST");
-		
-		for(FWar fwar:FWars.i.get()){
-			p.log("TEST2");
-			for(InventoryView inv2:fwar.tempInvs){
-				p.log("TEST4");
-				if(inv2.equals(inv)){
-					p.log("TEST5");
+		if(inv!=null){
+			for(FWar fwar:FWars.i.get()){
+				if(fwar!=null){
+					//p.log("TEST2");
+					//for(InventoryView inv2:fwar.tempInvs){
+					//	p.log("TEST4");
+					//	if(inv2.equals(inv)){
+					//		p.log("TEST5");
+					//	}
+					//}
+					if(fwar.tempInvs!=null){
+						if(fwar.tempInvs.contains(inv)){
+							//p.log("TEST3");
+							fwar.removeTempInventory(inv);
+							player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
+						}
+					}
+					if(fwar.tempInvsFromTarget!=null){
+						if(fwar.tempInvsFromTarget.contains(inv)){
+							//p.log("TEST3");
+							fwar.removeTempInventoryFromTarget(inv);
+							player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
+						}
+					}
 				}
-			}
-			if(fwar.tempInvs.contains(inv)){
-				p.log("TEST3");
-				fwar.removeTempInventory(inv);
-				player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
-			}
-			if(fwar.tempInvsFromTarget.contains(inv)){
-				p.log("TEST3");
-				fwar.removeTempInventoryFromTarget(inv);
-				player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
 			}
 		}
 	}
@@ -872,18 +880,20 @@ public class FactionsPlayerListener implements Listener
 					ItemStack lostItems= player.getInventory().addItem(istack).get(0);
 					event.setCurrentItem(lostItems);
 					
-					for(Material mat:fpl.getFaction().factionInventory.keySet()){
-						Integer[] args=fpl.getFaction().factionInventory.get(mat);
-						
-						if(mat==dataStack.getType()){
-							if(lostItems!=null){
-								args[1]=args[1]-(dataStack.getAmount()-lostItems.getAmount());
-							}else{
-								args[1]=args[1]-dataStack.getAmount();
+					for(MaterialData mat:fpl.getFaction().factionInventory.keySet()){
+						Integer args=fpl.getFaction().factionInventory.get(mat);
+						//if(mat.getItemType()==dataStack.getType()){
+							if(mat.equals(dataStack.getData())){
+								p.log("ITEM FOUND!!!!!");
+								if(lostItems!=null){
+									args=args-(dataStack.getAmount()-lostItems.getAmount());
+								}else{
+									args=args-dataStack.getAmount();
+								}
+								
+								fpl.getFaction().factionInventory.put(mat, args);
 							}
-							
-							fpl.getFaction().factionInventory.put(mat, args);
-						}				 
+						//}
 					}
 				}
 			}
