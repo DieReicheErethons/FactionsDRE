@@ -125,6 +125,34 @@ public class CmdWar extends FCommand{
 								fwar.startWar();
 							}
 							
+							else if(argCmd.equalsIgnoreCase("cancelwar")){
+								if(Conf.econEnabled){
+									Econ.modifyMoney(fme.getFaction(), fwar.money, "for cancelling a war", "");
+								}
+								
+								fwar.remove();
+								
+								
+								if(Conf.econEnabled){
+									Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
+								}
+								
+								for(Material mat:fwar.itemsFromTarget.keySet()){
+									Integer[] args= new Integer[2];
+									if(fwar.getTargetFaction().factionInventory.get(mat)==null){
+										fwar.getTargetFaction().factionInventory.put(mat, fwar.itemsFromTarget.get(mat));
+									}else{
+										args=fwar.itemsFromTarget.get(mat);
+										Integer[] argsOLD=fwar.getTargetFaction().factionInventory.get(mat);
+										args[1]=args[1]+ argsOLD[1];
+										fwar.getTargetFaction().factionInventory.put(mat, args);
+										
+									}
+								}
+								
+								
+							}
+							
 							else{
 								me.sendMessage(ChatColor.RED+"Dieser Befehl existiert nicht!");
 							}
@@ -225,6 +253,13 @@ public class CmdWar extends FCommand{
 										me.sendMessage(ChatColor.RED+"Es fehlen noch "+(args[1])+" "+matdata.toString()+" um die Forderungen zu erfüllen!");
 									}
 								}
+								
+								if(Conf.econEnabled){
+									if(fwar.money>fwar.moneyFromTarget){
+										me.sendMessage(ChatColor.RED+"Es fehlen noch "+(fwar.money-fwar.moneyFromTarget)+" Heronen um die Forderungen zu erfüllen!");
+									}
+								}
+								
 								
 								if(passed==true){
 									me.sendMessage(ChatColor.RED+"Forderungen wurden Erfüllt!");
