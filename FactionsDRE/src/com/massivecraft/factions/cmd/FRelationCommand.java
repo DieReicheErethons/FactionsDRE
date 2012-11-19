@@ -3,6 +3,8 @@ package com.massivecraft.factions.cmd;
 import org.bukkit.ChatColor;
 
 import com.massivecraft.factions.Conf;
+import com.massivecraft.factions.FWar;
+import com.massivecraft.factions.FWars;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.integration.spout.SpoutFeatures;
 import com.massivecraft.factions.struct.Permission;
@@ -55,6 +57,29 @@ public abstract class FRelationCommand extends FCommand
 				return;
 			}
 		}
+		//FWar Settings
+		if(targetRelation.isEnemy()){
+			if(Conf.fwarEnabled){
+				msg("<a><b>Please use \"/f war <FactionName>\" instead!");
+				return;
+			}
+		}
+		
+		if(targetRelation.isNeutral()){
+			if(Conf.fwarEnabled){
+				for(FWar war:FWars.i.get()){
+					if(war.getAttackerFaction()==them && war.getTargetFaction()==myFaction){
+						msg("<a><b>Please use \"/f war <FactionName> cancelwar\" instead!");
+						return;
+					}
+					if(war.getTargetFaction()==them && war.getAttackerFaction()==myFaction){
+						msg("<a><b>Please use \"/f war <FactionName> cancelwar\" instead!");
+						return;
+					}
+				}
+			}
+		}
+		
 		
 		// if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
 		if ( ! payForCommand(targetRelation.getRelationCost(), "to change a relation wish", "for changing a relation wish")) return;

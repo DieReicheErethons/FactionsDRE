@@ -277,6 +277,10 @@ public class Conf
 	public static int warNeutralZoneToWilderness=300;
 	public static int warBeginnerProtection=24;
 	
+	//FWar settings
+	public static boolean fwarEnabled=true;
+	public static int fwarDaysAfterWarProtection=10;
+	public static int fwarHoursUntilWarStartsAfterDemand=24;
 	
 	
 	

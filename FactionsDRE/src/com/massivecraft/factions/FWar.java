@@ -1,5 +1,8 @@
 package com.massivecraft.factions;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -95,14 +98,18 @@ public class FWar extends Entity{
 	}
 	
 	public String getTimeToWar(){
-		long timeToWar=(24*60*60*1000)-(System.currentTimeMillis()-this.time);
+		long timeToWar=(Conf.fwarHoursUntilWarStartsAfterDemand*60*60*1000)-(System.currentTimeMillis()-this.time);
 		
-		return (int)Math.floor(timeToWar/(60*60*1000))+"h "+(int)Math.floor(timeToWar%(60*60*1000)/(60*1000))+"min";
+		Date date = new Date(timeToWar);
+		DateFormat formatter = new SimpleDateFormat("HH:mm");
+		String dateFormatted = formatter.format(date);
+		
+		return dateFormatted;//(int)Math.floor(timeToWar/(60*60*1000))+"h "+(int)Math.floor(timeToWar%(60*60*1000)/(60*1000))+"min";
 	}
 	
 	
 	public long getMilliTimeToWar(){
-		long timeToWar=(24*60*60*1000)-(System.currentTimeMillis()-this.time);
+		long timeToWar=(Conf.fwarHoursUntilWarStartsAfterDemand*60*60*1000)-(System.currentTimeMillis()-this.time);
 		
 		return timeToWar;
 	}

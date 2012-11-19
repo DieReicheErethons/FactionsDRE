@@ -168,7 +168,7 @@ public class Faction extends Entity implements EconomyParticipator
 		for(Faction faction:Factions.i.get()){
 			for(Faction factionFromList:faction.factionsAfterWarProtection.keySet()){
 				long time=faction.factionsAfterWarProtection.get(factionFromList);
-				long timeleft=(10*24*60*60*1000)-(System.currentTimeMillis()-time);
+				long timeleft=(Conf.fwarDaysAfterWarProtection*24*60*60*1000)-(System.currentTimeMillis()-time);
 				if(timeleft<0){
 					faction.factionsAfterWarProtection.remove(factionFromList);
 				}
