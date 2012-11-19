@@ -18,9 +18,6 @@ public class CmdInventory extends FCommand
 		super();
 		this.aliases.add("inventory");
 		
-		//this.requiredArgs.add("player name");
-		//this.optionalArgs.put("", "");
-		
 		this.permission = Permission.MOD.node;
 		this.disableOnLock = true;
 		
@@ -35,46 +32,20 @@ public class CmdInventory extends FCommand
 		if(Conf.fwarEnabled){
 			Inventory inv=Bukkit.createInventory(me, 54);
 			for(String matString:fme.getFaction().factionInventory.keySet()){
-				MaterialData mat=FWar.convertStringToMaterialData(matString);
-				 Integer args=fme.getFaction().factionInventory.get(matString);
-				 int amount = args;
-				 me.sendMessage("Itesmsasdf");
-				 //item.setTypeId(mat.getItemTypeId());
-				 //item.setData(mat);
-				 //while(amount>0){
+				MaterialData mat = FWar.convertStringToMaterialData(matString);
+				
+				Integer args = fme.getFaction().factionInventory.get(matString);
+				int amount = args;
 				 
-					ItemStack item = new ItemStack(mat.getItemType(),amount,mat.getData());
-					/*if(mat.getItemType().getMaxStackSize()<=amount){
-						item.setAmount(mat.getItemType().getMaxStackSize());
-						item.setData(mat);
-						
-						amount=amount-mat.getItemType().getMaxStackSize();
-						inv.addItem(item);
-						
-					}else{
-						item.setAmount(amount);
-						item.setData(mat);
-						amount=0;
-						inv.addItem(item);
-					}*/
-					if(amount>0){
-						inv.addItem(item);
-					}
-					
-				 //}
-				 
-				 
-			}
-			/*for(ItemStack istack:fme.getFaction().factionInventory){
-				if(count<54){
-					inv.addItem(istack);
+				ItemStack item = new ItemStack(mat.getItemType(),amount,mat.getData());
+
+				if(amount > 0){
+					inv.addItem(item);
 				}
-				count++;
-			}*/
-			InventoryView view=me.openInventory(inv);
-			fme.playerInventoryView=view;
-			
-			
+			}
+
+			InventoryView view = me.openInventory(inv);
+			fme.playerInventoryView = view;
 		}
 	}
 }

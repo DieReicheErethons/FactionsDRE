@@ -121,22 +121,13 @@ public class CmdWar extends FCommand{
 									fwar.startWar();
 								}
 								
-								
-								
 								else{
 									me.sendMessage(ChatColor.RED+"Dieser Befehl existiert nicht!");
 								}
 								
 							} else {
 								me.sendMessage(ChatColor.RED+"Du hast bereits eine Forderung gestartet!");
-								me.sendMessage(ChatColor.RED+"Die Kriegserklärung gegen: "+fwar.getTargetFaction().getTag()+" startet in "+fwar.getTimeToWar());
 							}
-							
-							
-							
-						
-							
-							
 						}
 						
 						if(fwar.isStarted){ //If the war isn't started yet
@@ -176,7 +167,6 @@ public class CmdWar extends FCommand{
 								me.sendMessage("Zeit zum Start des Krieges: "+fwar.getTimeToWar());
 							}
 						}
-						
 					}
 					
 					
@@ -186,13 +176,13 @@ public class CmdWar extends FCommand{
 						if(fwar.isStarted){ //If the war isn't started yet
 							/* Check the commands */
 							if(argCmd!=null){
-								if(argCmd.equalsIgnoreCase("addpayitems")){
+								if(argCmd.equalsIgnoreCase("payitems")){
 									Inventory inv=Bukkit.createInventory(me, 54);
 									InventoryView view=me.openInventory(inv);
 									fwar.addTempInventoryFromTarget(view);
 								}
 								
-								else if(argCmd.equalsIgnoreCase("addpaymoney")){
+								else if(argCmd.equalsIgnoreCase("paymoney")){
 									if(Conf.econEnabled){
 										if(argValue>0){
 											if(Econ.modifyMoney(fme.getFaction(), -argValue, "", "for add money to pay a demand")){
@@ -304,68 +294,15 @@ public class CmdWar extends FCommand{
 								else{
 									me.sendMessage(ChatColor.RED+"Dieser Befehl existiert nicht!");
 								}
-								
 							}
-							
-							
-							
 						} else {
 							me.sendMessage(ChatColor.RED+"Die Fraktion "+fwar.getAttackerFaction().getTag()+" ist gerade dabei einen Krieg gegen euch zu starten!");
 						}
-						
 					}
-					
-					
 				} else {
 					me.sendMessage(ChatColor.RED+"Du kannst keinen Krieg gegen "+ChatColor.GOLD+argFaction.getTag()+ChatColor.RED+" starten!");
 				}
 			}
 		}
 	}
-		/*
-		else{
-			//Money
-			if(Conf.econEnabled){
-				if(this.argIsSet(1)){
-					int money=this.argAsInt(1);
-					
-					if(money>=0){
-						int newMoney=money-fme.demandMoney;
-						
-						if(newMoney<=0){
-							Econ.deposit(myFaction.getAccountId(), -newMoney);
-							fme.demandMoney=money;
-							me.sendMessage(ChatColor.GOLD+"Der Forderungsbetrag wurde auf "+ChatColor.GREEN+fme.demandMoney+ChatColor.GOLD+" gesetzt");
-						}
-						else{
-							if(Econ.getBalance(myFaction.getAccountId())<newMoney){
-								me.sendMessage(ChatColor.RED+"Deine Fraktion hat zuwenig Geld um eine solche Forderung stellen zu können!");
-							}
-							else{
-								Econ.withdraw(myFaction.getAccountId(),newMoney);
-								fme.demandMoney=money;
-								me.sendMessage(ChatColor.GOLD+"Der Forderungsbetrag wurde auf "+ChatColor.GREEN+fme.demandMoney+ChatColor.GOLD+" gesetzt");
-							}
-						}
-					}
-					else{
-						me.sendMessage(ChatColor.RED+"Der Betrag muss gleich oder mehr als 0 sein!");
-					}
-					return;
-				}
-			}
-			//Beginn War
-			if(this.argAsFaction(0)==fme.demandFaction){
-				new FWar(myFaction, fme.demandFaction, fme.demandItems, fme.demandMoney);
-				fme.demandFaction=null;
-				fme.demandItems.clear();
-				fme.demandMoney=0;
-				fme.isMakingDemand=false;
-			}else{
-				me.sendMessage(ChatColor.RED+"Du bist momentan daran einen Krieg gegen "+ChatColor.GOLD+fme.demandFaction.getTag()+ChatColor.RED+" zu starten, bitte schliess diese Aktion zuerst ab!");
-			}
-			
-		}
-	}
-	*/
 }

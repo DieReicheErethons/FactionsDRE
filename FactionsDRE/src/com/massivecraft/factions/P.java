@@ -23,6 +23,7 @@ import com.massivecraft.factions.integration.spout.SpoutFeatures;
 import com.massivecraft.factions.listeners.FactionsBlockListener;
 import com.massivecraft.factions.listeners.FactionsChatEarlyListener;
 import com.massivecraft.factions.listeners.FactionsEntityListener;
+import com.massivecraft.factions.listeners.FactionsInventoryListener;
 import com.massivecraft.factions.listeners.FactionsPlayerListener;
 import com.massivecraft.factions.listeners.FactionsServerListener;
 import com.massivecraft.factions.struct.ChatMode;
@@ -42,6 +43,7 @@ public class P extends MPlugin
 	
 	// Listeners
 	public final FactionsPlayerListener playerListener;
+	public final FactionsInventoryListener inventoryListener;
 	public final FactionsChatEarlyListener chatEarlyListener;
 	public final FactionsEntityListener entityListener;
 	public final FactionsBlockListener blockListener;
@@ -61,6 +63,7 @@ public class P extends MPlugin
 	{
 		p = this;
 		this.playerListener = new FactionsPlayerListener(this);
+		this.inventoryListener = new FactionsInventoryListener(this);
 		this.chatEarlyListener = new FactionsChatEarlyListener(this);
 		this.entityListener = new FactionsEntityListener(this);
 		this.blockListener = new FactionsBlockListener(this);

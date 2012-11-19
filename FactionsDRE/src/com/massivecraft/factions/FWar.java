@@ -182,7 +182,7 @@ public class FWar extends Entity{
 		if(tempInvs.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
-					if(istack.getEnchantments()==null){
+					if(istack.getEnchantments().isEmpty()){
 						Integer args;
 						if(items.get(convertMaterialDataToString(istack.getData()))==null){
 							args=istack.getAmount();
@@ -195,7 +195,7 @@ public class FWar extends Entity{
 						}
 					}else{
 						inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
-						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!!");
+						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!");
 					}
 				}
 			}
@@ -212,7 +212,7 @@ public class FWar extends Entity{
 		if(tempInvsFromTarget.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
-					if(istack.getEnchantments()==null){
+					if(istack.getEnchantments().isEmpty()){
 						Integer args;
 						if(itemsFromTarget.get(convertMaterialDataToString(istack.getData()))==null){
 							args=istack.getAmount();
@@ -225,7 +225,7 @@ public class FWar extends Entity{
 						}
 					}else{
 						inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
-						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!!");
+						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!");
 					}
 				}
 			}

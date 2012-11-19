@@ -15,8 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -26,9 +24,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
 import org.getspout.spoutapi.SpoutManager;
 
 import com.massivecraft.factions.Board;
@@ -37,7 +32,6 @@ import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.FWar;
-import com.massivecraft.factions.FWars;
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.P;
@@ -827,79 +821,5 @@ public class FactionsPlayerListener implements Listener
 			badGuy.leave(false);
 			badGuy.detach();
 		}
-	}
-	
-	/* Inventory Events */
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onInventoryClose(InventoryCloseEvent event){
-		InventoryView inv=event.getView();
-		Player player=(Player) event.getPlayer();
-		
-		p.log("TEST");
-		if(inv!=null){
-			for(FWar fwar:FWars.i.get()){
-				if(fwar!=null){
-					//p.log("TEST2");
-					//for(InventoryView inv2:fwar.tempInvs){
-					//	p.log("TEST4");
-					//	if(inv2.equals(inv)){
-					//		p.log("TEST5");
-					//	}
-					//}
-					if(fwar.tempInvs!=null){
-						if(fwar.tempInvs.contains(inv)){
-							//p.log("TEST3");
-							fwar.removeTempInventory(inv);
-							player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
-						}
-					}
-					if(fwar.tempInvsFromTarget!=null){
-						if(fwar.tempInvsFromTarget.contains(inv)){
-							//p.log("TEST3");
-							fwar.removeTempInventoryFromTarget(inv);
-							player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
-						}
-					}
-				}
-			}
-		}
-	}
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onInventoryClick(InventoryClickEvent event){
-		InventoryView inv=event.getView();
-		Player player=(Player) event.getWhoClicked();
-		ItemStack istack=event.getCurrentItem();
-		
-		for(FPlayer fpl:FPlayers.i.get()){
-			if(inv.equals(fpl.playerInventoryView)){
-				event.setCancelled(true);
-				
-				if(event.getRawSlot()<54){
-					ItemStack dataStack=istack.clone();
-					
-					ItemStack lostItems= player.getInventory().addItem(istack).get(0);
-					event.setCurrentItem(lostItems);
-					
-					for(String matString:fpl.getFaction().factionInventory.keySet()){
-						MaterialData mat=FWar.convertStringToMaterialData(matString);
-						Integer args=fpl.getFaction().factionInventory.get(matString);
-						//if(mat.getItemType()==dataStack.getType()){
-							if(mat.equals(dataStack.getData())){
-								p.log("ITEM FOUND!!!!!");
-								if(lostItems!=null){
-									args=args-(dataStack.getAmount()-lostItems.getAmount());
-								}else{
-									args=args-dataStack.getAmount();
-								}
-								
-								fpl.getFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
-							}
-						//}
-					}
-				}
-			}
-		}
-		
-		
 	}
 }
