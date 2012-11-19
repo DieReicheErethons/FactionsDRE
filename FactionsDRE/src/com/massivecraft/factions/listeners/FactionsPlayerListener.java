@@ -880,8 +880,9 @@ public class FactionsPlayerListener implements Listener
 					ItemStack lostItems= player.getInventory().addItem(istack).get(0);
 					event.setCurrentItem(lostItems);
 					
-					for(MaterialData mat:fpl.getFaction().factionInventory.keySet()){
-						Integer args=fpl.getFaction().factionInventory.get(mat);
+					for(String matString:fpl.getFaction().factionInventory.keySet()){
+						MaterialData mat=FWar.convertStringToMaterialData(matString);
+						Integer args=fpl.getFaction().factionInventory.get(matString);
 						//if(mat.getItemType()==dataStack.getType()){
 							if(mat.equals(dataStack.getData())){
 								p.log("ITEM FOUND!!!!!");
@@ -891,7 +892,7 @@ public class FactionsPlayerListener implements Listener
 									args=args-dataStack.getAmount();
 								}
 								
-								fpl.getFaction().factionInventory.put(mat, args);
+								fpl.getFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
 							}
 						//}
 					}

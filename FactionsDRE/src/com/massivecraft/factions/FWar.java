@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
@@ -16,10 +19,10 @@ public class FWar extends Entity{
 	public transient Set<InventoryView> tempInvs;
 	public transient Set<InventoryView> tempInvsFromTarget;
 	
-	public Map<MaterialData,Integer> items = new HashMap<MaterialData,Integer>();
+	public Map<String,Integer> items = new HashMap<String,Integer>();
 	public int money;
 	
-	public Map<MaterialData,Integer> itemsFromTarget = new HashMap<MaterialData,Integer>();
+	public Map<String,Integer> itemsFromTarget = new HashMap<String,Integer>();
 	public int moneyFromTarget;
 	
 	private String attackerFactionID, targetFactionID;
@@ -76,13 +79,14 @@ public class FWar extends Entity{
 		}
 		
 		int i=0;
-		for(MaterialData item:items.keySet()){
+		for(String itemString:items.keySet()){
+			MaterialData item=convertStringToMaterialData(itemString);
 			i++;
 			if(i>1 && i < items.size()) ausgabe=ausgabe+", ";
 			
 			if(i==items.size()) ausgabe=ausgabe+" und ";
 			
-			Integer args=items.get(item);
+			Integer args=items.get(itemString);
 			
 			ausgabe=ausgabe+args+" "+item;
 		}
@@ -176,15 +180,20 @@ public class FWar extends Entity{
 		if(tempInvs.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
-					Integer args;
-					if(items.get(istack.getData())==null){
-						args=istack.getAmount();
-						items.put(istack.getData(), args);
-					}
-					else{
-						Integer argsOLD = items.get(istack.getType());
-						args=argsOLD+istack.getAmount();
-						items.put(istack.getData(), args);
+					if(istack.getEnchantments()==null){
+						Integer args;
+						if(items.get(convertMaterialDataToString(istack.getData()))==null){
+							args=istack.getAmount();
+							items.put(convertMaterialDataToString(istack.getData()), args);
+						}
+						else{
+							Integer argsOLD = items.get(convertMaterialDataToString(istack.getData()));
+							args=argsOLD+istack.getAmount();
+							items.put(convertMaterialDataToString(istack.getData()), args);
+						}
+					}else{
+						inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
+						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!!");
 					}
 				}
 			}
@@ -201,15 +210,20 @@ public class FWar extends Entity{
 		if(tempInvsFromTarget.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
-					Integer args;
-					if(itemsFromTarget.get(istack.getData())==null){
-						args=istack.getAmount();
-						itemsFromTarget.put(istack.getData(), args);
-					}
-					else{
-						Integer argsOLD = itemsFromTarget.get(istack.getType());
-						args=argsOLD+istack.getAmount();
-						itemsFromTarget.put(istack.getData(), args);
+					if(istack.getEnchantments()==null){
+						Integer args;
+						if(itemsFromTarget.get(convertMaterialDataToString(istack.getData()))==null){
+							args=istack.getAmount();
+							itemsFromTarget.put(convertMaterialDataToString(istack.getData()), args);
+						}
+						else{
+							Integer argsOLD = itemsFromTarget.get(convertMaterialDataToString(istack.getData()));
+							args=argsOLD+istack.getAmount();
+							itemsFromTarget.put(convertMaterialDataToString(istack.getData()), args);
+						}
+					}else{
+						inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
+						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!!");
 					}
 				}
 			}
@@ -221,15 +235,16 @@ public class FWar extends Entity{
 	public void remove(){
 		FWars.i.detach(this);
 		
-		for(MaterialData mat:items.keySet()){
+		for(String matString:items.keySet()){
+			MaterialData mat=convertStringToMaterialData(matString);
 			Integer args;
-			if(getAttackerFaction().factionInventory.get(mat)==null){
-				getAttackerFaction().factionInventory.put(mat, items.get(mat));
+			if(getAttackerFaction().factionInventory.get(matString)==null){
+				getAttackerFaction().factionInventory.put(convertMaterialDataToString(mat), items.get(matString));
 			}else{
-				args=items.get(mat);
-				Integer argsOLD=getAttackerFaction().factionInventory.get(mat);
+				args=items.get(matString);
+				Integer argsOLD=getAttackerFaction().factionInventory.get(matString);
 				args=args+ argsOLD;
-				getAttackerFaction().factionInventory.put(mat, args);
+				getAttackerFaction().factionInventory.put(convertMaterialDataToString(mat), args);
 				
 			}
 		}
@@ -294,6 +309,20 @@ public class FWar extends Entity{
 		}
 		
 		return null;
+	}
+	
+	
+	public static String convertMaterialDataToString(MaterialData mat){
+		String text = ""+mat.getItemTypeId()+":"+mat.getData()+"";
+		P.p.log(text);
+		return text;
+	}
+	
+	public static MaterialData convertStringToMaterialData(String text){
+		String[] parts = text.split(":");
+		P.p.log("!!"+parts[0]+":"+parts[1]+"!!");
+		MaterialData mat=new MaterialData(Integer.parseInt(parts[0]), (byte)Integer.parseInt(parts[1]));
+		return mat;
 	}
 	
 	

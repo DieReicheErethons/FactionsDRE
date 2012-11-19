@@ -8,8 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
-
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.iface.RelationParticipator;
 import com.massivecraft.factions.integration.Econ;
@@ -161,7 +159,7 @@ public class Faction extends Entity implements EconomyParticipator
 	
 	
 	// FIELD: Faction Inventory
-	public Map<MaterialData,Integer> factionInventory = new HashMap<MaterialData,Integer>();
+	public Map<String,Integer> factionInventory = new HashMap<String,Integer>();
 	
 	// FIELD: AfterWar Protection
 	public Map<Faction, Long> factionsAfterWarProtection = new HashMap<Faction, Long>();

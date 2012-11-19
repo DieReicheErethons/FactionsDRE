@@ -154,15 +154,16 @@ public class CmdWar extends FCommand{
 									Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
 								}
 								
-								for(MaterialData mat:fwar.itemsFromTarget.keySet()){
+								for(String matString:fwar.itemsFromTarget.keySet()){
+									MaterialData mat=FWar.convertStringToMaterialData(matString);
 									Integer args;
-									if(fwar.getTargetFaction().factionInventory.get(mat)==null){
-										fwar.getTargetFaction().factionInventory.put(mat, fwar.itemsFromTarget.get(mat));
+									if(fwar.getTargetFaction().factionInventory.get(matString)==null){
+										fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
 									}else{
-										args=fwar.itemsFromTarget.get(mat);
-										Integer argsOLD=fwar.getTargetFaction().factionInventory.get(mat);
+										args=fwar.itemsFromTarget.get(matString);
+										Integer argsOLD=fwar.getTargetFaction().factionInventory.get(matString);
 										args=args+ argsOLD;
-										fwar.getTargetFaction().factionInventory.put(mat, args);
+										fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
 										
 									}
 								}
@@ -208,15 +209,16 @@ public class CmdWar extends FCommand{
 									Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
 								}
 								
-								for(MaterialData mat:fwar.itemsFromTarget.keySet()){
+								for(String matString:fwar.itemsFromTarget.keySet()){
+									MaterialData mat=FWar.convertStringToMaterialData(matString);
 									Integer args;
-									if(fwar.getTargetFaction().factionInventory.get(mat)==null){
-										fwar.getTargetFaction().factionInventory.put(mat, fwar.itemsFromTarget.get(mat));
+									if(fwar.getTargetFaction().factionInventory.get(matString)==null){
+										fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
 									}else{
-										args=fwar.itemsFromTarget.get(mat);
-										Integer argsOLD=fwar.getTargetFaction().factionInventory.get(mat);
+										args=fwar.itemsFromTarget.get(matString);
+										Integer argsOLD=fwar.getTargetFaction().factionInventory.get(matString);
 										args=args+ argsOLD;
-										fwar.getTargetFaction().factionInventory.put(mat, args);
+										fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
 										
 									}
 								}
@@ -230,14 +232,16 @@ public class CmdWar extends FCommand{
 							
 							else if(argCmd.equalsIgnoreCase("confirmpay")){
 								boolean passed=true;
-								for(MaterialData mat:fwar.items.keySet()){
+								for(String matString:fwar.items.keySet()){
+									MaterialData mat=FWar.convertStringToMaterialData(matString);
 									boolean found=false;
-									for(MaterialData matFromTarget:fwar.itemsFromTarget.keySet()){
+									for(String matFromTargetString:fwar.itemsFromTarget.keySet()){
+										MaterialData matFromTarget=FWar.convertStringToMaterialData(matFromTargetString);
 										if((matFromTarget.equals(mat))){
 											found=true;
 											
-											Integer args=fwar.items.get(mat);
-											Integer argsFromTarget=fwar.itemsFromTarget.get(mat);
+											Integer args=fwar.items.get(matString);
+											Integer argsFromTarget=fwar.itemsFromTarget.get(matString);
 											
 											
 											if(argsFromTarget<args){
@@ -249,7 +253,7 @@ public class CmdWar extends FCommand{
 									}
 									if(found==false){
 										passed=false;
-										Integer args=fwar.items.get(mat);
+										Integer args=fwar.items.get(matString);
 										me.sendMessage(ChatColor.RED+"Es fehlen noch "+(args)+" "+mat.toString()+" um die Forderungen zu erfüllen!");
 									}
 								}
@@ -264,15 +268,16 @@ public class CmdWar extends FCommand{
 								if(passed==true){
 									me.sendMessage(ChatColor.RED+"Forderungen wurden Erfüllt!");
 									
-									for(MaterialData mat:fwar.itemsFromTarget.keySet()){
+									for(String matString:fwar.itemsFromTarget.keySet()){
+										MaterialData mat=FWar.convertStringToMaterialData(matString);
 										Integer args;
-										if(fwar.getAttackerFaction().factionInventory.get(mat)==null){
-											fwar.getAttackerFaction().factionInventory.put(mat, fwar.itemsFromTarget.get(mat));
+										if(fwar.getAttackerFaction().factionInventory.get(matString)==null){
+											fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
 										}else{
-											args=fwar.itemsFromTarget.get(mat);
-											Integer argsOLD=fwar.getAttackerFaction().factionInventory.get(mat);
+											args=fwar.itemsFromTarget.get(matString);
+											Integer argsOLD=fwar.getAttackerFaction().factionInventory.get(matString);
 											args=args+ argsOLD;
-											fwar.getAttackerFaction().factionInventory.put(mat, args);
+											fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
 											
 										}
 									}
@@ -287,6 +292,9 @@ public class CmdWar extends FCommand{
 									fwar.getTargetFaction().factionsAfterWarProtection.put(fwar.getAttackerFaction(), System.currentTimeMillis());
 									
 									fwar.remove();
+									
+									fwar.getAttackerFaction().sendMessage("Der Krieg gegen "+fwar.getTargetFaction()+" wurde Beendet durch das Zahlen der Vorderungen!!");
+									fwar.getTargetFaction().sendMessage("Der Krieg gegen "+fwar.getAttackerFaction()+" wurde Beendet durch das Zahlen der Vorderungen!!");
 								}
 							}
 							

@@ -6,6 +6,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+import com.massivecraft.factions.FWar;
 import com.massivecraft.factions.struct.Permission;
 
 
@@ -31,8 +32,9 @@ public class CmdInventory extends FCommand
 	@Override
 	public void perform() {
 		Inventory inv=Bukkit.createInventory(me, 54);
-		for(MaterialData mat:fme.getFaction().factionInventory.keySet()){
-			 Integer args=fme.getFaction().factionInventory.get(mat);
+		for(String matString:fme.getFaction().factionInventory.keySet()){
+			MaterialData mat=FWar.convertStringToMaterialData(matString);
+			 Integer args=fme.getFaction().factionInventory.get(matString);
 			 int amount = args;
 			 me.sendMessage("Itesmsasdf");
 			 //item.setTypeId(mat.getItemTypeId());
