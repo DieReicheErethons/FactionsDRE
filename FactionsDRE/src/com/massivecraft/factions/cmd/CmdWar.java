@@ -172,6 +172,8 @@ public class CmdWar extends FCommand{
 									
 								}
 								
+							}else{
+								me.sendMessage("Zeit zum Start des Krieges: "+fwar.getTimeToWar());
 							}
 						}
 						
