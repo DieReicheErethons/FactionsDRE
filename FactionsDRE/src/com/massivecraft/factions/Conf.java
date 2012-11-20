@@ -282,6 +282,9 @@ public class Conf
 	public static int fwarDaysAfterWarProtection=10;
 	public static int fwarHoursUntilWarStartsAfterDemand=24;
 	
+	//LWC Admin Bypass
+	public static boolean lwcAdminBypassRequiresLwcIntegration=true;
+	
 	
 	
 	static

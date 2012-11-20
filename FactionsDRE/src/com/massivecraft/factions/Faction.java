@@ -251,7 +251,7 @@ public class Faction extends Entity implements EconomyParticipator
 	
 	public boolean isNormal()
 	{
-		return ! (this.isNone() || this.isSafeZone() || this.isWarZone());
+		return ! (this.isNone() || this.isSafeZone() || this.isWarZone() || this.isNeutral());
 	}
 	
 	public boolean isNone()
@@ -267,6 +267,11 @@ public class Faction extends Entity implements EconomyParticipator
 	public boolean isWarZone()
 	{
 		return this.getId().equals("-2");
+	}
+	
+	public boolean isNeutral()
+	{
+		return this.getId().equals("-3");
 	}
 	
 	public boolean isPlayerFreeType()

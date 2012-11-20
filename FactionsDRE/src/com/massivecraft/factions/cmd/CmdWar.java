@@ -55,21 +55,33 @@ public class CmdWar extends FCommand{
 						if(argCmd==null){ // Check that the cmd parameter is empty
 							if(argFaction.getRelationTo(fme.getFaction())!=Relation.ALLY){
 								if(argFaction.factionsAfterWarProtection.containsKey(fme.getFaction())==false){
-									/* Start the demands */
-									new FWar(fme.getFaction(),argFaction);
-									
-									/* Send help messages */
-									me.sendMessage(ChatColor.GOLD+"Du bist dabei einen Krieg gegen die Fraktion "+ChatColor.GREEN+argFaction.getTag()+ChatColor.GOLD+" zu starten!");
-									
-									me.sendMessage(ChatColor.GOLD+"Folgende Befehle brauchst Du:");
-									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" additems"+ChatColor.GOLD+" - Füge Items zu den Forderungen hinzu");
-									if(Conf.econEnabled){
-										me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" addmoney  [money]"+ChatColor.GOLD+" - Füge Geld zu den Forderungen hinzu");
+									if(!argFaction.getBeginnerProtection()){
+										if(!fme.getFaction().getBeginnerProtection()){
+											if(argFaction.getTag().equalsIgnoreCase(fme.getFaction().getTag())){
+												/* Start the demands */
+												new FWar(fme.getFaction(),argFaction);
+												
+												/* Send help messages */
+												me.sendMessage(ChatColor.GOLD+"Du bist dabei einen Krieg gegen die Fraktion "+ChatColor.GREEN+argFaction.getTag()+ChatColor.GOLD+" zu starten!");
+												
+												me.sendMessage(ChatColor.GOLD+"Folgende Befehle brauchst Du:");
+												me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" additems"+ChatColor.GOLD+" - Füge Items zu den Forderungen hinzu");
+												if(Conf.econEnabled){
+													me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" addmoney  [money]"+ChatColor.GOLD+" - Füge Geld zu den Forderungen hinzu");
+												}
+												me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" cancel"+ChatColor.GOLD+" - Bricht die Forderungen/Krieg ab");
+												me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" confirm"+ChatColor.GOLD+" - Bestätigt die Forderungen und informiert die gegnerische Fraktion");
+												
+												me.sendMessage(ChatColor.GOLD+"Alle Items die Du zu den Forderungen hinzufügst werden eurer Fraktion abgezogen. Nach dem Krieg erhaltet ihr diese zurück.");
+											}else{
+												me.sendMessage(ChatColor.RED+"Du kannst deiner eigenen Fraktion keinen Krieg erklären!");
+											}
+										}else{
+											me.sendMessage(ChatColor.RED+"Deine Fraktion hat noch Anfängerschutz");
+										}
+									}else{
+										me.sendMessage(ChatColor.RED+"Die Fraktion "+ChatColor.GOLD+argFaction.getTag()+ChatColor.RED+" hat noch Anfängerschutz");
 									}
-									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" cancel"+ChatColor.GOLD+" - Bricht die Forderungen/Krieg ab");
-									me.sendMessage(ChatColor.GREEN+" /f war "+argFaction.getTag()+" confirm"+ChatColor.GOLD+" - Bestätigt die Forderungen und informiert die gegnerische Fraktion");
-									
-									me.sendMessage(ChatColor.GOLD+"Alle Items die Du zu den Forderungen hinzufügst werden eurer Fraktion abgezogen. Nach dem Krieg erhaltet ihr diese zurück.");
 								}else{
 									me.sendMessage(ChatColor.RED+"Ihr müsst nach einem durch Forderungen beendeten Krieg "+Conf.fwarDaysAfterWarProtection+" Tage warten bis ihr sie wieder angreifen könnt!");
 								}
@@ -110,7 +122,7 @@ public class CmdWar extends FCommand{
 								}
 								
 								else if(argCmd.equalsIgnoreCase("cancel")){
-									me.sendMessage(ChatColor.GREEN+"Du hast die Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt.");
+									me.sendMessage(ChatColor.GREEN+"Du hast die Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt. "+ChatColor.GOLD+"Auf dieses kannst du mit /f inventory"+ChatColor.GREEN+" zugreifen.");
 									if(Conf.econEnabled){
 										Econ.modifyMoney(fme.getFaction(), fwar.money, "for cancelling a war", "");
 									}
@@ -220,6 +232,9 @@ public class CmdWar extends FCommand{
 								}
 								
 								else if(argCmd.equalsIgnoreCase("confirmpay")){
+									int counterForOutput=0;
+									String outputString=null;
+									
 									boolean passed=true;
 									for(String matString:fwar.items.keySet()){
 										MaterialData mat=FWar.convertStringToMaterialData(matString);
@@ -232,40 +247,83 @@ public class CmdWar extends FCommand{
 												Integer args=fwar.items.get(matString);
 												Integer argsFromTarget=fwar.itemsFromTarget.get(matString);
 												
+												
 												if(argsFromTarget<args){
 													passed=false;
-													me.sendMessage(ChatColor.RED+"Es fehlen noch "+(argsFromTarget-args)+" "+mat.toString()+" um die Forderungen zu erfüllen!");
+													counterForOutput++;
+													
+													if(counterForOutput > 2){
+														outputString=outputString+"/";
+													}
+													outputString=outputString+(args-argsFromTarget)+" "+mat.toString();
 												}
+												
 											}
 										}
 										if(found==false){
 											passed=false;
+											counterForOutput++;
 											Integer args=fwar.items.get(matString);
-											me.sendMessage(ChatColor.RED+"Es fehlen noch "+(args)+" "+mat.toString()+" um die Forderungen zu erfüllen!");
+											
+											if(counterForOutput > 2){
+												outputString=outputString+"/";
+											}
+											outputString=outputString+(args)+" "+mat.toString();
 										}
 									}
 									
 									if(Conf.econEnabled){
 										if(fwar.money>fwar.moneyFromTarget){
-											me.sendMessage(ChatColor.RED+"Es fehlen noch "+(fwar.money-fwar.moneyFromTarget)+" Heronen um die Forderungen zu erfüllen!");
+											counterForOutput++;
+											if(counterForOutput > 2){
+												outputString=outputString+"/";
+											}
+											outputString=outputString+(fwar.money-fwar.moneyFromTarget)+" Heronen";
+											//me.sendMessage(ChatColor.RED+"Es fehlen noch "+(fwar.money-fwar.moneyFromTarget)+" Heronen um die Forderungen zu erfüllen!");
 										}
 									}
 									
+									
 									if(passed==true){
-										me.sendMessage(ChatColor.RED+"Forderungen wurden erfüllt!");
+										me.sendMessage(ChatColor.GOLD+"Forderungen wurden Erfüllt!");
 										
 										for(String matString:fwar.itemsFromTarget.keySet()){
 											MaterialData mat=FWar.convertStringToMaterialData(matString);
-											Integer args;
-											if(fwar.getAttackerFaction().factionInventory.get(matString)==null){
-												fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
-											}else{
-												args=fwar.itemsFromTarget.get(matString);
-												Integer argsOLD=fwar.getAttackerFaction().factionInventory.get(matString);
-												args=args+ argsOLD;
-												fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
-												
+											boolean foundFromTarget=false;
+											
+											for(String matStringFromAtt:fwar.items.keySet()){
+												MaterialData matFromAtt=FWar.convertStringToMaterialData(matStringFromAtt);
+												if (matFromAtt.equals(mat)){
+													foundFromTarget=true;
+													
+													Integer amm=fwar.itemsFromTarget.get(matString);
+													Integer ammFromAtt=fwar.items.get(matStringFromAtt);
+													if(amm>ammFromAtt){
+														fwar.itemsFromTarget.put(matString, (amm-(amm-ammFromAtt)));
+														fwar.getTargetFaction().factionInventory.put(matString, (amm-ammFromAtt));
+														
+													}
+												}
 											}
+											
+											if(foundFromTarget==false){
+												
+												Integer amm=fwar.itemsFromTarget.get(matString);
+												fwar.getTargetFaction().factionInventory.put(matString, (amm));
+												
+											}else{
+												
+												Integer args;
+												if(fwar.getAttackerFaction().factionInventory.get(matString)==null){
+													fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
+												}else{
+													args=fwar.itemsFromTarget.get(matString);
+													Integer argsOLD=fwar.getAttackerFaction().factionInventory.get(matString);
+													args=args+ argsOLD;
+													fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
+													
+												}
+											}	
 										}
 										
 										
@@ -279,8 +337,10 @@ public class CmdWar extends FCommand{
 										
 										fwar.remove();
 										
-										fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getTargetFaction()+" wurde Beendet durch das Zahlen der Vorderungen!!");
-										fwar.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getAttackerFaction()+" wurde Beendet durch das Zahlen der Vorderungen!!");
+										fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+ChatColor.GREEN+fwar.getTargetFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!!");
+										fwar.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getAttackerFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!!");
+									}else{
+										me.sendMessage(ChatColor.GOLD+"Um die Vorderungen zu bezahen fehlen noch: "+ChatColor.GREEN+ChatColor.RED+outputString+"!");
 									}
 								}
 								
@@ -289,7 +349,7 @@ public class CmdWar extends FCommand{
 								}
 							}
 						} else {
-							me.sendMessage(ChatColor.RED+"Die Fraktion "+fwar.getAttackerFaction().getTag()+" ist gerade dabei einen Krieg gegen euch zu starten!");
+							me.sendMessage(ChatColor.RED+"Die Fraktion "+ChatColor.GOLD+fwar.getAttackerFaction().getTag()+ChatColor.RED+" ist gerade dabei einen Krieg gegen euch zu starten! "+ChatColor.WHITE+"Sollten sie nach 30 Minuten nicht fertig sein, so könnt ihr einen Krieg gegen sie starten.");
 						}
 					}
 				} else {
