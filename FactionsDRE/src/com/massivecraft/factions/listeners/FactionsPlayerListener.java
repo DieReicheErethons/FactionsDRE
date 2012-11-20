@@ -419,19 +419,21 @@ public class FactionsPlayerListener implements Listener
 			
 			
 			if(LWCFeatures.getEnabled()){
-				FPlayer me = FPlayers.i.get(player);
-				
-				FLocation loc = new FLocation(block);
-				Faction otherFaction = Board.getFactionAt(loc);
-				
-				if(me.getFaction()==otherFaction){
-					if(me.getRole()==Role.ADMIN){
-						if(event.isCancelled()){
-							event.setCancelled(false);
-							
+				if(Conf.lwcAdminBypassRequiresLwcIntegration){
+					FPlayer me = FPlayers.i.get(player);
+					
+					FLocation loc = new FLocation(block);
+					Faction otherFaction = Board.getFactionAt(loc);
+					
+					if(me.getFaction()==otherFaction){
+						if(me.getRole()==Role.ADMIN){
+							if(event.isCancelled()){
+								event.setCancelled(false);
+								
+							}
+							p.log("LWC-Bypass for factions-Admin");
+							//LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
 						}
-						p.log("LWC-Bypass for factions-Admin");
-						//LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
 					}
 				}
 			}
