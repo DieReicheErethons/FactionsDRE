@@ -46,7 +46,7 @@ public class CmdWar extends FCommand{
 			
 			
 			if(argFaction!=null){
-				if(argFaction.isNormal() && (!argFaction.getTag().equalsIgnoreCase("Neutral"))){
+				if(argFaction.isNormal()){
 					boolean isAttacker = FWar.get(fme.getFaction(),argFaction)!=null;
 					boolean isTarget = FWar.get(argFaction,fme.getFaction())!=null;
 					
