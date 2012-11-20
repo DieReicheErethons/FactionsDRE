@@ -75,7 +75,7 @@ public class CmdWar extends FCommand{
 											me.sendMessage(ChatColor.RED+"Deine Fraktion hat noch Anfängerschutz");
 										}
 									}else{
-										me.sendMessage(ChatColor.RED+"Die Fraktion "+argFaction.getTag()+" hat noch Anfängerschutz");
+										me.sendMessage(ChatColor.RED+"Die Fraktion "+ChatColor.GOLD+argFaction.getTag()+ChatColor.RED+" hat noch Anfängerschutz");
 									}
 								}else{
 									me.sendMessage(ChatColor.RED+"Ihr müsst nach einem durch Forderungen beendeten Krieg "+Conf.fwarDaysAfterWarProtection+" Tage warten bis ihr sie wieder angreifen könnt!");
@@ -115,7 +115,7 @@ public class CmdWar extends FCommand{
 								}
 								
 								else if(argCmd.equalsIgnoreCase("cancel")){
-									me.sendMessage(ChatColor.GREEN+"Du hast die Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt.");
+									me.sendMessage(ChatColor.GREEN+"Du hast die Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt. "+ChatColor.GOLD+"Auf dieses kannst du mit /f inventory"+ChatColor.GREEN+" zugreifen.");
 									if(Conf.econEnabled){
 										Econ.modifyMoney(fme.getFaction(), fwar.money, "for cancelling a war", "");
 									}
@@ -172,7 +172,7 @@ public class CmdWar extends FCommand{
 								}
 								
 							}else{
-								me.sendMessage("Zeit zum Start des Krieges: "+fwar.getTimeToWar());
+								me.sendMessage(ChatColor.GOLD+"Zeit zum Start des Krieges: "+ChatColor.GREEN+fwar.getTimeToWar());
 							}
 						}
 					}
@@ -205,7 +205,7 @@ public class CmdWar extends FCommand{
 								}
 								
 								else if(argCmd.equalsIgnoreCase("cancelpay")){
-									me.sendMessage(ChatColor.GREEN+"Du hast die Zahlung der Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt.");
+									me.sendMessage(ChatColor.GREEN+"Du hast die Zahlung der Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt. "+ChatColor.GOLD+"Auf dieses kannst du mit /f inventory"+ChatColor.GREEN+" zugreifen.");
 									if(Conf.econEnabled){
 										Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
 									}
@@ -228,7 +228,7 @@ public class CmdWar extends FCommand{
 								} 
 								
 								else if(argCmd.equalsIgnoreCase("showpay")){
-									me.sendMessage(ChatColor.RED+"Zu entrichtende Vorderungen: "+fwar.getDemandsAsString());
+									me.sendMessage(ChatColor.GOLD+"Zu entrichtende Vorderungen: "+ChatColor.GREEN+fwar.getDemandsAsString());
 								}
 								
 								else if(argCmd.equalsIgnoreCase("confirmpay")){
@@ -285,7 +285,7 @@ public class CmdWar extends FCommand{
 									
 									
 									if(passed==true){
-										me.sendMessage(ChatColor.RED+"Forderungen wurden Erfüllt!");
+										me.sendMessage(ChatColor.GOLD+"Forderungen wurden Erfüllt!");
 										
 										for(String matString:fwar.itemsFromTarget.keySet()){
 											MaterialData mat=FWar.convertStringToMaterialData(matString);
@@ -337,10 +337,10 @@ public class CmdWar extends FCommand{
 										
 										fwar.remove();
 										
-										fwar.getAttackerFaction().sendMessage("Der Krieg gegen "+fwar.getTargetFaction()+" wurde Beendet durch das Zahlen der Vorderungen!!");
-										fwar.getTargetFaction().sendMessage("Der Krieg gegen "+fwar.getAttackerFaction()+" wurde Beendet durch das Zahlen der Vorderungen!!");
+										fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+ChatColor.GREEN+fwar.getTargetFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!!");
+										fwar.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getAttackerFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!!");
 									}else{
-										me.sendMessage(ChatColor.RED+"Um die Vorderungen zu bezahen fehlen noch: "+outputString+"!");
+										me.sendMessage(ChatColor.GOLD+"Um die Vorderungen zu bezahen fehlen noch: "+ChatColor.GREEN+ChatColor.RED+outputString+"!");
 									}
 								}
 								
@@ -349,7 +349,7 @@ public class CmdWar extends FCommand{
 								}
 							}
 						} else {
-							me.sendMessage(ChatColor.RED+"Die Fraktion "+fwar.getAttackerFaction().getTag()+" ist gerade dabei einen Krieg gegen euch zu starten!");
+							me.sendMessage(ChatColor.RED+"Die Fraktion "+ChatColor.GOLD+fwar.getAttackerFaction().getTag()+ChatColor.RED+" ist gerade dabei einen Krieg gegen euch zu starten! "+ChatColor.WHITE+"Sollten sie nach 30 Minuten nicht fertig sein, so könnt ihr einen Krieg gegen sie starten.");
 						}
 					}
 				} else {
