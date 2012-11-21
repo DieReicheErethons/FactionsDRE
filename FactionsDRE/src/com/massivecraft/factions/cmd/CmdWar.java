@@ -179,6 +179,10 @@ public class CmdWar extends FCommand{
 									}
 									
 									fwar.remove();
+									
+									fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+ChatColor.GREEN+fwar.getTargetFaction().getTag()+ChatColor.GOLD+" wurde durch euch beendet!");
+									fwar.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getAttackerFaction().getTag()+ChatColor.GOLD+" wurde durch die Angreifer beendet!");
+									
 								}
 								
 							}else{
@@ -311,7 +315,7 @@ public class CmdWar extends FCommand{
 										
 										fwar.remove();
 										
-										fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+ChatColor.GREEN+fwar.getTargetFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!");
+										fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+ChatColor.GREEN+fwar.getTargetFaction().getTag()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!");
 										fwar.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getAttackerFaction().getTag()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!");
 									}else{
 										me.sendMessage(ChatColor.GOLD+"Um die Vorderungen zu bezahen fehlen noch: "+ChatColor.GREEN+ChatColor.RED+outputString+"!");

@@ -282,6 +282,8 @@ public class Conf
 	public static int fwarDaysAfterWarProtection=10;
 	public static int fwarHoursUntilWarStartsAfterDemand=24;
 	
+	public static Set<String> fwarItemBlackList = new HashSet<String>();
+	
 	//LWC Admin Bypass
 	public static boolean lwcAdminBypassRequiresLwcIntegration=true;
 	
