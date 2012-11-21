@@ -111,6 +111,7 @@ public class P extends MPlugin
 
 		// Register Event Handlers
 		getServer().getPluginManager().registerEvents(playerListener, this);
+		getServer().getPluginManager().registerEvents(inventoryListener, this);
 		getServer().getPluginManager().registerEvents(chatEarlyListener, this);
 		getServer().getPluginManager().registerEvents(entityListener, this);
 		getServer().getPluginManager().registerEvents(blockListener, this);

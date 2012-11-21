@@ -1,9 +1,12 @@
 package com.massivecraft.factions.cmd;
 
+import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
 import com.massivecraft.factions.Conf;
@@ -54,7 +57,7 @@ public class CmdWar extends FCommand{
 					if(!isAttacker && !isTarget){
 						if(argCmd==null){ // Check that the cmd parameter is empty
 							if(argFaction.getRelationTo(fme.getFaction())!=Relation.ALLY){
-								if(argFaction.factionsAfterWarProtection.containsKey(fme.getFaction())==false){
+								if(argFaction.isAfterWarProtected(fme.getFaction())==false){
 									if(!argFaction.getBeginnerProtection()){
 										if(!fme.getFaction().getBeginnerProtection()){
 											if(!argFaction.getTag().equalsIgnoreCase(fme.getFaction().getTag())){
@@ -156,17 +159,22 @@ public class CmdWar extends FCommand{
 										Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
 									}
 									
-									for(String matString:fwar.itemsFromTarget.keySet()){
-										MaterialData mat=FWar.convertStringToMaterialData(matString);
-										Integer args;
-										if(fwar.getTargetFaction().factionInventory.get(matString)==null){
-											fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
-										}else{
-											args=fwar.itemsFromTarget.get(matString);
-											Integer argsOLD=fwar.getTargetFaction().factionInventory.get(matString);
-											args=args+ argsOLD;
-											fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
-											
+									for(String matString:fwar.items.keySet()){
+										boolean exist=false;
+										for(String matString2:fwar.itemsToPay.keySet()){
+											if(matString.equals(matString2)){
+												exist=true;
+												
+												int amount = fwar.items.get(matString)-fwar.itemsToPay.get(matString2);
+												
+												if(amount>0){
+													fwar.getTargetFaction().addItemsToInventory(matString, amount);
+												}
+											}
+										}
+										
+										if(!exist){
+											fwar.getTargetFaction().addItemsToInventory(matString, fwar.items.get(matString));
 										}
 									}
 									
@@ -188,6 +196,21 @@ public class CmdWar extends FCommand{
 							if(argCmd!=null){
 								if(argCmd.equalsIgnoreCase("payitems")){
 									Inventory inv=Bukkit.createInventory(me, 54);
+									
+									
+									/* Add Content */
+									for(String matString:fwar.itemsToPay.keySet()){
+										MaterialData mat = FWar.convertStringToMaterialData(matString);
+										
+										if(fwar.itemsToPay.get(matString)!=null){
+											int amount = fwar.itemsToPay.get(matString);
+											if(amount>0){
+												ItemStack item = new ItemStack(mat.getItemType(),amount,mat.getData());
+												inv.addItem(item);
+											}
+										}
+									}
+									
 									InventoryView view=me.openInventory(inv);
 									fwar.addTempInventoryFromTarget(view);
 								}
@@ -209,19 +232,26 @@ public class CmdWar extends FCommand{
 									}
 									
 									/* Items */
-									for(String matString:fwar.itemsFromTarget.keySet()){
-										MaterialData mat=FWar.convertStringToMaterialData(matString);
-										Integer args;
-										if(fwar.getTargetFaction().factionInventory.get(matString)==null){
-											fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
-										}else{
-											args=fwar.itemsFromTarget.get(matString);
-											Integer argsOLD=fwar.getTargetFaction().factionInventory.get(matString);
-											args=args+ argsOLD;
-											fwar.getTargetFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
-											
+									for(String matString:fwar.items.keySet()){
+										boolean exist=false;
+										for(String matString2:fwar.itemsToPay.keySet()){
+											if(matString.equals(matString2)){
+												exist=true;
+												
+												int amount = fwar.items.get(matString)-fwar.itemsToPay.get(matString2);
+												
+												if(amount>0){
+													fwar.getTargetFaction().addItemsToInventory(matString, amount);
+												}
+											}
+										}
+										
+										if(!exist){
+											fwar.getTargetFaction().addItemsToInventory(matString, fwar.items.get(matString));
 										}
 									}
+									
+									fwar.itemsToPay= new HashMap<String, Integer>(fwar.items);
 									
 									/* Message */
 									me.sendMessage(ChatColor.GREEN+"Du hast die Zahlung der Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt.");
@@ -233,53 +263,29 @@ public class CmdWar extends FCommand{
 								
 								else if(argCmd.equalsIgnoreCase("confirmpay")){
 									int counterForOutput=0;
-									String outputString=null;
+									String outputString="";
 									
+									/* Check Materials */
 									boolean passed=true;
-									for(String matString:fwar.items.keySet()){
-										MaterialData mat=FWar.convertStringToMaterialData(matString);
-										boolean found=false;
-										for(String matFromTargetString:fwar.itemsFromTarget.keySet()){
-											MaterialData matFromTarget=FWar.convertStringToMaterialData(matFromTargetString);
-											if((matFromTarget.equals(mat))){
-												found=true;
-												
-												Integer args=fwar.items.get(matString);
-												Integer argsFromTarget=fwar.itemsFromTarget.get(matString);
-												
-												
-												if(argsFromTarget<args){
-													passed=false;
-													counterForOutput++;
-													
-													if(counterForOutput > 2){
-														outputString=outputString+"/";
-													}
-													outputString=outputString+(args-argsFromTarget)+" "+mat.toString();
-												}
-												
-											}
-										}
-										if(found==false){
+									for(String mat:fwar.itemsToPay.keySet()){
+										int amount=fwar.itemsToPay.get(mat);
+										if(amount>0){
 											passed=false;
-											counterForOutput++;
-											Integer args=fwar.items.get(matString);
 											
-											if(counterForOutput > 2){
-												outputString=outputString+"/";
-											}
-											outputString=outputString+(args)+" "+mat.toString();
+											outputString=outputString+(amount+" "+mat+", ");
 										}
 									}
 									
+									/* Check Money */
 									if(Conf.econEnabled){
 										if(fwar.money>fwar.moneyFromTarget){
 											counterForOutput++;
 											if(counterForOutput > 2){
 												outputString=outputString+"/";
 											}
-											outputString=outputString+(fwar.money-fwar.moneyFromTarget)+" Heronen";
-											//me.sendMessage(ChatColor.RED+"Es fehlen noch "+(fwar.money-fwar.moneyFromTarget)+" Heronen um die Forderungen zu erfüllen!");
+											outputString=outputString+Econ.moneyString(fwar.money-fwar.moneyFromTarget);
+											
+											passed=false;
 										}
 									}
 									
@@ -287,43 +293,11 @@ public class CmdWar extends FCommand{
 									if(passed==true){
 										me.sendMessage(ChatColor.GOLD+"Forderungen wurden Erfüllt!");
 										
-										for(String matString:fwar.itemsFromTarget.keySet()){
-											MaterialData mat=FWar.convertStringToMaterialData(matString);
-											boolean foundFromTarget=false;
+										/* Add items to the attackers inventory */
+										for(String mat:fwar.items.keySet()){
+											int amount=fwar.items.get(mat);
 											
-											for(String matStringFromAtt:fwar.items.keySet()){
-												MaterialData matFromAtt=FWar.convertStringToMaterialData(matStringFromAtt);
-												if (matFromAtt.equals(mat)){
-													foundFromTarget=true;
-													
-													Integer amm=fwar.itemsFromTarget.get(matString);
-													Integer ammFromAtt=fwar.items.get(matStringFromAtt);
-													if(amm>ammFromAtt){
-														fwar.itemsFromTarget.put(matString, (amm-(amm-ammFromAtt)));
-														fwar.getTargetFaction().factionInventory.put(matString, (amm-ammFromAtt));
-														
-													}
-												}
-											}
-											
-											if(foundFromTarget==false){
-												
-												Integer amm=fwar.itemsFromTarget.get(matString);
-												fwar.getTargetFaction().factionInventory.put(matString, (amm));
-												
-											}else{
-												
-												Integer args;
-												if(fwar.getAttackerFaction().factionInventory.get(matString)==null){
-													fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), fwar.itemsFromTarget.get(matString));
-												}else{
-													args=fwar.itemsFromTarget.get(matString);
-													Integer argsOLD=fwar.getAttackerFaction().factionInventory.get(matString);
-													args=args+ argsOLD;
-													fwar.getAttackerFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
-													
-												}
-											}	
+											fwar.getAttackerFaction().addItemsToInventory(mat, amount*2); //Duplicate the amount
 										}
 										
 										
@@ -333,12 +307,12 @@ public class CmdWar extends FCommand{
 										}
 										
 										
-										fwar.getTargetFaction().factionsAfterWarProtection.put(fwar.getAttackerFaction(), System.currentTimeMillis());
+										fwar.getTargetFaction().factionsAfterWarProtection.put(fwar.getAttackerFaction().getId(), System.currentTimeMillis());
 										
 										fwar.remove();
 										
-										fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+ChatColor.GREEN+fwar.getTargetFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!!");
-										fwar.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getAttackerFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!!");
+										fwar.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+ChatColor.GREEN+fwar.getTargetFaction()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!");
+										fwar.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen "+fwar.getAttackerFaction().getTag()+ChatColor.GOLD+" wurde Beendet durch das Zahlen der Vorderungen!");
 									}else{
 										me.sendMessage(ChatColor.GOLD+"Um die Vorderungen zu bezahen fehlen noch: "+ChatColor.GREEN+ChatColor.RED+outputString+"!");
 									}

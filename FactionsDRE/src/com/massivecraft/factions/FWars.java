@@ -42,6 +42,7 @@ public class FWars extends EntityCollection<FWar>{
 		
 		for(FWar war:this.get()){
 			war.tempInvs=new HashSet<InventoryView>();
+			war.tempInvsFromTarget=new HashSet<InventoryView>();
 		}
 		
 		return true;

@@ -34,7 +34,6 @@ public class FactionsInventoryListener implements Listener{
 				if(fwar!=null){
 					if(fwar.tempInvs!=null){
 						if(fwar.tempInvs.contains(inv)){
-							p.log("test");
 							fwar.removeTempInventory(inv);
 							player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
 						}
@@ -58,52 +57,90 @@ public class FactionsInventoryListener implements Listener{
 		ItemStack istack=event.getCurrentItem();
 		
 		/* Faction Inventory */
-		for(FPlayer fpl:FPlayers.i.get()){
-			if(inv.equals(fpl.playerInventoryView)){
-				event.setCancelled(true);
-				
-				if(event.getRawSlot()<54){
-					ItemStack dataStack=istack.clone();
+		if(istack!=null){
+			for(FPlayer fpl:FPlayers.i.get()){
+				if(inv.equals(fpl.playerInventoryView)){
+					event.setCancelled(true);
 					
-					ItemStack lostItems= player.getInventory().addItem(istack).get(0);
-					event.setCurrentItem(lostItems);
-					
-					for(String matString:fpl.getFaction().factionInventory.keySet()){
-						MaterialData mat=FWar.convertStringToMaterialData(matString);
-						Integer args=fpl.getFaction().factionInventory.get(matString);
+					if(event.getRawSlot()<54){
+						ItemStack dataStack=istack.clone();
 						
-						if(mat.equals(dataStack.getData())){
-							if(lostItems!=null){
-								args=args-(dataStack.getAmount()-lostItems.getAmount());
-							}else{
-								args=args-dataStack.getAmount();
-							}
+						ItemStack lostItems= player.getInventory().addItem(istack).get(0);
+						event.setCurrentItem(lostItems);
+						
+						for(String matString:fpl.getFaction().factionInventory.keySet()){
+							MaterialData mat=FWar.convertStringToMaterialData(matString);
+							Integer args=fpl.getFaction().factionInventory.get(matString);
 							
-							fpl.getFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
+							if(mat.equals(dataStack.getData())){
+								if(lostItems!=null){
+									args=args-(dataStack.getAmount()-lostItems.getAmount());
+								}else{
+									args=args-dataStack.getAmount();
+								}
+								
+								fpl.getFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
+							}
 						}
 					}
 				}
 			}
-		}
-		
-		/*War Pay-Inventory */
-		if(inv!=null){
-			for(FWar fwar:FWars.i.get()){
-				if(fwar!=null){
-					if(fwar.tempInvsFromTarget!=null){
-						if(fwar.tempInvsFromTarget.contains(inv)){
-							event.setCancelled(true);
-							
-							if(event.getRawSlot()>54){
-								for(ItemStack tempIStack:inv.getTopInventory().getContents()){
-									if(tempIStack!=null){
-										if(tempIStack.getType()==istack.getType()){
-											if(istack.getAmount()>tempIStack.getAmount()){
-												istack.setAmount(istack.getAmount()-tempIStack.getAmount());
-												tempIStack.setAmount(0);
-											} else {
-												tempIStack.setAmount(tempIStack.getAmount()-istack.getAmount());
-												istack.setAmount(0);
+			
+			/*War Pay-Inventory */
+			if(inv!=null){
+				for(FWar fwar:FWars.i.get()){
+					if(fwar!=null){
+						if(fwar.tempInvsFromTarget!=null){
+							if(fwar.tempInvsFromTarget.contains(inv)){
+								event.setCancelled(true);
+								
+								if(event.getRawSlot()>53){
+									int slot=0;
+									for(slot=0; slot<54; slot++){
+										ItemStack tempIStack=inv.getItem(slot);
+										
+										if(tempIStack!=null){
+											if(tempIStack.getData().equals(istack.getData())){
+												int amount;
+												MaterialData mData=istack.getData();
+												
+												if(istack.getAmount()>tempIStack.getAmount()){
+													amount = tempIStack.getAmount();
+													
+													if(istack.getAmount()-tempIStack.getAmount()>0){
+														istack.setAmount(istack.getAmount()-tempIStack.getAmount());
+													} else {
+														event.setCurrentItem(null);
+													}
+													
+													tempIStack.setTypeId(0);
+													inv.setItem(slot, tempIStack);
+												} else {
+													amount = istack.getAmount();
+													
+													if(tempIStack.getAmount()-istack.getAmount()>0){
+														tempIStack.setAmount(tempIStack.getAmount()-istack.getAmount());
+													} else {
+														tempIStack.setTypeId(0);
+														inv.setItem(slot, tempIStack);
+													}
+													
+													event.setCurrentItem(null);
+												}
+												
+												for(String matString:fwar.itemsToPay.keySet()){
+													MaterialData mat=FWar.convertStringToMaterialData(matString);
+													int oldAmount=fwar.itemsToPay.get(matString);
+													
+													p.log("TEST1"+oldAmount);
+													
+													if(mat.equals(mData)){
+														fwar.itemsToPay.put(matString,oldAmount-amount);
+														break;
+													}
+													
+													p.log("TEST2"+fwar.itemsToPay.get(matString));
+												}
 											}
 										}
 									}

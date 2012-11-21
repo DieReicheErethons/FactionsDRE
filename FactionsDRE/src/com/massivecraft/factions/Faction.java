@@ -161,19 +161,43 @@ public class Faction extends Entity implements EconomyParticipator
 	// FIELD: Faction Inventory
 	public Map<String,Integer> factionInventory = new HashMap<String,Integer>();
 	
+	public void addItemsToInventory(String mData, int amount){
+		boolean exist=false;
+		for(String existMData:factionInventory.keySet()){
+			if(existMData.equals(mData)){
+				exist=true;
+				
+				factionInventory.put(existMData,factionInventory.get(existMData)+amount);
+			}
+		}
+		
+		if(!exist){
+			factionInventory.put(mData,amount);
+		}
+	}
+	
 	// FIELD: AfterWar Protection
-	public Map<Faction, Long> factionsAfterWarProtection = new HashMap<Faction, Long>();
+	public Map<String, Long> factionsAfterWarProtection = new HashMap<String, Long>();
 	
 	public static void checkAfterWarProtections(){
 		for(Faction faction:Factions.i.get()){
-			for(Faction factionFromList:faction.factionsAfterWarProtection.keySet()){
-				long time=faction.factionsAfterWarProtection.get(factionFromList);
+			for(String factionIdFromList:faction.factionsAfterWarProtection.keySet()){
+				long time=faction.factionsAfterWarProtection.get(factionIdFromList);
 				long timeleft=(Conf.fwarDaysAfterWarProtection*24*60*60*1000)-(System.currentTimeMillis()-time);
 				if(timeleft<0){
-					faction.factionsAfterWarProtection.remove(factionFromList);
+					faction.factionsAfterWarProtection.remove(factionIdFromList);
 				}
 			}
 		}
+	}
+	
+	public boolean isAfterWarProtected(Faction faction){
+		for(String factionIdFromList:faction.factionsAfterWarProtection.keySet()){
+			if(faction.getId().equals(factionIdFromList)){
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	

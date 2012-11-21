@@ -16,14 +16,14 @@ import com.massivecraft.factions.struct.Relation;
 import com.massivecraft.factions.zcore.persist.Entity;
 
 public class FWar extends Entity{	
-	public transient Set<InventoryView> tempInvs;
-	public transient Set<InventoryView> tempInvsFromTarget;
+	public transient Set<InventoryView> tempInvs= new HashSet<InventoryView>();
+	public transient Set<InventoryView> tempInvsFromTarget = new HashSet<InventoryView>();
 	
 	public Map<String,Integer> items = new HashMap<String,Integer>();
 	public int money;
 	
-	public Map<String,Integer> itemsFromTarget = new HashMap<String,Integer>();
 	public int moneyFromTarget;
+	public Map<String,Integer> itemsToPay = new HashMap<String,Integer>();
 	
 	private String attackerFactionID, targetFactionID;
 	public Faction getAttackerFaction(){ return Factions.i.get(attackerFactionID);}
@@ -46,9 +46,6 @@ public class FWar extends Entity{
 		this.isStarted = false; // Obviously the war isn't started yet
 		this.isWar = false;//No War until time passed
 		
-		this.tempInvs = new HashSet<InventoryView>();
-		this.tempInvsFromTarget = new HashSet<InventoryView>();
-		
 		this.timeToDeleteFWar = System.currentTimeMillis();
 	}
 	
@@ -68,6 +65,8 @@ public class FWar extends Entity{
 		getAttackerFaction().sendMessage("Eure Fraktion hat "+getTargetFaction().getTag()+" Forderungen in höhe von "+getDemandsAsString()+" gestellt");
 		getAttackerFaction().sendMessage("Falls sie nicht innerhalb "+getTimeToWar()+" zahlen, kommt es zum Krieg!");
 		
+		/* Copy items */
+		itemsToPay= new HashMap<String, Integer>(items);
 	}
 	
 	public String getDemandsAsString(){
@@ -209,29 +208,7 @@ public class FWar extends Entity{
 	}
 	
 	public void removeTempInventoryFromTarget(InventoryView inv){
-		if(tempInvsFromTarget.contains(inv)){
-			for(ItemStack istack:inv.getTopInventory().getContents()){
-				if(istack!=null){
-					if(istack.getEnchantments().isEmpty()){
-						Integer args;
-						if(itemsFromTarget.get(convertMaterialDataToString(istack.getData()))==null){
-							args=istack.getAmount();
-							itemsFromTarget.put(convertMaterialDataToString(istack.getData()), args);
-						}
-						else{
-							Integer argsOLD = itemsFromTarget.get(convertMaterialDataToString(istack.getData()));
-							args=argsOLD+istack.getAmount();
-							itemsFromTarget.put(convertMaterialDataToString(istack.getData()), args);
-						}
-					}else{
-						inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
-						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!");
-					}
-				}
-			}
-			inv.getTopInventory().clear();
-			tempInvsFromTarget.remove(inv);
-		}
+		tempInvsFromTarget.remove(inv);
 	}
 	
 	public void remove(){
