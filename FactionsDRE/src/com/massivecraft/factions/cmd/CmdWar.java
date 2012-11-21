@@ -57,7 +57,7 @@ public class CmdWar extends FCommand{
 								if(argFaction.factionsAfterWarProtection.containsKey(fme.getFaction())==false){
 									if(!argFaction.getBeginnerProtection()){
 										if(!fme.getFaction().getBeginnerProtection()){
-											if(argFaction.getTag().equalsIgnoreCase(fme.getFaction().getTag())){
+											if(!argFaction.getTag().equalsIgnoreCase(fme.getFaction().getTag())){
 												/* Start the demands */
 												new FWar(fme.getFaction(),argFaction);
 												

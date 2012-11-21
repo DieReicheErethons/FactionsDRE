@@ -34,6 +34,7 @@ public class FactionsInventoryListener implements Listener{
 				if(fwar!=null){
 					if(fwar.tempInvs!=null){
 						if(fwar.tempInvs.contains(inv)){
+							p.log("test");
 							fwar.removeTempInventory(inv);
 							player.sendMessage(ChatColor.GREEN+"Items hinzugefügt!");
 						}
@@ -56,6 +57,7 @@ public class FactionsInventoryListener implements Listener{
 		Player player=(Player) event.getWhoClicked();
 		ItemStack istack=event.getCurrentItem();
 		
+		/* Faction Inventory */
 		for(FPlayer fpl:FPlayers.i.get()){
 			if(inv.equals(fpl.playerInventoryView)){
 				event.setCancelled(true);
@@ -78,6 +80,35 @@ public class FactionsInventoryListener implements Listener{
 							}
 							
 							fpl.getFaction().factionInventory.put(FWar.convertMaterialDataToString(mat), args);
+						}
+					}
+				}
+			}
+		}
+		
+		/*War Pay-Inventory */
+		if(inv!=null){
+			for(FWar fwar:FWars.i.get()){
+				if(fwar!=null){
+					if(fwar.tempInvsFromTarget!=null){
+						if(fwar.tempInvsFromTarget.contains(inv)){
+							event.setCancelled(true);
+							
+							if(event.getRawSlot()>54){
+								for(ItemStack tempIStack:inv.getTopInventory().getContents()){
+									if(tempIStack!=null){
+										if(tempIStack.getType()==istack.getType()){
+											if(istack.getAmount()>tempIStack.getAmount()){
+												istack.setAmount(istack.getAmount()-tempIStack.getAmount());
+												tempIStack.setAmount(0);
+											} else {
+												tempIStack.setAmount(tempIStack.getAmount()-istack.getAmount());
+												istack.setAmount(0);
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}
