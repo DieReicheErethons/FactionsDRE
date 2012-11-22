@@ -127,11 +127,13 @@ public class CmdHelp extends FCommand
 		pageLines.add("");
 		pageLines.add( p.cmdBase.cmdRelationAlly.getUseageTemplate(true) );
 		pageLines.add( p.cmdBase.cmdRelationNeutral.getUseageTemplate(true) );
-		pageLines.add( p.cmdBase.cmdRelationEnemy.getUseageTemplate(true) );
+		//pageLines.add( p.cmdBase.cmdRelationEnemy.getUseageTemplate(true) );
+		pageLines.add( p.cmdBase.cmdWar.getUseageTemplate(true) );
+		pageLines.add(p.txt.parse("<i>The war command is really complicated. Use /f war to get help!"));
 		pageLines.add(p.txt.parse("<i>Set the relation you WISH to have with another faction."));
 		pageLines.add(p.txt.parse("<i>Your default relation with other factions will be neutral."));
 		pageLines.add(p.txt.parse("<i>If BOTH factions choose \"ally\" you will be allies."));
-		pageLines.add(p.txt.parse("<i>If ONE faction chooses \"enemy\" you will be enemies."));
+		//pageLines.add(p.txt.parse("<i>If ONE faction chooses \"enemy\" you will be enemies."));
 		helpPages.add(pageLines);
 		
 		pageLines = new ArrayList<String>();

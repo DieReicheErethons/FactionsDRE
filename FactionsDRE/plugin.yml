@@ -224,3 +224,5 @@ permissions:
     description: unclaim all of your factions land
   factions.taxation:
     description: set the tax of your faction
+  factions.war:
+    description: use this command to start a war
