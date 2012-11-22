@@ -121,7 +121,7 @@ public class FWar extends Entity{
 			if(war.isStarted==false){
 				if(war.getMilliTimeToDeleteFWar()<0){
 					war.remove();
-					war.getAttackerFaction().sendMessage("Kriegserklärungen gegen "+war.getTargetFaction().getTag()+" wurden abgebrochen da ihr länger als 30 Minuten gebraucht habt diese auszuarbeiten!");
+					war.getAttackerFaction().sendMessage(ChatColor.GOLD+"Kriegserklärungen gegen "+ChatColor.GREEN+war.getTargetFaction().getTag()+ChatColor.GOLD+" wurden abgebrochen da ihr länger als 30 Minuten gebraucht habt diese auszuarbeiten!");
 				}
 			}
 		}
@@ -136,6 +136,10 @@ public class FWar extends Entity{
 					war.isWar=true;
 					war.getAttackerFaction().setRelationWish(war.getTargetFaction(), Relation.ENEMY);
 					war.getTargetFaction().setRelationWish(war.getAttackerFaction(), Relation.ENEMY);
+					
+					war.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen die Fraktion "+ChatColor.GREEN+war.getTargetFaction().getTag()+ChatColor.GOLD+" hat begonnen!");
+					war.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen die Fraktion "+ChatColor.GREEN+war.getAttackerFaction().getTag()+ChatColor.GOLD+" hat begonnen!");
+					
 					war.timeToNextPayForMorePlayersThenTarget = System.currentTimeMillis();
 				}
 			}
