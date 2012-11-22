@@ -181,33 +181,38 @@ public class FWar extends Entity{
 		if(tempInvs.contains(inv)){
 			for(ItemStack istack:inv.getTopInventory().getContents()){
 				if(istack!=null){
-					if(istack.getEnchantments().isEmpty()){
-						boolean blackContains=false;
-						for(String string:Conf.fwarItemBlackList){
-							MaterialData mat=convertStringToMaterialData(string);
-							
-							if(mat.getItemTypeId()==istack.getTypeId() && mat.getData()==istack.getData().getData()){
-								blackContains=true;
+					if(istack.getEnchantments().isEmpty()){ //Forbid enchanted items
+						if(istack.getDurability()==0){ //Forbid damaged items
+							boolean blackContains=false;
+							for(String string:Conf.fwarItemBlackList){
+								MaterialData mat=convertStringToMaterialData(string);
+								
+								if(mat.getItemTypeId()==istack.getTypeId() && mat.getData()==istack.getData().getData()){
+									blackContains=true;
+								}
 							}
-						}
-						if(!blackContains){
-							Integer args;
-							if(items.get(convertMaterialDataToString(istack.getData()))==null){
-								args=istack.getAmount();
-								items.put(convertMaterialDataToString(istack.getData()), args);
-							}
-							else{
-								Integer argsOLD = items.get(convertMaterialDataToString(istack.getData()));
-								args=argsOLD+istack.getAmount();
-								items.put(convertMaterialDataToString(istack.getData()), args);
+							if(!blackContains){
+								Integer args;
+								if(items.get(convertMaterialDataToString(istack.getData()))==null){
+									args=istack.getAmount();
+									items.put(convertMaterialDataToString(istack.getData()), args);
+								}
+								else{
+									Integer argsOLD = items.get(convertMaterialDataToString(istack.getData()));
+									args=argsOLD+istack.getAmount();
+									items.put(convertMaterialDataToString(istack.getData()), args);
+								}
+							}else{
+								inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
+								FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+""+istack.getData().getData()+" ist auf der Blacklist. Du kannst es nicht verwenden.");
 							}
 						}else{
 							inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
-							FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Dieses Item ist auf der BlackList!");
+							FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine kaputte Items verwenden!");
 						}
 					}else{
 						inv.getPlayer().getWorld().dropItem(inv.getPlayer().getLocation(), istack);
-						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine Enchanteten Items Verwenden!");
+						FPlayers.i.get((Player) inv.getPlayer()).sendMessage(ChatColor.RED+"Du kannst keine verzauberte Items verwenden!");
 					}
 				}
 			}
