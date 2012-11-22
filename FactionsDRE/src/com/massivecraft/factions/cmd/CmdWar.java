@@ -188,6 +188,8 @@ public class CmdWar extends FCommand{
 							}else{
 								if(!fwar.isWar){
 									me.sendMessage(ChatColor.GOLD+"Zeit bis zum Start des Krieges: "+ChatColor.GREEN+fwar.getTimeToWar());
+								}else{
+									me.sendMessage(ChatColor.GOLD+"Ihr befindet euch bereits im Krieg mit der fraktion: "+ChatColor.GREEN+fwar.getTargetFaction().getTag());
 								}
 							}
 						}
