@@ -34,7 +34,7 @@ public class CmdWar extends FCommand{
 		senderMustBePlayer = true;
 		senderMustBeMember = true;
 		senderMustBeModerator = true;
-		senderMustBeAdmin = false;
+		senderMustBeAdmin = true;
 	}
 	
 	@Override
@@ -337,6 +337,28 @@ public class CmdWar extends FCommand{
 				} else {
 					me.sendMessage(ChatColor.RED+"Du kannst keinen Krieg gegen "+ChatColor.GOLD+argFaction.getTag()+ChatColor.RED+" starten!");
 				}
+			}else{
+				me.sendMessage(ChatColor.GREEN+"[Factions Kriegssystem]:");
+				me.sendMessage(ChatColor.GOLD+"Hier eine Kurze Erklärung:");
+				me.sendMessage(ChatColor.GOLD+"Einen Krieg startest du mit "+ChatColor.GREEN+"/f war <Fraktionsname>");
+				me.sendMessage(ChatColor.GOLD+"Dadurch wirst du zum Angreifer. Angreifer haben den Vorteil das sie den Krieg immer beenden können. Ihr Nachteil besteht darin, dass wenn sie eine Fraktion mit weniger Spielern angreifen, so müssen sie einen Täglichen Ersatz entrichten. Dieser Ersatz wird "+ChatColor.RED+"NICHT"+ChatColor.GOLD+" den Verteidigern zugesagt.");
+				me.sendMessage(ChatColor.GOLD+"Der Zu entrichtende Ersatz berechnet sich wie folgt: "+ChatColor.GREEN+"((Anzahl Spieler der Angreifer)-(Anzahl Spieler der Verteidiger))*10 Pro Tag.");
+				me.sendMessage(ChatColor.GOLD+"Dieses Kriegssystem basiert auf dem Vordern von Items und Geld. Dem Verteidiger ist es somit möglich den Krieg durch das bezahlen der Vorderungen zu beenden.");
+				me.sendMessage(ChatColor.GOLD+"Beendet der Verteidiger den Krieg durch das bezahlen der Vorderungen so ist er für "+Conf.fwarDaysAfterWarProtection+" Tage gegen erneuten Krieg mit den Angreifern geschützt.");
+				me.sendMessage(ChatColor.YELLOW+"Verfügbare Befehle:");
+				me.sendMessage(ChatColor.GREEN+"Als Angreifer:");
+				me.sendMessage(ChatColor.GREEN+"Vorbereitungs Phase:");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> additems"+ChatColor.GOLD+" Fügt Items den Vorderungen gegenüber der Anzugreienden Fraktion hinzu");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> addmoney"+ChatColor.GOLD+" Fügt Geld den Vorderungen gegenüber der Anzugreienden Fraktion hinzu");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> cancel"+ChatColor.GOLD+" Bricht die Vorbereitungs Phase und den Krieg ab.");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> confirm"+ChatColor.GOLD+" Bestätigt die gestellten Vorderungen uns Startet einen Countdown von "+Conf.fwarHoursUntilWarStartsAfterDemand+" Stunden bis der Krieg ausbricht");
+				me.sendMessage(ChatColor.GREEN+"Während dem Krieg:");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> cancelwar"+ChatColor.GOLD+" Beendet den Krieg");
+				me.sendMessage(ChatColor.GREEN+"Als Verteidiger:");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> payitems"+ChatColor.GOLD+" Bereitet die Zahlung der Items vor.");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> paymoney"+ChatColor.GOLD+" Bereitet die Zahlung des Geldes vor.");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> cancelpay"+ChatColor.GOLD+" Bricht den Bezahlungsprozess ab");
+				me.sendMessage(ChatColor.YELLOW+"/f war <Fraktionsname> confirmpay"+ChatColor.GOLD+" Bestätigt das Bezahlen der Items und des Geldes. Beendet den Krieg. Und leitet den "+Conf.fwarDaysAfterWarProtection+" Tage Schutz den Angreifern Gegenüber ein.");
 			}
 		}
 	}
