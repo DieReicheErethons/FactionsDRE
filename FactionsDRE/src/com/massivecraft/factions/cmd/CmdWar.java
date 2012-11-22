@@ -186,7 +186,9 @@ public class CmdWar extends FCommand{
 								}
 								
 							}else{
-								me.sendMessage(ChatColor.GOLD+"Zeit bis zum Start des Krieges: "+ChatColor.GREEN+fwar.getTimeToWar());
+								if(!fwar.isWar){
+									me.sendMessage(ChatColor.GOLD+"Zeit bis zum Start des Krieges: "+ChatColor.GREEN+fwar.getTimeToWar());
+								}
 							}
 						}
 					}

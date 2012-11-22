@@ -137,6 +137,7 @@ public class P extends MPlugin
 		    	Board.updateNZone();
 		    	
 		    	FWar.checkForDeleteFWars();
+		    	FWar.setRelationshipWhenTimeToWarIsOver();
 		    	//Taxation Update
 				for(FPlayer fplayer:FPlayers.i.getOnline()){
 					fplayer.getTax();
@@ -150,7 +151,7 @@ public class P extends MPlugin
 		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	Factions.i.updateBeginnersProtection();
-		    	FWar.setRelationshipWhenTimeToWarIsOver();
+		    	
 		    	FWar.payForMorePlayersThenTarget();
 		    	Faction.checkAfterWarProtections();
 		    }
