@@ -315,13 +315,11 @@ public class FWar extends Entity{
 	
 	public static String convertMaterialDataToString(MaterialData mat){
 		String text = ""+mat.getItemTypeId()+":"+mat.getData()+"";
-		P.p.log(text);
 		return text;
 	}
 	
 	public static MaterialData convertStringToMaterialData(String text){
 		String[] parts = text.split(":");
-		P.p.log("!!"+parts[0]+":"+parts[1]+"!!");
 		MaterialData mat=new MaterialData(Integer.parseInt(parts[0]), (byte)Integer.parseInt(parts[1]));
 		return mat;
 	}
