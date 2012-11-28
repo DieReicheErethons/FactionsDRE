@@ -24,7 +24,7 @@ public class CmdInventory extends FCommand
 		senderMustBePlayer = true;
 		senderMustBeMember = true;
 		senderMustBeModerator = true;
-		senderMustBeAdmin = false;
+		senderMustBeAdmin = true;
 	}
 
 	@Override
