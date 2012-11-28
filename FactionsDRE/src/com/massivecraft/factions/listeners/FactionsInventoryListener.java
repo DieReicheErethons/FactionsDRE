@@ -132,14 +132,10 @@ public class FactionsInventoryListener implements Listener{
 													MaterialData mat=FWar.convertStringToMaterialData(matString);
 													int oldAmount=fwar.itemsToPay.get(matString);
 													
-													p.log("TEST1"+oldAmount);
-													
 													if(mat.equals(mData)){
 														fwar.itemsToPay.put(matString,oldAmount-amount);
 														break;
 													}
-													
-													p.log("TEST2"+fwar.itemsToPay.get(matString));
 												}
 											}
 										}

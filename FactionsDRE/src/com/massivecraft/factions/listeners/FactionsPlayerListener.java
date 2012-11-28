@@ -412,7 +412,6 @@ public class FactionsPlayerListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-		
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		if(block!=null){
@@ -431,8 +430,6 @@ public class FactionsPlayerListener implements Listener
 								event.setCancelled(false);
 								
 							}
-							p.log("LWC-Bypass for factions-Admin");
-							//LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
 						}
 					}
 				}

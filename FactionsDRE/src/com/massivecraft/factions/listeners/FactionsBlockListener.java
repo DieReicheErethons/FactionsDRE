@@ -81,8 +81,6 @@ public class FactionsBlockListener implements Listener
 								event.setCancelled(false);
 								LWCFeatures.get().findProtection(block).remove();
 							}
-							p.log("LWC-Bypass for factions-Admin");
-							//LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
 						}
 					}
 				}
