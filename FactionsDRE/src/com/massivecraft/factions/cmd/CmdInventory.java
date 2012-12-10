@@ -48,7 +48,7 @@ public class CmdInventory extends FCommand
 					
 					ItemStack item = new ItemStack(mat.getItemType(),tmpAmount,mat.getData());
 					inv.addItem(item);
-				};
+				}
 			}
 
 			InventoryView view = me.openInventory(inv);
