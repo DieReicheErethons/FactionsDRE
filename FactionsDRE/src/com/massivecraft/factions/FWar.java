@@ -132,15 +132,17 @@ public class FWar extends Entity{
 	public static void setRelationshipWhenTimeToWarIsOver(){
 		for(FWar war:FWars.i.get()){
 			if(!war.isWar){
-				if(war.getMilliTimeToWar()<=0){
-					war.isWar=true;
-					war.getAttackerFaction().setRelationWish(war.getTargetFaction(), Relation.ENEMY);
-					war.getTargetFaction().setRelationWish(war.getAttackerFaction(), Relation.ENEMY);
-					
-					war.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen die Fraktion "+ChatColor.GREEN+war.getTargetFaction().getTag()+ChatColor.GOLD+" hat begonnen!");
-					war.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen die Fraktion "+ChatColor.GREEN+war.getAttackerFaction().getTag()+ChatColor.GOLD+" hat begonnen!");
-					
-					war.timeToNextPayForMorePlayersThenTarget = System.currentTimeMillis();
+				if(war.isStarted){
+					if(war.getMilliTimeToWar()<=0){
+						war.isWar=true;
+						war.getAttackerFaction().setRelationWish(war.getTargetFaction(), Relation.ENEMY);
+						war.getTargetFaction().setRelationWish(war.getAttackerFaction(), Relation.ENEMY);
+						
+						war.getAttackerFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen die Fraktion "+ChatColor.GREEN+war.getTargetFaction().getTag()+ChatColor.GOLD+" hat begonnen!");
+						war.getTargetFaction().sendMessage(ChatColor.GOLD+"Der Krieg gegen die Fraktion "+ChatColor.GREEN+war.getAttackerFaction().getTag()+ChatColor.GOLD+" hat begonnen!");
+						
+						war.timeToNextPayForMorePlayersThenTarget = System.currentTimeMillis();
+					}
 				}
 			}
 		}
