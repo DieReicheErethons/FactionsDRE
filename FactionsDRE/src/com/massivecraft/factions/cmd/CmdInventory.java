@@ -36,12 +36,19 @@ public class CmdInventory extends FCommand
 				
 				Integer args = fme.getFaction().factionInventory.get(matString);
 				int amount = args;
-				 
-				ItemStack item = new ItemStack(mat.getItemType(),amount,mat.getData());
-
-				if(amount > 0){
+				
+				
+				while(amount>0){
+					int tmpAmount=mat.toItemStack().getMaxStackSize();
+					if(mat.toItemStack().getMaxStackSize()>amount){
+						tmpAmount=amount;
+					}
+					amount=amount-mat.toItemStack().getMaxStackSize();
+					
+					
+					ItemStack item = new ItemStack(mat.getItemType(),tmpAmount,mat.getData());
 					inv.addItem(item);
-				}
+				};
 			}
 
 			InventoryView view = me.openInventory(inv);
