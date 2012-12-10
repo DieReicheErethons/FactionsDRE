@@ -185,8 +185,6 @@ public class BuildingFile {
 		if(block1.getY()>block2.getY()) pY=block2.getY();else pY=block1.getY();
 		if(block1.getZ()>block2.getZ()) pZ=block2.getZ();else pZ=block1.getZ();
 		
-		P.p.log("test");
-		
 		for(int x=pX;x<pX+width;x++){
 			for(int y=pY;y<pY+height;y++){
 				for(int z=pZ;z<pZ+length;z++){
