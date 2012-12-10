@@ -237,27 +237,17 @@ public class FWar extends Entity{
 		FWars.i.detach(this);
 		
 		for(String matString:items.keySet()){
-			MaterialData mat=convertStringToMaterialData(matString);
-			Integer args;
-			if(getAttackerFaction().factionInventory.get(matString)==null){
-				getAttackerFaction().factionInventory.put(convertMaterialDataToString(mat), items.get(matString));
-			}else{
-				args=items.get(matString);
-				Integer argsOLD=getAttackerFaction().factionInventory.get(matString);
-				args=args+ argsOLD;
-				getAttackerFaction().factionInventory.put(convertMaterialDataToString(mat), args);
-				
-			}
+			this.getAttackerFaction().addItemsToInventory(matString, items.get(matString));
 		}
 		
-		
+		if(Conf.econEnabled){
+			Econ.modifyMoney(this.getAttackerFaction(), this.money, "for a removed war", "");
+		}
 		
 		if(getAttackerFaction().getRelationTo(getTargetFaction())==Relation.ENEMY){
 			getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
 			getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
 		}
-		
-		
 	}
 	
 	// Get functions

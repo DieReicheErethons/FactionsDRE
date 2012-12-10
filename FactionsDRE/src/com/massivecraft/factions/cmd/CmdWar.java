@@ -152,11 +152,7 @@ public class CmdWar extends FCommand{
 								
 								if(argCmd.equalsIgnoreCase("cancelwar")){
 									if(Conf.econEnabled){
-										Econ.modifyMoney(fme.getFaction(), fwar.money, "for cancelling a war", "");
-									}
-									
-									if(Conf.econEnabled){
-										Econ.modifyMoney(fme.getFaction(), fwar.moneyFromTarget, "for cancelling the pay for a war", "");
+										Econ.modifyMoney(fwar.getTargetFaction(), fwar.moneyFromTarget, "because "+fme.getFaction().getTag(), "");
 									}
 									
 									for(String matString:fwar.items.keySet()){
