@@ -13,11 +13,11 @@ import com.google.gson.reflect.TypeToken;
 import com.massivecraft.factions.zcore.persist.EntityCollection;
 
 public class FWars extends EntityCollection<FWar>{
-	
+
 	public static FWars i = new FWars();
-	
+
 	P p = P.p;
-	
+
 	private FWars()
 	{
 		super
@@ -34,18 +34,20 @@ public class FWars extends EntityCollection<FWar>{
 	public Type getMapType() {
 		return new TypeToken<Map<String, FWar>>(){}.getType();
 	}
-	
+
 	@Override
 	public boolean loadFromDisc()
 	{
 		if ( ! super.loadFromDisc()) return false;
-		
+
 		for(FWar war:this.get()){
 			war.tempInvs=new HashSet<InventoryView>();
 			war.tempInvsFromTarget=new HashSet<InventoryView>();
 		}
-		
+
+		FWar.checkWars();
+
 		return true;
-		
+
 	}
 }

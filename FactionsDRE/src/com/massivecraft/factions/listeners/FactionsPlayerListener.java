@@ -54,18 +54,18 @@ public class FactionsPlayerListener implements Listener
 	{
 		this.p = p;
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event)
 	{
 		if (event.isCancelled()) return;
-		
+
 		Player talkingPlayer = event.getPlayer();
 		String msg = event.getMessage();
-		
+
 		// ... it was not a command. This means that it is a chat message!
 		FPlayer me = FPlayers.i.get(talkingPlayer);
-		
+
 		// Are we to insert the Faction tag into the format?
 		// If we are not to insert it - we are done.
 		if ( ! Conf.chatTagEnabled || Conf.chatTagHandledByAnotherPlugin)
@@ -75,7 +75,7 @@ public class FactionsPlayerListener implements Listener
 
 		int InsertIndex = 0;
 		String eventFormat = event.getFormat();
-		
+
 		if (!Conf.chatTagReplaceString.isEmpty() && eventFormat.contains(Conf.chatTagReplaceString))
 		{
 			// we're using the "replace" method of inserting the faction tags
@@ -106,19 +106,19 @@ public class FactionsPlayerListener implements Listener
 			if (InsertIndex > eventFormat.length())
 				return;
 		}
-		
+
 		String formatStart = eventFormat.substring(0, InsertIndex) + ((Conf.chatTagPadBefore && !me.getChatTag().isEmpty()) ? " " : "");
 		String formatEnd = ((Conf.chatTagPadAfter && !me.getChatTag().isEmpty()) ? " " : "") + eventFormat.substring(InsertIndex);
-		
+
 		String nonColoredMsgFormat = formatStart + me.getChatTag().trim() + formatEnd;
-		
+
 		// Relation Colored?
 		if (Conf.chatTagRelationColored)
 		{
 			// We must choke the standard message and send out individual messages to all players
 			// Why? Because the relations will differ.
 			event.setCancelled(true);
-			
+
 			for (Player listeningPlayer : event.getRecipients())
 			{
 				FPlayer you = FPlayers.i.get(listeningPlayer);
@@ -136,7 +136,7 @@ public class FactionsPlayerListener implements Listener
 					return;
 				}
 			}
-			
+
 			// Write to the log... We will write the non colored message.
 			String nonColoredMsg = ChatColor.stripColor(String.format(nonColoredMsgFormat, talkingPlayer.getDisplayName(), msg));
 			Logger.getLogger("Minecraft").info(nonColoredMsg);
@@ -147,38 +147,42 @@ public class FactionsPlayerListener implements Listener
 			event.setFormat(nonColoredMsgFormat);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
 		// Make sure that all online players do have a fplayer.
 		final FPlayer me = FPlayers.i.get(event.getPlayer());
-		
+
 		// Update the lastLoginTime for this fplayer
 		me.setLastLoginTime(System.currentTimeMillis());
-		
+
 		// Taxation  by Frank
 		me.taxoldtime=0;
 		me.getTax();
-		
+
 		// Spout  by Frank
 		if(SpoutFeatures.enabled()){
 			me.setsPlayer(SpoutManager.getPlayer(event.getPlayer()));
 			me.initSpoutMenu();
 		}
-		
+
 		// FWar by Frank
 		if(me.getFaction()!=null){
 			FWar war=FWar.getAsTarget(me.getFaction());
 			if(war!=null){
-				me.sendMessage("Eurer Fraktion wurde eine Forderung gestellt, in höhe von "+war.getDemandsAsString());
-				me.sendMessage("Die Forderung kam von "+war.getAttackerFaction().getTag()+" und falls ihr nicht innerhalb "+war.getTimeToWar()+" bezahlt, werden sie angreifen!");
+				if(war.getAttackerFaction()!=null){
+					me.sendMessage("Eurer Fraktion wurde eine Forderung gestellt, in höhe von "+war.getDemandsAsString());
+					me.sendMessage("Die Forderung kam von "+war.getAttackerFaction().getTag()+" und falls ihr nicht innerhalb "+war.getTimeToWar()+" bezahlt, werden sie angreifen!");
+				}else{
+					war.remove();
+				}
 			}
 		}
 
 		SpoutFeatures.updateAppearancesShortly(event.getPlayer());
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event)
     {
@@ -186,10 +190,10 @@ public class FactionsPlayerListener implements Listener
 
 		// Make sure player's power is up to date when they log off.
 		me.getPower();
-		
+
 		// and update their last login time to point to when the logged off, for auto-remove routine
 		me.setLastLoginTime(System.currentTimeMillis());
-		
+
 		Faction myFaction = me.getFaction();
 		if (myFaction != null)
 		{
@@ -197,24 +201,24 @@ public class FactionsPlayerListener implements Listener
 		}
 		SpoutFeatures.playerDisconnect(me);
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMove(PlayerMoveEvent event)
 	{
 		Player player = event.getPlayer();
 		FPlayer me = FPlayers.i.get(player);
-		
+
 		// Did we change coord?
 		FLocation from = me.getLastStoodAt();
 		FLocation to = new FLocation(player.getLocation());
-		
+
 		if (from.equals(to))
 		{
 			return;
 		}
-		
+
 		// Yes we did change coord (:
-		
+
 		me.setLastStoodAt(to);
 
 		// Did we change "host"(faction)?
@@ -224,14 +228,14 @@ public class FactionsPlayerListener implements Listener
 		boolean changedFaction = (factionFrom != factionTo);
 
 		//Did we change Factiongrenze?
-		
+
 		boolean  GrenzeFrom=Board.isFactionGrenzeAt(from);
 		boolean  GrenzeTo=Board.isFactionGrenzeAt(to);
 		boolean changedFactionGrenze= (GrenzeFrom!=GrenzeTo)&&(factionFrom==factionTo);
 		if(!changedFactionGrenze){
 			changedFactionGrenze=(factionFrom!=factionTo);
 		}
-		
+
 		//Is our Faction in War?
 		boolean isFactionInWar=false;
 		for(Faction faction:Factions.i.get()){
@@ -246,8 +250,8 @@ public class FactionsPlayerListener implements Listener
 				}
 			}
 		}
-		
-		
+
+
 		if(changedFactionGrenze&&isFactionInWar){
 			if(GrenzeFrom){
 				me.sendMessage(ChatColor.GOLD+"Du bist nun im "+ChatColor.GREEN+"sicheren Gebiet");
@@ -255,8 +259,8 @@ public class FactionsPlayerListener implements Listener
 				me.sendMessage(ChatColor.GOLD+"Du bist nun im "+ChatColor.RED+"Grenzgebiet");
 			}
 		}
-		
-		
+
+
 		if (changedFaction && SpoutFeatures.updateTerritoryDisplay(me))
 			changedFaction = false;
 
@@ -294,7 +298,7 @@ public class FactionsPlayerListener implements Listener
 				{
 					me.sendMessage(Conf.ownedLandMessage+ownersTo);
 				}
-				
+
 				if(factionTo.isNormal()&&isFactionInWar){
 					if(Board.isFactionGrenzeAt(to)){
 						me.sendMessage(ChatColor.GOLD+"Du bist nun im "+ChatColor.RED+"Grenzgebiet");
@@ -328,7 +332,7 @@ public class FactionsPlayerListener implements Listener
 				}
 			}
 		}
-		
+
 		if (me.getAutoClaimFor() != null)
 		{
 			me.attemptClaim(me.getAutoClaimFor(), player.getLocation(), true);
@@ -367,28 +371,28 @@ public class FactionsPlayerListener implements Listener
 				}
 			}
 		}
-		
-		
-		
+
+
+
 		//Buildings  by Frank
 		if(me.getIsbuilding()!=null){
-			
+
 			Location seelocation=null;
-			
-			
+
+
 			List<Block> sight = me.getPlayer().getLastTwoTargetBlocks(null, 30);
-			
+
 			for(Block block:sight){
 				if(!BuildingType.isIgnoredBlock((byte)block.getTypeId())){
 					seelocation=block.getLocation();
 					break;
 				}
 			}
-			
+
 			if(me.getLastseelocation()==null){
 				me.setLastseelocation(seelocation);
 			}
-			
+
 			//Ist ein block in sicht?
 			if (seelocation!=null){
 				//Ticker schon abgelaufen?
@@ -397,10 +401,10 @@ public class FactionsPlayerListener implements Listener
 					if (me.getLastseelocation().getBlockX()!=seelocation.getBlockX() || me.getLastseelocation().getBlockY()!=seelocation.getBlockY() || me.getLastseelocation().getBlockZ()!=seelocation.getBlockZ()){
 						//Yes we did :)
 							me.getIsbuilding().checkBuilding(me, seelocation.getBlockX(), seelocation.getBlockY(), seelocation.getBlockZ(), 1);
-							
+
 							//Location updaten
 							me.setLastseelocation(seelocation);
-							
+
 							//Ticker einstellen
 							me.setBuildingticker(System.currentTimeMillis()+300);
 					}
@@ -415,31 +419,31 @@ public class FactionsPlayerListener implements Listener
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		if(block!=null){
-			
-			
+
+
 			if(LWCFeatures.getEnabled()){
 				if(Conf.lwcAdminBypassRequiresLwcIntegration){
 					FPlayer me = FPlayers.i.get(player);
-					
+
 					FLocation loc = new FLocation(block);
 					Faction otherFaction = Board.getFactionAt(loc);
-					
+
 					if(me.getFaction()==otherFaction){
 						if(me.getRole()==Role.ADMIN){
 							if(event.isCancelled()){
 								event.setCancelled(false);
-								
+
 							}
 						}
 					}
 				}
 			}
 		}
-		
-		
+
+
 		if (event.isCancelled()) return;
 
-		
+
 
 		if (block == null)
 		{
@@ -451,14 +455,14 @@ public class FactionsPlayerListener implements Listener
 			event.setCancelled(true);
 			return;
 		}
-		
-		
-		
-		
-		
-		
-		
-		
+
+
+
+
+
+
+
+
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
 		{
 			return;  // only interested on right-clicks for below
@@ -488,9 +492,9 @@ public class FactionsPlayerListener implements Listener
 			event.setCancelled(true);
 			return;
 		}
-		
-		
-		
+
+
+
 	}
 
 	public static boolean playerCanUseItemHere(Player player, Location location, Material material, boolean justCheck)
@@ -517,7 +521,7 @@ public class FactionsPlayerListener implements Listener
 		{
 			if (!Conf.wildernessDenyUseage || Conf.worldsNoWildernessProtection.contains(location.getWorld().getName()))
 				return true; // This is not faction territory. Use whatever you like here.
-			
+
 			if (!justCheck)
 				me.msg("<b>You can't use <h>%s<b> in the wilderness.", TextUtil.getMaterialName(material));
 
@@ -564,8 +568,8 @@ public class FactionsPlayerListener implements Listener
 
 			return false;
 		}
-		
-		
+
+
 		//Check Grenzgebiet
 		if(rel.isEnemy()){
 			if(!Board.isFactionGrenzeAt(loc)){
@@ -573,7 +577,7 @@ public class FactionsPlayerListener implements Listener
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -620,24 +624,24 @@ public class FactionsPlayerListener implements Listener
 		{
 			if (!justCheck)
 				me.msg("<b>You can't use <h>%s<b> in this territory, it is owned by: %s<b>.", TextUtil.getMaterialName(material), otherFaction.getOwnerListString(loc));
-			
+
 			return false;
 		}
-		
-		
+
+
 		/*if(LWCFeatures.getEnabled()){
 			if(myFaction==otherFaction){
 				if(me.getRole()==Role.ADMIN){
 					//if(event.isCancelled()){
 					//	event.setCancelled(false);
 					//}
-					
+
 					LWCFeatures.get().enforceAccess(player, LWCFeatures.get().findProtection(block), block);
 				}
 			}
 		}*/
-		
-		
+
+
 
 		return true;
 	}
