@@ -26,8 +26,18 @@ public class FWar extends Entity{
 	public Map<String,Integer> itemsToPay = new HashMap<String,Integer>();
 
 	private String attackerFactionID, targetFactionID;
-	public Faction getAttackerFaction(){ return Factions.i.get(attackerFactionID);}
-	public Faction getTargetFaction(){ return Factions.i.get(targetFactionID);}
+	public Faction getAttackerFaction(){
+		if(Factions.i.get(attackerFactionID)==null){
+			this.remove();
+		}
+		return Factions.i.get(attackerFactionID);
+	}
+	public Faction getTargetFaction(){
+		if(Factions.i.get(targetFactionID)==null){
+			this.remove();
+		}
+		return Factions.i.get(targetFactionID);
+	}
 
 	public boolean isStarted;
 	public boolean isWar;
@@ -238,17 +248,21 @@ public class FWar extends Entity{
 	public void remove(){
 		FWars.i.detach(this);
 
-		for(String matString:items.keySet()){
-			this.getAttackerFaction().addItemsToInventory(matString, items.get(matString));
-		}
+		if(this.getAttackerFaction()!=null){
+			for(String matString:items.keySet()){
+				this.getAttackerFaction().addItemsToInventory(matString, items.get(matString));
+			}
 
-		if(Conf.econEnabled){
-			Econ.modifyMoney(this.getAttackerFaction(), this.money, "for a removed war", "");
-		}
+			if(Conf.econEnabled){
+				Econ.modifyMoney(this.getAttackerFaction(), this.money, "for a removed war", "");
+			}
 
-		if(getAttackerFaction().getRelationTo(getTargetFaction())==Relation.ENEMY){
-			getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
-			getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
+			if(getTargetFaction()!=null){
+				if(getAttackerFaction().getRelationTo(getTargetFaction())==Relation.ENEMY){
+					getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
+					getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
+				}
+			}
 		}
 	}
 
