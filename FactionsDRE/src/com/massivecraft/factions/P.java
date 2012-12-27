@@ -385,6 +385,8 @@ public class P extends MPlugin
 	// execute change Faction commands
 	public void executeFactionChangeCommands(Set<String> commands, Player player){
 		for(String command:commands){
+			command = command.replace("%player%", player.getName());
+			command = command.replace("%faction%", FPlayers.i.get(player).getFaction().getTag());
 			String[] splittedCommand=command.split(";");
 			if(splittedCommand.length>1){
 				if(splittedCommand[0].equalsIgnoreCase("p")){
@@ -392,10 +394,7 @@ public class P extends MPlugin
 				}else{
 					p.getServer().dispatchCommand(Bukkit.getConsoleSender(),splittedCommand[1]);
 				}
-				p.log("SPLITTEDCOMMAND0"+splittedCommand[0]);
-				p.log("SPLITTEDCOMMAND1"+splittedCommand[1]);
 			}else{
-				p.log("SPLITTEDCOMMAND0"+splittedCommand[0]);
 				p.getServer().dispatchCommand(Bukkit.getConsoleSender(),splittedCommand[0]);
 			}
 		}
