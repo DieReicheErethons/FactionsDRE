@@ -228,7 +228,6 @@ public class FactionsPlayerListener implements Listener
 		boolean changedFaction = (factionFrom != factionTo);
 
 		//Did we change Factiongrenze?
-
 		boolean  GrenzeFrom=Board.isFactionGrenzeAt(from);
 		boolean  GrenzeTo=Board.isFactionGrenzeAt(to);
 		boolean changedFactionGrenze= (GrenzeFrom!=GrenzeTo)&&(factionFrom==factionTo);
@@ -260,7 +259,50 @@ public class FactionsPlayerListener implements Listener
 			}
 		}
 
+		//Execute commands
+		if(changedFaction){
+			if(factionFrom.isNeutral()){
+				p.executeFactionChangeCommands(Conf.commandsOnNeutralZoneLeave,player);
+			}else if(factionFrom.isNone()){
+				p.executeFactionChangeCommands(Conf.commandsOnWildernessLeave,player);
+			}else if(factionFrom.isSafeZone()){
+				p.executeFactionChangeCommands(Conf.commandsOnSafeZoneLeave,player);
+			}else if(factionFrom.isWarZone()){
+				p.executeFactionChangeCommands(Conf.commandsOnWarZoneLeave,player);
+			}else if(factionFrom.isNormal()){
+				if(me.getRelationTo(factionFrom)==Relation.MEMBER){
+					p.executeFactionChangeCommands(Conf.commandsOnOwnFactionLeave,player);
+				}else if(me.getRelationTo(factionFrom)==Relation.ALLY){
+					p.executeFactionChangeCommands(Conf.commandsOnAllyFactionLeave,player);
+				}else if(me.getRelationTo(factionFrom)==Relation.ENEMY){
+					p.executeFactionChangeCommands(Conf.commandsOnEnemyFactionLeave,player);
+				}else if(me.getRelationTo(factionFrom)==Relation.NEUTRAL){
+					p.executeFactionChangeCommands(Conf.commandsOnNeutralFactionLeave,player);
+				}
+			}
 
+			if(factionTo.isNeutral()){
+				p.executeFactionChangeCommands(Conf.commandsOnNeutralZoneEnter,player);
+			}else if(factionTo.isNone()){
+				p.executeFactionChangeCommands(Conf.commandsOnWildernessEnter,player);
+			}else if(factionTo.isSafeZone()){
+				p.executeFactionChangeCommands(Conf.commandsOnSafeZoneEnter,player);
+			}else if(factionTo.isWarZone()){
+				p.executeFactionChangeCommands(Conf.commandsOnWarZoneEnter,player);
+			}else if(factionTo.isNormal()){
+				if(me.getRelationTo(factionTo)==Relation.MEMBER){
+					p.executeFactionChangeCommands(Conf.commandsOnOwnFactionEnter,player);
+				}else if(me.getRelationTo(factionTo)==Relation.ALLY){
+					p.executeFactionChangeCommands(Conf.commandsOnAllyFactionEnter,player);
+				}else if(me.getRelationTo(factionTo)==Relation.ENEMY){
+					p.executeFactionChangeCommands(Conf.commandsOnEnemyFactionEnter,player);
+				}else if(me.getRelationTo(factionTo)==Relation.NEUTRAL){
+					p.executeFactionChangeCommands(Conf.commandsOnNeutralFactionEnter,player);
+				}
+			}
+		}
+
+		//Display Message
 		if (changedFaction && SpoutFeatures.updateTerritoryDisplay(me))
 			changedFaction = false;
 

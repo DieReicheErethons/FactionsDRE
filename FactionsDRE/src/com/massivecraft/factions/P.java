@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,7 +41,7 @@ public class P extends MPlugin
 {
 	// Our single plugin instance
 	public static P p;
-	
+
 	// Listeners
 	public final FactionsPlayerListener playerListener;
 	public final FactionsInventoryListener inventoryListener;
@@ -48,17 +49,17 @@ public class P extends MPlugin
 	public final FactionsEntityListener entityListener;
 	public final FactionsBlockListener blockListener;
 	public final FactionsServerListener serverListener;
-	
+
 	// Persistance related
 	private boolean locked = false;
 	public boolean getLocked() {return this.locked;}
 	public void setLocked(boolean val) {this.locked = val; this.setAutoSave(val);}
 	private Integer AutoLeaveTask = null;
-	
+
 	// Commands
 	public FCmdRoot cmdBase;
 	public CmdAutoHelp cmdAutoHelp;
-	
+
 	public P()
 	{
 		p = this;
@@ -76,31 +77,31 @@ public class P extends MPlugin
 	{
 		if ( ! preEnable()) return;
 		this.loadSuccessful = false;
-		
-		
-		
+
+
+
 		// Load Conf from disk
 		Conf.load();
-		
+
 		// Add Base Commands
 		this.cmdBase = new FCmdRoot();
 		this.cmdAutoHelp = new CmdAutoHelp();
 		this.getBaseCommands().add(cmdBase);
-		
+
 		//Setup
 		EssentialsFeatures.setup();
 		SpoutFeatures.setup();
 		Econ.setup();
 		CapiFeatures.setup();
 		LWCFeatures.setup();
-		
+
 		// Load Saved Data
 		FPlayers.i.loadFromDisc();
 		Factions.i.loadFromDisc();
 		FWars.i.loadFromDisc();
 		Board.load();
-		
-		
+
+
 		if(Conf.worldGuardChecking)
 		{
 			Worldguard.init(this);
@@ -119,46 +120,46 @@ public class P extends MPlugin
 
 		postEnable();
 		this.loadSuccessful = true;
-		
+
 		// -------------------------------------------- //
 		// Update Sheduler
 		// -------------------------------------------- //
-		
+
 		//Per Second
 		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	FPlayers.update();
 		    }
 		}, 0L, 20L);
-		
+
 		//Per Minute
 		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	Board.updateNZone();
-		    	
+
 		    	FWar.checkForDeleteFWars();
 		    	FWar.setRelationshipWhenTimeToWarIsOver();
 		    	//Taxation Update
 				for(FPlayer fplayer:FPlayers.i.getOnline()){
 					fplayer.getTax();
 				}
-				
-				
+
+
 		    }
 		}, 0L, 1200L);
-		
+
 		//Per Hour
 		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	Factions.i.updateBeginnersProtection();
-		    	
+
 		    	FWar.payForMorePlayersThenTarget();
 		    	Faction.checkAfterWarProtections();
 		    }
 		}, 0L, 72000L);
-		
+
 	}
-	
+
 	@Override
 	public GsonBuilder getGsonBuilder()
 	{
@@ -246,8 +247,8 @@ public class P extends MPlugin
 
 	// Simply put, should this chat event be left for Factions to handle? For now, that means players with Faction Chat
 	// enabled or use of the Factions f command without a slash; combination of isPlayerFactionChatting() and isFactionsCommand()
-	
-	
+
+
 	public boolean shouldLetFactionsHandleThisChat(AsyncPlayerChatEvent event)
 	{
 		if (event == null) return false;
@@ -260,15 +261,15 @@ public class P extends MPlugin
 	{
 		if (player == null) return false;
 		FPlayer me = FPlayers.i.get(player);
-		
+
 		if (me == null)return false;
 		return me.getChatMode().isAtLeast(ChatMode.ALLIANCE);
 	}
 
 	// Is this chat message actually a Factions command, and thus should be left alone by other plugins?
-	
+
 	// TODO: GET THIS BACK AND WORKING
-	
+
 	public boolean isFactionsCommand(String check)
 	{
 		if (check == null || check.isEmpty()) return false;
@@ -379,5 +380,24 @@ public class P extends MPlugin
 	public boolean isPlayerAllowedToUseThisHere(Player player, Location location, Material material)
 	{
 		return FactionsPlayerListener.playerCanUseItemHere(player, location, material, true);
+	}
+
+	// execute change Faction commands
+	public void executeFactionChangeCommands(Set<String> commands, Player player){
+		for(String command:commands){
+			String[] splittedCommand=command.split(";");
+			if(splittedCommand.length>1){
+				if(splittedCommand[0].equalsIgnoreCase("p")){
+					p.getServer().dispatchCommand(player,splittedCommand[1]);
+				}else{
+					p.getServer().dispatchCommand(Bukkit.getConsoleSender(),splittedCommand[1]);
+				}
+				p.log("SPLITTEDCOMMAND0"+splittedCommand[0]);
+				p.log("SPLITTEDCOMMAND1"+splittedCommand[1]);
+			}else{
+				p.log("SPLITTEDCOMMAND0"+splittedCommand[0]);
+				p.getServer().dispatchCommand(Bukkit.getConsoleSender(),splittedCommand[0]);
+			}
+		}
 	}
 }

@@ -9,17 +9,17 @@ public class Conf
 {
 	public static List<String> baseCommandAliases = new ArrayList<String>();
 	public static boolean allowNoSlashCommand = true;
-	
+
 	// Colors
 	public static ChatColor colorMember = ChatColor.GREEN;
 	public static ChatColor colorAlly = ChatColor.LIGHT_PURPLE;
 	public static ChatColor colorNeutral = ChatColor.WHITE;
 	public static ChatColor colorEnemy = ChatColor.RED;
-	
+
 	public static ChatColor colorPeaceful = ChatColor.GOLD;
 	public static ChatColor colorWar = ChatColor.DARK_RED;
 	//public static ChatColor colorWilderness = ChatColor.DARK_GREEN;
-	
+
 	// Power
 	public static double powerPlayerMax = 10.0;
 	public static double powerPlayerMin = -10.0;
@@ -30,14 +30,14 @@ public class Conf
 	public static double powerOfflineLossPerDay = 0.0;  // players will lose this much power per day offline
 	public static double powerOfflineLossLimit = 0.0;  // players will no longer lose power from being offline once their power drops to this amount or less
 	public static double powerFactionMax = 0.0;  // if greater than 0, the cap on how much power a faction can have (additional power from players beyond that will act as a "buffer" of sorts)
-	
+
 	public static String prefixAdmin = "**";
 	public static String prefixMod = "*";
-	
+
 	public static int factionTagLengthMin = 3;
 	public static int factionTagLengthMax = 10;
 	public static boolean factionTagForceUpperCase = false;
-	
+
 	public static boolean newFactionsDefaultOpen = false;
 
 	// when faction membership hits this limit, players will no longer be able to join using /f join; default is 0, no limit
@@ -49,10 +49,10 @@ public class Conf
 	public static boolean showMapFactionKey = true;
 	public static boolean showNeutralFactionsOnMap = true;
 	public static boolean showEnemyFactionsOnMap = true;
-	
+
 	// Disallow joining/leaving/kicking while power is negative
 	public static boolean canLeaveWithNegativePower = true;
-	
+
 	// Configuration for faction-only chat
 	public static boolean factionOnlyChat = true;
 	// Configuration on the Faction tag in chat messages.
@@ -68,13 +68,13 @@ public class Conf
 	public static String chatTagFormat = "%s"+ChatColor.WHITE;
 	public static String factionChatFormat = "%s:"+ChatColor.WHITE+" %s";
 	public static String allianceChatFormat = ChatColor.LIGHT_PURPLE+"%s:"+ChatColor.WHITE+" %s";
-	
+
 	public static double autoLeaveAfterDaysOfInactivity = 10.0;
 	public static double autoLeaveRoutineRunsEveryXMinutes = 5.0;
 	public static boolean removePlayerDataWhenBanned = true;
 
 	public static boolean worldGuardChecking = false;
-	
+
 	//LWC
 	public static boolean lwcIntegration = false;
 	public static boolean onUnclaimResetLwcLocks = false;
@@ -90,7 +90,7 @@ public class Conf
 	public static boolean logLandUnclaims = true;
 	public static boolean logMoneyTransactions = true;
 	public static boolean logPlayerCommands = true;
-	
+
 	public static boolean homesEnabled = true;
 	public static boolean homesMustBeInClaimedTerritory = true;
 	public static boolean homesTeleportToOnDeath = true;
@@ -103,26 +103,26 @@ public class Conf
 	public static boolean homesTeleportAllowedFromDifferentWorld = true;
 	public static double homesTeleportAllowedEnemyDistance = 32.0;
 	public static boolean homesTeleportIgnoreEnemiesIfInOwnTerritory = true;
-	
+
 	public static boolean disablePVPBetweenNeutralFactions = false;
 	public static boolean disablePVPForFactionlessPlayers = false;
 	public static boolean enablePVPAgainstFactionlessInAttackersLand = false;
-	
+
 	public static int noPVPDamageToOthersForXSecondsAfterLogin = 3;
 
 	public static boolean peacefulTerritoryDisablePVP = true;
 	public static boolean peacefulTerritoryDisableMonsters = false;
 	public static boolean peacefulMembersDisablePowerLoss = true;
-	
+
 	public static boolean permanentFactionsDisableLeaderPromotion = false;
-	
+
 	public static boolean claimsMustBeConnected = false;
 	public static boolean claimsCanBeUnconnectedIfOwnedByOtherFaction = true;
 	public static int claimsRequireMinFactionMembers = 1;
 	public static int claimedLandsMax = 0;
-	
+
 	public static double considerFactionsReallyOfflineAfterXMinutes = 0.0;
-	
+
 	public static int actionDeniedPainAmount = 1;
 
 	// commands which will be prevented if the player is a member of a permanent faction
@@ -131,7 +131,7 @@ public class Conf
 	// commands which will be prevented when in claimed territory of another faction
 	public static Set<String> territoryNeutralDenyCommands = new HashSet<String>();
 	public static Set<String> territoryEnemyDenyCommands = new HashSet<String>();
-	
+
 	public static double territoryShieldFactor = 0.3;
 	public static boolean territoryDenyBuild = true;
 	public static boolean territoryDenyBuildWhenOffline = true;
@@ -164,7 +164,7 @@ public class Conf
 	public static boolean safeZoneBlockTNT = true;
 	public static boolean safeZonePreventAllDamageToPlayers = false;
 	public static boolean safeZoneDenyEndermanBlocks = true;
-	
+
 	public static boolean warZoneDenyBuild = true;
 	public static boolean warZoneDenyUseage = true;
 	public static boolean warZoneBlockCreepers = false;
@@ -173,7 +173,7 @@ public class Conf
 	public static boolean warZonePowerLoss = true;
 	public static boolean warZoneFriendlyFire = false;
 	public static boolean warZoneDenyEndermanBlocks = true;
-	
+
 	public static boolean wildernessDenyBuild = false;
 	public static boolean wildernessDenyUseage = false;
 	public static boolean wildernessBlockCreepers = false;
@@ -191,7 +191,7 @@ public class Conf
 	public static boolean ownedAreaPainBuild = false;
 	public static boolean ownedAreaProtectMaterials = true;
 	public static boolean ownedAreaDenyUseage = true;
-	
+
 	public static String ownedLandMessage = "Owner(s): ";
 	public static String publicLandMessage = "Public faction land.";
 	public static boolean ownedMessageOnBorder = true;
@@ -199,12 +199,12 @@ public class Conf
 	public static boolean ownedMessageByChunk = false;
 
 	public static boolean pistonProtectionThroughDenyBuild = true;
-	
+
 	public static Set<Material> territoryProtectedMaterials = EnumSet.noneOf(Material.class);
 	public static Set<Material> territoryDenyUseageMaterials = EnumSet.noneOf(Material.class);
 	public static Set<Material> territoryProtectedMaterialsWhenOffline = EnumSet.noneOf(Material.class);
 	public static Set<Material> territoryDenyUseageMaterialsWhenOffline = EnumSet.noneOf(Material.class);
-	
+
 	public static Set<EntityType> safeZoneNerfedCreatureTypes = EnumSet.noneOf(EntityType.class);
 
 	// Spout features
@@ -226,7 +226,25 @@ public class Conf
 	public static String capeMember = "https://github.com/MassiveCraft/Factions/raw/master/capes/member.png";
 	public static String capeNeutral = "https://github.com/MassiveCraft/Factions/raw/master/capes/neutral.png";
 	public static String capePeaceful = "https://github.com/MassiveCraft/Factions/raw/master/capes/peaceful.png";
-	
+
+	// Commands execution
+	public static Set<String> commandsOnSafeZoneEnter = new HashSet<String>();
+	public static Set<String> commandsOnSafeZoneLeave = new HashSet<String>();
+	public static Set<String> commandsOnWildernessEnter = new HashSet<String>();
+	public static Set<String> commandsOnWildernessLeave = new HashSet<String>();
+	public static Set<String> commandsOnWarZoneEnter = new HashSet<String>();
+	public static Set<String> commandsOnWarZoneLeave = new HashSet<String>();
+	public static Set<String> commandsOnNeutralZoneEnter = new HashSet<String>();
+	public static Set<String> commandsOnNeutralZoneLeave = new HashSet<String>();
+	public static Set<String> commandsOnNeutralFactionEnter = new HashSet<String>();
+	public static Set<String> commandsOnNeutralFactionLeave = new HashSet<String>();
+	public static Set<String> commandsOnEnemyFactionEnter = new HashSet<String>();
+	public static Set<String> commandsOnEnemyFactionLeave = new HashSet<String>();
+	public static Set<String> commandsOnAllyFactionEnter = new HashSet<String>();
+	public static Set<String> commandsOnAllyFactionLeave = new HashSet<String>();
+	public static Set<String> commandsOnOwnFactionEnter = new HashSet<String>();
+	public static Set<String> commandsOnOwnFactionLeave = new HashSet<String>();
+
 	// Economy settings
 	public static boolean econEnabled = false;
 	public static String econUniverseAccount = "";
@@ -255,44 +273,44 @@ public class Conf
 	public static double econCostEnemy = 0.0;
 	public static double econCostNeutral = 0.0;
 	public static double econCostNoBoom = 0.0;
-	
+
 	//Faction banks, to pay for land claiming and other costs instead of individuals paying for them
 	public static boolean bankEnabled = true;
 	public static boolean bankMembersCanWithdraw = false; //Have to be at least moderator to withdraw or pay money to another faction
 	public static boolean bankFactionPaysCosts = true; //The faction pays for faction command costs, such as sethome
 	public static boolean bankFactionPaysLandCosts = true; //The faction pays for land claiming costs.
-	
+
 	public static Set<String> worldsNoClaiming = new HashSet<String>();
 	public static Set<String> worldsNoPowerLoss = new HashSet<String>();
 	public static Set<String> worldsIgnorePvP = new HashSet<String>();
 	public static Set<String> worldsNoWildernessProtection = new HashSet<String>();
-	
+
 	public static transient int mapHeight = 8;
 	public static transient int mapWidth = 39;
 	public static transient char[] mapKeyChrs = "\\/#?$%=&^ABCDEFGHJKLMNOPQRSTUVWXYZ1234567890abcdeghjmnopqrsuvwxyz".toCharArray();
-	
+
 	//War settings
 	public static Set<Material> warAllowedBuildBlocks= new HashSet<Material>();
 	public static int warConquestTime=120;
 	public static int warNeutralZoneToWilderness=300;
 	public static int warBeginnerProtection=24;
-	
+
 	//FWar settings
 	public static boolean fwarEnabled=true;
 	public static int fwarDaysAfterWarProtection=10;
 	public static int fwarHoursUntilWarStartsAfterDemand=24;
-	
+
 	public static Set<String> fwarItemBlackList = new HashSet<String>();
-	
+
 	//LWC Admin Bypass
 	public static boolean lwcAdminBypassRequiresLwcIntegration=true;
-	
-	
-	
+
+
+
 	static
 	{
 		baseCommandAliases.add("f");
-		
+
 		territoryEnemyDenyCommands.add("home");
 		territoryEnemyDenyCommands.add("sethome");
 		territoryEnemyDenyCommands.add("spawn");
