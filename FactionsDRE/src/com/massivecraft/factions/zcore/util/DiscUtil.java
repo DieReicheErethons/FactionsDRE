@@ -13,12 +13,12 @@ public class DiscUtil
 		out.write(content);
 		out.close();
 	}
-	
+
 	public static String read(File file) throws IOException
 	{
 		BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
 		String ret = new String(new byte[0], "UTF-8");
-		 
+
 		String line;
 		while ((line = in.readLine()) != null)
 		{
@@ -28,7 +28,7 @@ public class DiscUtil
 		in.close();
 		return ret;
 	}
-	
+
 	public static boolean writeCatch(File file, String content)
 	{
 		try
@@ -41,7 +41,7 @@ public class DiscUtil
 			return false;
 		}
 	}
-	
+
 	public static String readCatch(File file)
 	{
 		try
@@ -53,7 +53,7 @@ public class DiscUtil
 			return null;
 		}
 	}
-	
+
 	public static boolean downloadUrl(String urlstring, File file)
 	{
 		try
@@ -62,6 +62,7 @@ public class DiscUtil
 			ReadableByteChannel rbc = Channels.newChannel(url.openStream());
 			FileOutputStream fos = new FileOutputStream(file);
 		    fos.getChannel().transferFrom(rbc, 0, 1 << 24);
+		    fos.close();
 		    return true;
 		}
 		catch (Exception e)
@@ -70,7 +71,7 @@ public class DiscUtil
 			return false;
 		}
 	}
-	
+
 	public static boolean downloadUrl(String urlstring, String filename)
 	{
 		return downloadUrl(urlstring, new File(filename));
