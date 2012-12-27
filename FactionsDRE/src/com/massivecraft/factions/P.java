@@ -385,8 +385,10 @@ public class P extends MPlugin
 	// execute change Faction commands
 	public void executeFactionChangeCommands(Set<String> commands, Player player){
 		for(String command:commands){
+			//Replace
 			command = command.replace("%player%", player.getName());
 			command = command.replace("%faction%", FPlayers.i.get(player).getFaction().getTag());
+			//Execute
 			String[] splittedCommand=command.split(";");
 			if(splittedCommand.length>1){
 				if(splittedCommand[0].equalsIgnoreCase("p")){
