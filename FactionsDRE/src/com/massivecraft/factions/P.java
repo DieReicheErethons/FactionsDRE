@@ -126,14 +126,14 @@ public class P extends MPlugin
 		// -------------------------------------------- //
 
 		//Per Second
-		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
+		p.getServer().getScheduler().scheduleSyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	FPlayers.update();
 		    }
 		}, 0L, 20L);
 
 		//Per Minute
-		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
+		p.getServer().getScheduler().scheduleSyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	Board.updateNZone();
 
@@ -149,7 +149,7 @@ public class P extends MPlugin
 		}, 0L, 1200L);
 
 		//Per Hour
-		p.getServer().getScheduler().scheduleAsyncRepeatingTask(p, new Runnable() {
+		p.getServer().getScheduler().scheduleSyncRepeatingTask(p, new Runnable() {
 		    public void run() {
 		    	Factions.i.updateBeginnersProtection();
 

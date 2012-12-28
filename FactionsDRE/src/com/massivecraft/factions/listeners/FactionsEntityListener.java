@@ -64,7 +64,7 @@ public class FactionsEntityListener implements Listener
 		{
 			return;
 		}
-		
+
 		Player player = (Player) entity;
 		FPlayer fplayer = FPlayers.i.get(player);
 		Faction faction = Board.getFactionAt(new FLocation(player.getLocation()));
@@ -99,7 +99,7 @@ public class FactionsEntityListener implements Listener
 		fplayer.onDeath();
 		fplayer.msg("<i>Your power is now <h>"+fplayer.getPowerRounded()+" / "+fplayer.getPowerMaxRounded());
 	}
-	
+
 	/**
 	 * Who can I hurt?
 	 * I can never hurt members or allies.
@@ -110,7 +110,7 @@ public class FactionsEntityListener implements Listener
 	public void onEntityDamage(EntityDamageEvent event)
 	{
 		if (event.isCancelled()) return;
-		
+
 		if (event instanceof EntityDamageByEntityEvent)
 		{
 			EntityDamageByEntityEvent sub = (EntityDamageByEntityEvent)event;
@@ -130,9 +130,9 @@ public class FactionsEntityListener implements Listener
 	public void onEntityExplode(EntityExplodeEvent event)
 	{
 		if (event.isCancelled()) return;
-		
+
 		Location loc = event.getLocation();
-		
+
 		Faction faction = Board.getFactionAt(new FLocation(loc));
 
 		if (faction.noExplosionsInTerritory())
@@ -221,7 +221,7 @@ public class FactionsEntityListener implements Listener
 	public void onEntityCombustByEntity(EntityCombustByEntityEvent event)
 	{
 		if (event.isCancelled()) return;
-		
+
 		EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(event.getCombuster(), event.getEntity(), EntityDamageEvent.DamageCause.FIRE, 0);
 		if ( ! this.canDamagerHurtDamagee(sub, false))
 			event.setCancelled(true);
@@ -289,15 +289,15 @@ public class FactionsEntityListener implements Listener
 		Entity damager = sub.getDamager();
 		Entity damagee = sub.getEntity();
 		int damage = sub.getDamage();
-		
+
 		if ( ! (damagee instanceof Player))
 			return true;
 
 		FPlayer defender = FPlayers.i.get((Player)damagee);
-		
+
 		if (defender == null || defender.getPlayer() == null)
 			return true;
-		
+
 		Location defenderLoc = defender.getPlayer().getLocation();
 		Faction defLocFaction = Board.getFactionAt(new FLocation(defenderLoc));
 
@@ -321,23 +321,23 @@ public class FactionsEntityListener implements Listener
 			}
 			return !defLocFaction.noMonstersInTerritory();
 		}
-		
+
 		if ( ! (damager instanceof Player))
 			return true;
-		
+
 		FPlayer attacker = FPlayers.i.get((Player)damager);
-		
+
 		if (attacker == null || attacker.getPlayer() == null)
 			return true;
-		
+
 		if (attacker.hasLoginPvpDisabled())
 		{
 			if (notify) attacker.msg("<i>You can't hurt other players for " + Conf.noPVPDamageToOthersForXSecondsAfterLogin + " seconds after logging in.");
 			return false;
 		}
-		
+
 		Faction locFaction = Board.getFactionAt(new FLocation(attacker));
-		
+
 		// so we know from above that the defender isn't in a safezone... what about the attacker, sneaky dog that he might be?
 		if (locFaction.noPvPInTerritory())
 		{
@@ -353,7 +353,7 @@ public class FactionsEntityListener implements Listener
 
 		Faction defendFaction = defender.getFaction();
 		Faction attackFaction = attacker.getFaction();
-		
+
 		if (attackFaction.isNone() && Conf.disablePVPForFactionlessPlayers)
 		{
 			if (notify) attacker.msg("<i>You can't hurt other players until you join a faction.");
@@ -372,7 +372,7 @@ public class FactionsEntityListener implements Listener
 				return false;
 			}
 		}
-		
+
 		if (defendFaction.isPeaceful())
 		{
 			if (notify) attacker.msg("<i>You can't hurt players who are in a peaceful faction.");
@@ -383,29 +383,29 @@ public class FactionsEntityListener implements Listener
 			if (notify) attacker.msg("<i>You can't hurt players while you are in a peaceful faction.");
 			return false;
 		}
-		
+
 		Relation relation = defendFaction.getRelationTo(attackFaction);
-		
+
 		// You can not hurt neutral factions
 		if (Conf.disablePVPBetweenNeutralFactions && relation.isNeutral())
 		{
 			if (notify) attacker.msg("<i>You can't hurt neutral factions. Declare them as an enemy.");
 			return false;
 		}
-		
+
 		// Players without faction may be hurt anywhere
 		if (!defender.hasFaction())
 			return true;
-		
+
 		// You can never hurt faction members or allies
 		if (relation.isMember() || relation.isAlly())
 		{
 			if (notify) attacker.msg("<i>You can't hurt %s<i>.", defender.describeTo(attacker));
 			return false;
 		}
-		
+
 		boolean ownTerritory = defender.isInOwnTerritory();
-		
+
 		// You can not hurt neutrals in their own territory.
 		if (ownTerritory && relation.isNeutral())
 		{
@@ -416,13 +416,13 @@ public class FactionsEntityListener implements Listener
 			}
 			return false;
 		}
-		
+
 		// Damage will be dealt. However check if the damage should be reduced.
 		if (damage > 0.0 && ownTerritory && Conf.territoryShieldFactor > 0)
 		{
 			int newDamage = (int)Math.ceil(damage * (1D - Conf.territoryShieldFactor));
 			sub.setDamage(newDamage);
-			
+
 			// Send message
 			if (notify)
 			{
@@ -430,10 +430,10 @@ public class FactionsEntityListener implements Listener
 				defender.msg("<i>Enemy damage reduced by <rose>%s<i>.", perc);
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
@@ -441,43 +441,43 @@ public class FactionsEntityListener implements Listener
 		{
 			return;
 		}
-		
+
 		if (Conf.safeZoneNerfedCreatureTypes.contains(event.getEntityType()) && Board.getFactionAt(new FLocation(event.getLocation())).noMonstersInTerritory())
 		{
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityTarget(EntityTargetEvent event)
 	{
 		if (event.isCancelled()) return;
-		
+
 		// if there is a target
 		Entity target = event.getTarget();
 		if (target == null)
 		{
 			return;
 		}
-		
+
 		// We are interested in blocking targeting for certain mobs:
 		if ( ! Conf.safeZoneNerfedCreatureTypes.contains(MiscUtil.creatureTypeFromEntity(event.getEntity())))
 		{
 			return;
 		}
-		
+
 		// in case the target is in a safe zone.
 		if (Board.getFactionAt(new FLocation(target.getLocation())).noMonstersInTerritory())
 		{
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHangingBreak(HangingBreakEvent event)
 	{
 		if (event.isCancelled()) return;
-		
+
 		if (! (event instanceof HangingBreakByEntityEvent))
 		{
 			return;
@@ -505,7 +505,7 @@ public class FactionsEntityListener implements Listener
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityChangeBlock(EntityChangeBlockEvent event)
 	{
@@ -600,7 +600,7 @@ public class FactionsEntityListener implements Listener
 
 			int absX = Math.abs(ex.X - locX);
 			int absZ = Math.abs(ex.Z - locZ);
-			if (absX < 5 && absZ < 5) 
+			if (absX < 5 && absZ < 5)
 			{	// it sure looks like an exploit attempt
 				// let's tattle on him to everyone
 				String msg = "NOTICE: Player \""+ex.playerName+"\" attempted to exploit a TNT bug in the territory of \""+ex.faction.getTag()+"\"";
