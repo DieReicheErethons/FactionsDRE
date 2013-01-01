@@ -71,7 +71,7 @@ public class FactionsEntityListener implements Listener
 		
 		//Check power regain for killing an enemy
 		if(Conf.fwarPowerRegenForEnemyKill!=0){
-			if(event.getEntity().getKiller() instanceof Player){
+			if(event.getEntity().getKiller()!=null && event.getEntity().getKiller() instanceof Player){
 				Player killer = (Player) event.getEntity().getKiller();
 				FPlayer fkiller = FPlayers.i.get(killer);
 				
