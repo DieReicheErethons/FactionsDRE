@@ -299,7 +299,9 @@ public class Conf
 	public static boolean fwarEnabled=true;
 	public static int fwarDaysAfterWarProtection=10;
 	public static int fwarHoursUntilWarStartsAfterDemand=24;
-
+	public static boolean fwarDisablePowerRegen=false;
+	public static int fwarPowerRegenByEnemyKill=0;
+	
 	public static Set<String> fwarItemBlackList = new HashSet<String>();
 
 	//LWC Admin Bypass

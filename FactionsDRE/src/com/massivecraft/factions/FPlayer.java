@@ -605,7 +605,13 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 		if (thisPlayer != null && thisPlayer.isDead()) return;  // don't let dead players regain power until they respawn
 
 		int millisPerMinute = 60*1000;
-		this.alterPower(millisPassed * Conf.powerPerMinute / millisPerMinute);
+		if(!Conf.fwarDisablePowerRegen){
+			this.alterPower(millisPassed * Conf.powerPerMinute / millisPerMinute);
+		}else{
+			if(!FWar.isFactionInWar(this.getFaction())){
+				this.alterPower(millisPassed * Conf.powerPerMinute / millisPerMinute);
+			}
+		}
 	}
 
 	protected void losePowerFromBeingOffline()

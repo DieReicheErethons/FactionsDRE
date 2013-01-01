@@ -338,5 +338,12 @@ public class FWar extends Entity{
 		return mat;
 	}
 
-
+	public static boolean isFactionInWar(Faction faction){
+		for(FWar fwar: FWars.i.get()){
+			if(fwar.getAttackerFaction()==faction || fwar.getTargetFaction()==faction){
+				return true;
+			}
+		}
+		return false;
+	}
 }
