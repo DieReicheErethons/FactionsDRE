@@ -553,7 +553,7 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 		return this.power;
 	}
 	
-	protected void alterPower(double delta)
+	public void alterPower(double delta)
 	{
 		this.power += delta;
 		if (this.power > this.getPowerMax())

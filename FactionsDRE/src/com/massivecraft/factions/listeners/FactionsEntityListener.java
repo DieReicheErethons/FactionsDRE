@@ -64,10 +64,24 @@ public class FactionsEntityListener implements Listener
 		{
 			return;
 		}
-
+		
 		Player player = (Player) entity;
 		FPlayer fplayer = FPlayers.i.get(player);
 		Faction faction = Board.getFactionAt(new FLocation(player.getLocation()));
+		
+		//Check power regain for killing an enemy
+		if(Conf.fwarPowerRegenForEnemyKill!=0){
+			if(event.getEntity().getKiller() instanceof Player){
+				Player killer = (Player) event.getEntity().getKiller();
+				FPlayer fkiller = FPlayers.i.get(killer);
+				
+				if(fkiller.getFaction().getRelationTo(fplayer).isEnemy()){
+					fkiller.alterPower(Conf.fwarPowerRegenForEnemyKill);
+				}
+			}
+		}
+		
+		//Check power loss
 		if (faction.isWarZone())
 		{
 			// war zones always override worldsNoPowerLoss either way, thus this layout
