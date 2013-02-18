@@ -45,6 +45,7 @@ public class FWar extends Entity{
 	public long timeToNextPayForMorePlayersThenTarget;
 
 	public long timeToDeleteFWar;
+	private boolean isRemoved;
 
 
 	public FWar(Faction attacker, Faction target){
@@ -111,20 +112,17 @@ public class FWar extends Entity{
 		return (int)Math.floor(timeToWar/(60*60*1000))+"h "+(int)Math.floor(timeToWar%(60*60*1000)/(60*1000))+"min";
 	}
 
-
 	public long getMilliTimeToWar(){
 		long timeToWar=(Conf.fwarHoursUntilWarStartsAfterDemand*60*60*1000)-(System.currentTimeMillis()-this.time);
 
 		return timeToWar;
 	}
 
-
 	public long getMilliTimeToDeleteFWar(){
 		long timeToDeleteFWar=(30*60*1000)-(System.currentTimeMillis()-this.timeToDeleteFWar);
 
 		return timeToDeleteFWar;
 	}
-
 
 	public static void checkForDeleteFWars(){
 		for(FWar war:FWars.i.get()){
@@ -136,8 +134,6 @@ public class FWar extends Entity{
 			}
 		}
 	}
-
-
 
 	public static void setRelationshipWhenTimeToWarIsOver(){
 		for(FWar war:FWars.i.get()){
@@ -158,13 +154,11 @@ public class FWar extends Entity{
 		}
 	}
 
-
 	public long getMilliTimeToNextPay(){
 		long timeToPay=(24*60*60*1000)-(System.currentTimeMillis()-this.timeToNextPayForMorePlayersThenTarget);
 
 		return timeToPay;
 	}
-
 
 	public static void payForMorePlayersThenTarget(){
 		if(Conf.econEnabled){
@@ -187,7 +181,6 @@ public class FWar extends Entity{
 			}
 		}
 	}
-
 
 	public void addTempInventory(InventoryView inv){
 		tempInvs.add(inv);
@@ -246,23 +239,27 @@ public class FWar extends Entity{
 	}
 
 	public void remove(){
-		FWars.i.detach(this);
+		if(!this.isRemoved){
+			FWars.i.detach(this);
 
-		if(this.getAttackerFaction()!=null){
-			for(String matString:items.keySet()){
-				this.getAttackerFaction().addItemsToInventory(matString, items.get(matString));
-			}
+			if(this.getAttackerFaction()!=null){
+				for(String matString:items.keySet()){
+					this.getAttackerFaction().addItemsToInventory(matString, items.get(matString));
+				}
 
-			if(Conf.econEnabled){
-				Econ.modifyMoney(this.getAttackerFaction(), this.money, "for a removed war", "");
-			}
+				if(Conf.econEnabled){
+					Econ.modifyMoney(this.getAttackerFaction(), this.money, "for a removed war", "");
+				}
 
-			if(getTargetFaction()!=null){
-				if(getAttackerFaction().getRelationTo(getTargetFaction())==Relation.ENEMY){
-					getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
-					getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
+				if(getTargetFaction()!=null){
+					if(getAttackerFaction().getRelationTo(getTargetFaction())==Relation.ENEMY){
+						getAttackerFaction().setRelationWish(getTargetFaction(), Relation.NEUTRAL);
+						getTargetFaction().setRelationWish(getAttackerFaction(), Relation.NEUTRAL);
+					}
 				}
 			}
+
+			this.isRemoved = true;
 		}
 	}
 
