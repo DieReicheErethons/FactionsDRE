@@ -126,10 +126,7 @@ public class CmdWar extends FCommand{
 
 								else if(argCmd.equalsIgnoreCase("cancel")){
 									me.sendMessage(ChatColor.GREEN+"Du hast die Forderungen erfolgreich abgebrochen. Alle Items wurden eurem Itemkonto hinzugefügt. "+ChatColor.GOLD+"Auf dieses kannst du mit /f inventory"+ChatColor.GREEN+" zugreifen.");
-									if(Conf.econEnabled){
-										Econ.modifyMoney(fme.getFaction(), fwar.money, "for cancelling a war", "");
-									}
-
+									
 									fwar.remove();
 
 									// TODO: Füge Items zu dem Itemkonte hinzu
