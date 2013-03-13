@@ -83,6 +83,15 @@ public class CmdKick extends FCommand
 
 		yourFaction.deinvite(you);
 		you.resetFactionData();
+		
+		if(you.getPower()>0){
+			you.setPower(0);
+		}
+		
+		if(you.getPower()<0){
+			you.setLastpower(you.getPower());
+		}
+		
 	}
 
 }

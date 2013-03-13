@@ -89,6 +89,16 @@ public class CmdJoin extends FCommand
 		fplayer.resetFactionData();
 		fplayer.setFaction(faction);
 		faction.deinvite(fplayer);
+		
+		if(fplayer.getPower()>0){
+			fplayer.setPower(0);
+		}
+		
+		if(fplayer.getLastpower()<0){
+			fplayer.setPower(fplayer.getLastpower());
+			fplayer.setLastpower(0);
+		}
+		
 
 		if (Conf.logFactionJoin)
 		{

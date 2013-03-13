@@ -67,6 +67,10 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	
 	// FIELD: power
 	private double power;
+	
+	// FIELD: power
+	private double lastpower;
+	
 
 	// FIELD: powerBoost
 	// special increase/decrease to min and max power for this player
@@ -248,6 +252,7 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	public FPlayer()
 	{
 		this.resetFactionData(false);
+		this.setLastpower(0);
 		this.power = Conf.powerPlayerStarting;
 		this.lastPowerUpdateTime = System.currentTimeMillis();
 		this.lastLoginTime = System.currentTimeMillis();
@@ -553,6 +558,19 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 		return this.power;
 	}
 	
+	
+	
+	public double getLastpower() {
+		return lastpower;
+	}
+	public void setLastpower(double lastpower) {
+		this.lastpower = lastpower;
+	}
+	
+	public void setPower(double newpower)
+	{
+		this.power=newpower;
+	}
 	public void alterPower(double delta)
 	{
 		this.power += delta;
@@ -796,7 +814,15 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 		}
 		
 		this.resetFactionData();
-
+		
+		if(this.getPower()>0){
+			this.setPower(0);
+		}
+		
+		if(this.getPower()<0){
+			this.setLastpower(this.getPower());
+		}
+		
 		if (myFaction.isNormal() && !perm && myFaction.getFPlayers().isEmpty())
 		{
 			// Remove this faction
@@ -1017,5 +1043,6 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	{
 		this.sendMessage(P.p.txt.parse(str, args));
 	}
+	
 	
 }
