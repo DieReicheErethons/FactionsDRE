@@ -65,21 +65,21 @@ public class FactionsBlockListener implements Listener
 		
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
-		if(block!=null){
-			
-			
-			if(LWCFeatures.getEnabled()){
-				if(Conf.lwcAdminBypassRequiresLwcIntegration){
+		if (block != null) {
+			if (LWCFeatures.getEnabled()) {
+				if (Conf.lwcAdminBypassRequiresLwcIntegration) {
 					FPlayer me = FPlayers.i.get(player);
 					
 					FLocation loc = new FLocation(block);
 					Faction otherFaction = Board.getFactionAt(loc);
 					
-					if(me.getFaction()==otherFaction){
-						if(me.getRole()==Role.ADMIN){
-							if(event.isCancelled()){
+					if (me.getFaction() == otherFaction) {
+						if (me.getRole() == Role.ADMIN) {
+							if (event.isCancelled()) {
 								event.setCancelled(false);
-								LWCFeatures.get().findProtection(block).remove();
+								if (LWCFeatures.get().findProtection(block) != null) {
+									LWCFeatures.get().findProtection(block).remove();
+								}
 							}
 						}
 					}
