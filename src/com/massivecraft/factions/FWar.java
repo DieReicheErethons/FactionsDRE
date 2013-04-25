@@ -32,6 +32,7 @@ public class FWar extends Entity{
 		}
 		return Factions.i.get(attackerFactionID);
 	}
+	
 	public Faction getTargetFaction(){
 		if(Factions.i.get(targetFactionID)==null){
 			this.remove();
@@ -46,7 +47,6 @@ public class FWar extends Entity{
 
 	public long timeToDeleteFWar;
 	private boolean isRemoved;
-
 
 	public FWar(Faction attacker, Faction target){
 		this.attach();
@@ -277,18 +277,18 @@ public class FWar extends Entity{
 		return null;
 	}
 
-	public static FWar getAsAttacker(Faction faction){
-		for(FWar war:FWars.i.get()){
-			if(war.getAttackerFaction()==faction){
+	public static FWar getAsAttacker (Faction faction) {
+		for (FWar war : FWars.i.get()) {
+			if (war.getAttackerFaction()==faction) {
 				return war;
 			}
 		}
 		return null;
 	}
 
-	public static FWar getAsTarget(Faction faction){
-		for(FWar war:FWars.i.get()){
-			if(war.getTargetFaction()==faction){
+	public static FWar getAsTarget (Faction faction) {
+		for (FWar war : FWars.i.get()) {
+			if (war.getTargetFaction() == faction) {
 				return war;
 			}
 		}

@@ -200,9 +200,18 @@ public class Faction extends Entity implements EconomyParticipator
 		return false;
 	}
 	
+	// FIELD: IsInWar
+	private boolean isInWar = false;
+	public boolean isInWar() { return isInWar; }
+	public void checkIsInWar() {
+		isInWar = false;
+		for (Faction faction:Factions.i.get()) {
+			if (faction.getRelationTo(this) == Relation.ENEMY) {
+				isInWar = true;
+			}
+		}
+	}
 	
-	
-
 	//Taxation functions  by Frank
 	public double tax;
 	public double getTax(){return this.tax;}
@@ -236,10 +245,6 @@ public class Faction extends Entity implements EconomyParticipator
 	public long getBeginnerProtectionTime() {return beginnerProtectionTime;}
 	public void setBeginnerProtectionTime(long l) {this.beginnerProtectionTime = l;}
 	
-	
-	
-	
-	
 	// -------------------------------------------- //
 	// Construct
 	// -------------------------------------------- //
@@ -266,8 +271,6 @@ public class Faction extends Entity implements EconomyParticipator
 	public boolean noPvPInTerritory() { return isSafeZone() || (peaceful && Conf.peacefulTerritoryDisablePVP); }
 
 	public boolean noMonstersInTerritory() { return isSafeZone() || (peaceful && Conf.peacefulTerritoryDisableMonsters); }
-
-	
 
 	// -------------------------------
 	// Understand the types
@@ -302,7 +305,6 @@ public class Faction extends Entity implements EconomyParticipator
 	{
 		return this.isSafeZone() || this.isWarZone();
 	}
-	
 	
 	// -------------------------------
 	// Relation and relation colors
@@ -357,6 +359,8 @@ public class Faction extends Entity implements EconomyParticipator
 		{
 			this.relationWish.put(otherFaction.getId(), relation);
 		}
+		
+		this.checkIsInWar();
 	}
 	
 	//----------------------------------------------//

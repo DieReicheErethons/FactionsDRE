@@ -102,6 +102,7 @@ public class Factions extends EntityCollection<Faction>
 		for (Faction faction : i.get())
 		{
 			faction.refreshFPlayers();
+			faction.checkIsInWar();
 		}
 
 		return true;

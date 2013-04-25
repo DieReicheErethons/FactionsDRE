@@ -48,10 +48,10 @@ public class SpoutInputListener implements Listener{
 		
 		if(key.equals("KEY_P")) {
 			if (isCtrlPressed()){
-				if(player.getIsbuilding()!=null){
+				if(player.isBuilding()!=null){
 					World world=player.getPlayer().getWorld();
 					
-					BuildingFile bfile=player.getIsbuilding().getBuildingFile(1);
+					BuildingFile bfile=player.isBuilding().getBuildingFile(1);
 					
 					if (bfile!=null){
 						int pX=player.getLastseelocation().getBlockX();
@@ -71,7 +71,7 @@ public class SpoutInputListener implements Listener{
 							}
 						}
 					}
-					player.setIsbuilding(null);
+					player.setIsBuilding(null);
 				}
 			}
 		}

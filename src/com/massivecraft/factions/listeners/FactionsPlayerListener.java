@@ -207,7 +207,8 @@ public class FactionsPlayerListener implements Listener
 	{
 		Player player = event.getPlayer();
 		FPlayer me = FPlayers.i.get(player);
-
+		Faction meFaction = me.getFaction();
+		
 		// Did we change coord?
 		FLocation from = me.getLastStoodAt();
 		FLocation to = new FLocation(player.getLocation());
@@ -218,7 +219,6 @@ public class FactionsPlayerListener implements Listener
 		}
 
 		// Yes we did change coord (:
-
 		me.setLastStoodAt(to);
 
 		// Did we change "host"(faction)?
@@ -228,34 +228,21 @@ public class FactionsPlayerListener implements Listener
 		boolean changedFaction = (factionFrom != factionTo);
 
 		//Did we change Factiongrenze?
-		boolean  GrenzeFrom=Board.isFactionGrenzeAt(from);
-		boolean  GrenzeTo=Board.isFactionGrenzeAt(to);
-		boolean changedFactionGrenze= (GrenzeFrom!=GrenzeTo)&&(factionFrom==factionTo);
-		if(!changedFactionGrenze){
-			changedFactionGrenze=(factionFrom!=factionTo);
+		boolean  GrenzeFrom = Board.isFactionGrenzeAt(from);
+		boolean  GrenzeTo = Board.isFactionGrenzeAt(to);
+		boolean changedFactionGrenze = (GrenzeFrom != GrenzeTo) && (factionFrom == factionTo);
+		if (!changedFactionGrenze) {
+			changedFactionGrenze = (factionFrom != factionTo);
 		}
 
 		//Is our Faction in War?
-		boolean isFactionInWar=false;
-		for(Faction faction:Factions.i.get()){
-			if(faction.getRelationTo(me.getFaction())==Relation.ENEMY){
-				if(me.getFaction()==factionTo){
-					isFactionInWar=true;
-					break;
+		if (changedFactionGrenze && meFaction.isInWar()) {
+			if (meFaction == factionTo || factionTo.getRelationTo(meFaction) == Relation.ENEMY) {
+				if (GrenzeFrom) {
+					me.sendMessage(ChatColor.GOLD + "Du bist nun im " + ChatColor.GREEN + "sicheren Gebiet");
+				} else if(GrenzeTo) {
+					me.sendMessage(ChatColor.GOLD + "Du bist nun im " + ChatColor.RED + "Grenzgebiet");
 				}
-				else if(factionTo.getRelationTo(me.getFaction())==Relation.ENEMY){
-					isFactionInWar=true;
-					break;
-				}
-			}
-		}
-
-
-		if(changedFactionGrenze&&isFactionInWar){
-			if(GrenzeFrom){
-				me.sendMessage(ChatColor.GOLD+"Du bist nun im "+ChatColor.GREEN+"sicheren Gebiet");
-			}else if(GrenzeTo){
-				me.sendMessage(ChatColor.GOLD+"Du bist nun im "+ChatColor.RED+"Grenzgebiet");
 			}
 		}
 
@@ -303,26 +290,23 @@ public class FactionsPlayerListener implements Listener
 		}
 
 		//Display Message
-		if (changedFaction && SpoutFeatures.updateTerritoryDisplay(me))
+		if (changedFaction && SpoutFeatures.updateTerritoryDisplay(me)) {
 			changedFaction = false;
+		}
 
-		if (me.isMapAutoUpdating())
-		{
+		if (me.isMapAutoUpdating()){
 			me.sendMessage(Board.getMap(me.getFaction(), to, player.getLocation().getYaw()));
 
-			if (spoutClient && Conf.spoutTerritoryOwnersShow)
+			if (spoutClient && Conf.spoutTerritoryOwnersShow) {
 				SpoutFeatures.updateOwnerList(me);
-		}
-		else
-		{
+			}
+		} else {
 			Faction myFaction = me.getFaction();
 			String ownersTo = myFaction.getOwnerListString(to);
 
-			if (changedFaction)
-			{
+			if (changedFaction) {
 				me.sendFactionHereMessage();
-				if
-				(
+				if (
 					Conf.ownedAreasEnabled
 					&&
 					Conf.ownedMessageOnBorder
@@ -341,20 +325,16 @@ public class FactionsPlayerListener implements Listener
 					me.sendMessage(Conf.ownedLandMessage+ownersTo);
 				}
 
-				if(factionTo.isNormal()&&isFactionInWar){
-					if(Board.isFactionGrenzeAt(to)){
+				if (factionTo.isNormal() && meFaction.isInWar()) {
+					if (Board.isFactionGrenzeAt(to)) {
 						me.sendMessage(ChatColor.GOLD+"Du bist nun im "+ChatColor.RED+"Grenzgebiet");
-					}else{
+					} else {
 						me.sendMessage(ChatColor.GOLD+"Du bist nun im "+ChatColor.GREEN+"sicheren Gebiet");
 					}
 				}
-			}
-			else if (spoutClient && Conf.spoutTerritoryOwnersShow)
-			{
+			} else if (spoutClient && Conf.spoutTerritoryOwnersShow) {
 				SpoutFeatures.updateOwnerList(me);
-			}
-			else if
-			(
+			} else if (
 				Conf.ownedAreasEnabled
 				&&
 				Conf.ownedMessageInsideTerritory
@@ -417,7 +397,7 @@ public class FactionsPlayerListener implements Listener
 
 
 		//Buildings  by Frank
-		if(me.getIsbuilding()!=null){
+		if (me.isBuilding()!=null) {
 
 			Location seelocation=null;
 
@@ -442,7 +422,7 @@ public class FactionsPlayerListener implements Listener
 					// Did we change coord?
 					if (me.getLastseelocation().getBlockX()!=seelocation.getBlockX() || me.getLastseelocation().getBlockY()!=seelocation.getBlockY() || me.getLastseelocation().getBlockZ()!=seelocation.getBlockZ()){
 						//Yes we did :)
-							me.getIsbuilding().checkBuilding(me, seelocation.getBlockX(), seelocation.getBlockY(), seelocation.getBlockZ(), 1);
+							me.isBuilding().checkBuilding(me, seelocation.getBlockX(), seelocation.getBlockY(), seelocation.getBlockZ(), 1);
 
 							//Location updaten
 							me.setLastseelocation(seelocation);

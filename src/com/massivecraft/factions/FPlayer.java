@@ -212,7 +212,7 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	public void initSpoutMenu(){setsMenu(new SpoutMenu(this,this.getsPlayer()));}
 	
 	//FIELD: Building by Frank
-	private transient BuildingType isbuilding;
+	private transient BuildingType isBuilding;
 	
 	private transient Set<Block> changedBlock=new HashSet<Block>();
 	private transient Location lastseelocation;
@@ -232,8 +232,8 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator
 	public void setFirstclaimblock(Block firstclaimblock) {this.firstclaimblock = firstclaimblock;}
 	public Block getSecondclaimblock() {return secondclaimblock;}
 	public void setSecondclaimblock(Block secondclaimblock) {this.secondclaimblock = secondclaimblock;}
-	public BuildingType getIsbuilding() {return isbuilding;}
-	public void setIsbuilding(BuildingType isbuilding) {this.isbuilding = isbuilding;}
+	public BuildingType isBuilding() {return isBuilding;}
+	public void setIsBuilding(BuildingType isBuilding) {this.isBuilding = isBuilding;}
 	public Location getLastseelocation() {return lastseelocation;}
 	public void setLastseelocation(Location lastseelocation) {this.lastseelocation = lastseelocation;}
 	public SpoutMenu getsMenu() {return sMenu;}

@@ -157,7 +157,7 @@ public class SpoutScreenListener implements Listener {
         for(GenericButton btbutton:player.getsMenu().BType_Buttons.keySet()){
         	if(Button==btbutton){
         		player.getsMenu().menuPopup.close();
-        		player.setIsbuilding(player.getsMenu().BType_Buttons.get(btbutton));
+        		player.setIsBuilding(player.getsMenu().BType_Buttons.get(btbutton));
         	}
         }
         
