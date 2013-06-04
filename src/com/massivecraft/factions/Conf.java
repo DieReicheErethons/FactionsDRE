@@ -5,8 +5,7 @@ import java.util.*;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 
-public class Conf
-{
+public class Conf {
 	public static List<String> baseCommandAliases = new ArrayList<String>();
 	public static boolean allowNoSlashCommand = true;
 
@@ -18,18 +17,31 @@ public class Conf
 
 	public static ChatColor colorPeaceful = ChatColor.GOLD;
 	public static ChatColor colorWar = ChatColor.DARK_RED;
-	//public static ChatColor colorWilderness = ChatColor.DARK_GREEN;
+	// public static ChatColor colorWilderness = ChatColor.DARK_GREEN;
 
 	// Power
 	public static double powerPlayerMax = 10.0;
 	public static double powerPlayerMin = -10.0;
 	public static double powerPlayerStarting = 0.0;
-	public static double powerPerMinute = 0.2; // Default health rate... it takes 5 min to heal one power
+	public static double powerPerMinute = 0.2; // Default health rate... it
+												// takes 5 min to heal one power
 	public static double powerPerDeath = 4.0; // A death makes you lose 4 power
-	public static boolean powerRegenOffline = false;  // does player power regenerate even while they're offline?
-	public static double powerOfflineLossPerDay = 0.0;  // players will lose this much power per day offline
-	public static double powerOfflineLossLimit = 0.0;  // players will no longer lose power from being offline once their power drops to this amount or less
-	public static double powerFactionMax = 0.0;  // if greater than 0, the cap on how much power a faction can have (additional power from players beyond that will act as a "buffer" of sorts)
+	public static boolean powerRegenOffline = false; // does player power
+														// regenerate even while
+														// they're offline?
+	public static double powerOfflineLossPerDay = 0.0; // players will lose this
+														// much power per day
+														// offline
+	public static double powerOfflineLossLimit = 0.0; // players will no longer
+														// lose power from being
+														// offline once their
+														// power drops to this
+														// amount or less
+	public static double powerFactionMax = 0.0; // if greater than 0, the cap on
+												// how much power a faction can
+												// have (additional power from
+												// players beyond that will act
+												// as a "buffer" of sorts)
 
 	public static String prefixAdmin = "**";
 	public static String prefixMod = "*";
@@ -40,10 +52,12 @@ public class Conf
 
 	public static boolean newFactionsDefaultOpen = false;
 
-	// when faction membership hits this limit, players will no longer be able to join using /f join; default is 0, no limit
+	// when faction membership hits this limit, players will no longer be able
+	// to join using /f join; default is 0, no limit
 	public static int factionMemberLimit = 0;
 
-	// what faction ID to start new players in when they first join the server; default is 0, "no faction"
+	// what faction ID to start new players in when they first join the server;
+	// default is 0, "no faction"
 	public static String newPlayerStartingFactionID = "0";
 
 	public static boolean showMapFactionKey = true;
@@ -65,9 +79,9 @@ public class Conf
 	public static int chatTagInsertIndex = 1;
 	public static boolean chatTagPadBefore = false;
 	public static boolean chatTagPadAfter = true;
-	public static String chatTagFormat = "%s"+ChatColor.WHITE;
-	public static String factionChatFormat = "%s:"+ChatColor.WHITE+" %s";
-	public static String allianceChatFormat = ChatColor.LIGHT_PURPLE+"%s:"+ChatColor.WHITE+" %s";
+	public static String chatTagFormat = "%s" + ChatColor.WHITE;
+	public static String factionChatFormat = "%s:" + ChatColor.WHITE + " %s";
+	public static String allianceChatFormat = ChatColor.LIGHT_PURPLE + "%s:" + ChatColor.WHITE + " %s";
 
 	public static double autoLeaveAfterDaysOfInactivity = 10.0;
 	public static double autoLeaveRoutineRunsEveryXMinutes = 5.0;
@@ -75,7 +89,7 @@ public class Conf
 
 	public static boolean worldGuardChecking = false;
 
-	//LWC
+	// LWC
 	public static boolean lwcIntegration = false;
 	public static boolean onUnclaimResetLwcLocks = false;
 	public static boolean onCaptureResetLwcLocks = false;
@@ -125,10 +139,12 @@ public class Conf
 
 	public static int actionDeniedPainAmount = 1;
 
-	// commands which will be prevented if the player is a member of a permanent faction
+	// commands which will be prevented if the player is a member of a permanent
+	// faction
 	public static Set<String> permanentFactionMemberDenyCommands = new HashSet<String>();
 
-	// commands which will be prevented when in claimed territory of another faction
+	// commands which will be prevented when in claimed territory of another
+	// faction
 	public static Set<String> territoryNeutralDenyCommands = new HashSet<String>();
 	public static Set<String> territoryEnemyDenyCommands = new HashSet<String>();
 
@@ -209,19 +225,80 @@ public class Conf
 	public static Set<EntityType> safeZoneNerfedCreatureTypes = EnumSet.noneOf(EntityType.class);
 
 	// Spout features
-	public static boolean spoutFactionTagsOverNames = true;  // show faction tags over names over player heads
-	public static boolean spoutFactionTitlesOverNames = true;  // whether to include player's title in that
-	public static boolean spoutFactionAdminCapes = true;  // Show capes on faction admins, colored based on the viewer's relation to the target player
-	public static boolean spoutFactionModeratorCapes = true;  // same, but for faction moderators
-	public static int spoutTerritoryDisplayPosition = 3;  // permanent territory display, instead of by chat; 0 = disabled, 1 = top left, 2 = top center, 3+ = top right
-	public static float spoutTerritoryDisplaySize = 1.0f;  // text scale (size) for territory display
-	public static boolean spoutTerritoryDisplayShowDescription = true;  // whether to show the faction description, not just the faction tag
-	public static boolean spoutTerritoryOwnersShow = true;  // show territory owner list as well
-	public static boolean spoutTerritoryNoticeShow = true;  // show additional brief territory notice near center of screen, to be sure player notices transition
-	public static int spoutTerritoryNoticeTop = 40;  // how far down the screen to place the additional notice
-	public static boolean spoutTerritoryNoticeShowDescription = false;  // whether to show the faction description in the notice, not just the faction tag
-	public static float spoutTerritoryNoticeSize = 1.5f;  // text scale (size) for notice
-	public static float spoutTerritoryNoticeLeaveAfterSeconds = 2.00f;  // how many seconds before the notice goes away
+	public static boolean spoutFactionTagsOverNames = true; // show faction tags
+															// over names over
+															// player heads
+	public static boolean spoutFactionTitlesOverNames = true; // whether to
+																// include
+																// player's
+																// title in that
+	public static boolean spoutFactionAdminCapes = true; // Show capes on
+															// faction admins,
+															// colored based on
+															// the viewer's
+															// relation to the
+															// target player
+	public static boolean spoutFactionModeratorCapes = true; // same, but for
+																// faction
+																// moderators
+	public static int spoutTerritoryDisplayPosition = 3; // permanent territory
+															// display, instead
+															// of by chat; 0 =
+															// disabled, 1 = top
+															// left, 2 = top
+															// center, 3+ = top
+															// right
+	public static float spoutTerritoryDisplaySize = 1.0f; // text scale (size)
+															// for territory
+															// display
+	public static boolean spoutTerritoryDisplayShowDescription = true; // whether
+																		// to
+																		// show
+																		// the
+																		// faction
+																		// description,
+																		// not
+																		// just
+																		// the
+																		// faction
+																		// tag
+	public static boolean spoutTerritoryOwnersShow = true; // show territory
+															// owner list as
+															// well
+	public static boolean spoutTerritoryNoticeShow = true; // show additional
+															// brief territory
+															// notice near
+															// center of screen,
+															// to be sure player
+															// notices
+															// transition
+	public static int spoutTerritoryNoticeTop = 40; // how far down the screen
+													// to place the additional
+													// notice
+	public static boolean spoutTerritoryNoticeShowDescription = false; // whether
+																		// to
+																		// show
+																		// the
+																		// faction
+																		// description
+																		// in
+																		// the
+																		// notice,
+																		// not
+																		// just
+																		// the
+																		// faction
+																		// tag
+	public static float spoutTerritoryNoticeSize = 1.5f; // text scale (size)
+															// for notice
+	public static float spoutTerritoryNoticeLeaveAfterSeconds = 2.00f; // how
+																		// many
+																		// seconds
+																		// before
+																		// the
+																		// notice
+																		// goes
+																		// away
 	public static String capeAlly = "https://github.com/MassiveCraft/Factions/raw/master/capes/ally.png";
 	public static String capeEnemy = "https://github.com/MassiveCraft/Factions/raw/master/capes/enemy.png";
 	public static String capeMember = "https://github.com/MassiveCraft/Factions/raw/master/capes/member.png";
@@ -275,11 +352,21 @@ public class Conf
 	public static double econCostNeutral = 0.0;
 	public static double econCostNoBoom = 0.0;
 
-	//Faction banks, to pay for land claiming and other costs instead of individuals paying for them
+	// Faction banks, to pay for land claiming and other costs instead of
+	// individuals paying for them
 	public static boolean bankEnabled = true;
-	public static boolean bankMembersCanWithdraw = false; //Have to be at least moderator to withdraw or pay money to another faction
-	public static boolean bankFactionPaysCosts = true; //The faction pays for faction command costs, such as sethome
-	public static boolean bankFactionPaysLandCosts = true; //The faction pays for land claiming costs.
+	public static boolean bankMembersCanWithdraw = false; // Have to be at least
+															// moderator to
+															// withdraw or pay
+															// money to another
+															// faction
+	public static boolean bankFactionPaysCosts = true; // The faction pays for
+														// faction command
+														// costs, such as
+														// sethome
+	public static boolean bankFactionPaysLandCosts = true; // The faction pays
+															// for land claiming
+															// costs.
 
 	public static Set<String> worldsNoClaiming = new HashSet<String>();
 	public static Set<String> worldsNoPowerLoss = new HashSet<String>();
@@ -290,28 +377,25 @@ public class Conf
 	public static transient int mapWidth = 39;
 	public static transient char[] mapKeyChrs = "\\/#?$%=&^ABCDEFGHJKLMNOPQRSTUVWXYZ1234567890abcdeghjmnopqrsuvwxyz".toCharArray();
 
-	//War settings
-	public static Set<Material> warAllowedBuildBlocks= new HashSet<Material>();
-	public static int warConquestTime=120;
-	public static int warNeutralZoneToWilderness=300;
-	public static int warBeginnerProtection=24;
+	// War settings
+	public static Set<Material> warAllowedBuildBlocks = new HashSet<Material>();
+	public static int warConquestTime = 120;
+	public static int warNeutralZoneToWilderness = 300;
+	public static int warBeginnerProtection = 24;
 
-	//FWar settings
-	public static boolean fwarEnabled=true;
-	public static int fwarDaysAfterWarProtection=10;
-	public static int fwarHoursUntilWarStartsAfterDemand=24;
-	public static boolean fwarDisablePowerRegen=false;
-	public static int fwarPowerRegenForEnemyKill=0;
-	
+	// FWar settings
+	public static boolean fwarEnabled = true;
+	public static int fwarDaysAfterWarProtection = 10;
+	public static int fwarHoursUntilWarStartsAfterDemand = 24;
+	public static boolean fwarDisablePowerRegen = false;
+	public static int fwarPowerRegenForEnemyKill = 0;
+
 	public static Set<String> fwarItemBlackList = new HashSet<String>();
 
-	//LWC Admin Bypass
-	public static boolean lwcAdminBypassRequiresLwcIntegration=true;
+	// LWC Admin Bypass
+	public static boolean lwcAdminBypassRequiresLwcIntegration = true;
 
-
-
-	static
-	{
+	static {
 		baseCommandAliases.add("f");
 
 		territoryEnemyDenyCommands.add("home");
@@ -380,13 +464,12 @@ public class Conf
 	// Persistance
 	// -------------------------------------------- //
 	private static transient Conf i = new Conf();
-	public static void load()
-	{
+
+	public static void load() {
 		P.p.persist.loadOrSaveDefault(i, Conf.class, "conf");
 	}
-	public static void save()
-	{
+
+	public static void save() {
 		P.p.persist.save(i);
 	}
 }
-

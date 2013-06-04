@@ -28,41 +28,33 @@ import org.bukkit.entity.Player;
  *  Author: Spathizilla
  */
 
-public class Worldguard
-{
+public class Worldguard {
 	private static WorldGuardPlugin wg;
 	private static boolean enabled = false;
 
-	public static void init(Plugin plugin)
-	{
+	public static void init(Plugin plugin) {
 		Plugin wgplug = plugin.getServer().getPluginManager().getPlugin("WorldGuard");
-		if (wgplug == null || !(wgplug instanceof WorldGuardPlugin))
-		{
+		if (wgplug == null || !(wgplug instanceof WorldGuardPlugin)) {
 			enabled = false;
 			wg = null;
 			P.p.log("Could not hook to WorldGuard. WorldGuard checks are disabled.");
-		}
-		else
-		{
+		} else {
 			wg = (WorldGuardPlugin) wgplug;
 			enabled = true;
 			P.p.log("Successfully hooked to WorldGuard.");
 		}
 	}
 
-	public static boolean isEnabled()
-	{
+	public static boolean isEnabled() {
 		return enabled;
 	}
 
-	// PVP Flag check 
+	// PVP Flag check
 	// Returns:
-	//   True: PVP is allowed
-	//   False: PVP is disallowed
-	public static boolean isPVP(Player player)
-	{
-		if( ! enabled)
-		{
+	// True: PVP is allowed
+	// False: PVP is disallowed
+	public static boolean isPVP(Player player) {
+		if (!enabled) {
 			// No WG hooks so we'll always bypass this check.
 			return true;
 		}
@@ -78,12 +70,10 @@ public class Worldguard
 
 	// Check for Regions in chunk the chunk
 	// Returns:
-	//   True: Regions found within chunk
-	//   False: No regions found within chunk
-	public static boolean checkForRegionsInChunk(Location loc)
-	{
-		if( ! enabled)
-		{
+	// True: Regions found within chunk
+	// False: No regions found within chunk
+	public static boolean checkForRegionsInChunk(Location loc) {
+		if (!enabled) {
 			// No WG hooks so we'll always bypass this check.
 			return false;
 		}
@@ -95,32 +85,27 @@ public class Worldguard
 		int maxChunkX = minChunkX + 15;
 		int maxChunkZ = minChunkZ + 15;
 
-		int worldHeight = world.getMaxHeight(); // Allow for heights other than default
+		int worldHeight = world.getMaxHeight(); // Allow for heights other than
+												// default
 
 		BlockVector minChunk = new BlockVector(minChunkX, 0, minChunkZ);
 		BlockVector maxChunk = new BlockVector(maxChunkX, worldHeight, maxChunkZ);
 
 		RegionManager regionManager = wg.getRegionManager(world);
 		ProtectedCuboidRegion region = new ProtectedCuboidRegion("wgfactionoverlapcheck", minChunk, maxChunk);
-		Map<String, ProtectedRegion> allregions = regionManager.getRegions(); 
+		Map<String, ProtectedRegion> allregions = regionManager.getRegions();
 		List<ProtectedRegion> allregionslist = new ArrayList<ProtectedRegion>(allregions.values());
 		List<ProtectedRegion> overlaps;
 		boolean foundregions = false;
 
-		try
-		{
+		try {
 			overlaps = region.getIntersectingRegions(allregionslist);
-			if(overlaps == null || overlaps.isEmpty())
-			{
+			if (overlaps == null || overlaps.isEmpty()) {
 				foundregions = false;
-			}
-			else
-			{
+			} else {
 				foundregions = true;
 			}
-		}
-		catch (UnsupportedIntersectionException e)
-		{
+		} catch (UnsupportedIntersectionException e) {
 			e.printStackTrace();
 		}
 

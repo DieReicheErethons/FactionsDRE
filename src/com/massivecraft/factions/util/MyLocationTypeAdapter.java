@@ -15,21 +15,17 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.massivecraft.factions.P;
 
-
-public class MyLocationTypeAdapter implements JsonDeserializer<Location>, JsonSerializer<Location>
-{
+public class MyLocationTypeAdapter implements JsonDeserializer<Location>, JsonSerializer<Location> {
 	private static final String WORLD = "world";
 	private static final String X = "x";
 	private static final String Y = "y";
 	private static final String Z = "z";
 	private static final String YAW = "yaw";
 	private static final String PITCH = "pitch";
-	
+
 	@Override
-	public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
-	{
-		try
-		{
+	public Location deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+		try {
 			JsonObject obj = json.getAsJsonObject();
 
 			String worldname = obj.get(WORLD).getAsString();
@@ -47,9 +43,7 @@ public class MyLocationTypeAdapter implements JsonDeserializer<Location>, JsonSe
 
 			return new Location(world, x, y, z, yaw, pitch);
 
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			P.p.log(Level.WARNING, "Error encountered while deserializing a location.");
 			return null;
@@ -60,10 +54,8 @@ public class MyLocationTypeAdapter implements JsonDeserializer<Location>, JsonSe
 	public JsonElement serialize(Location src, Type typeOfSrc, JsonSerializationContext context) {
 		JsonObject obj = new JsonObject();
 
-		try
-		{
-			if (src.getWorld() == null)
-			{
+		try {
+			if (src.getWorld() == null) {
 				P.p.log(Level.WARNING, "Passed location's world was not found on the server. Dropping the location.");
 				return obj;
 			}
@@ -77,9 +69,7 @@ public class MyLocationTypeAdapter implements JsonDeserializer<Location>, JsonSe
 
 			return obj;
 
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			P.p.log(Level.WARNING, "Error encountered while serializing a location.");
 			return obj;

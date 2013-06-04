@@ -13,47 +13,41 @@ import com.massivecraft.factions.zcore.persist.Entity;
 import com.massivecraft.factions.zcore.persist.EntityCollection;
 import com.massivecraft.factions.zcore.persist.PlayerEntityCollection;
 
-public class MPluginSecretPlayerListener implements Listener
-{
+public class MPluginSecretPlayerListener implements Listener {
 	private MPlugin p;
-	public MPluginSecretPlayerListener(MPlugin p)
-	{
+
+	public MPluginSecretPlayerListener(MPlugin p) {
 		this.p = p;
 	}
-	
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event)
-	{
-		if (event.isCancelled()) return;
 
-		if (p.handleCommand(event.getPlayer(), event.getMessage()))
-		{
-			if (p.logPlayerCommands())
-				Bukkit.getLogger().info("[PLAYER_COMMAND] "+event.getPlayer().getName()+": "+event.getMessage());
-			event.setCancelled(true);
-		}
-	}
-	
 	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerChat(AsyncPlayerChatEvent event)
-	{
-		if (event.isCancelled()) return;
-		
-		if (p.handleCommand(event.getPlayer(), event.getMessage()))
-		{
+	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
+		if (event.isCancelled())
+			return;
+
+		if (p.handleCommand(event.getPlayer(), event.getMessage())) {
 			if (p.logPlayerCommands())
-				Bukkit.getLogger().info("[PLAYER_COMMAND] "+event.getPlayer().getName()+": "+event.getMessage());
+				Bukkit.getLogger().info("[PLAYER_COMMAND] " + event.getPlayer().getName() + ": " + event.getMessage());
 			event.setCancelled(true);
 		}
 	}
-	
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void onPlayerChat(AsyncPlayerChatEvent event) {
+		if (event.isCancelled())
+			return;
+
+		if (p.handleCommand(event.getPlayer(), event.getMessage())) {
+			if (p.logPlayerCommands())
+				Bukkit.getLogger().info("[PLAYER_COMMAND] " + event.getPlayer().getName() + ": " + event.getMessage());
+			event.setCancelled(true);
+		}
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event)
-	{
-		for (EntityCollection<? extends Entity> ecoll : EM.class2Entities.values())
-		{
-			if (ecoll instanceof PlayerEntityCollection)
-			{
+	public void onPlayerPreLogin(AsyncPlayerPreLoginEvent event) {
+		for (EntityCollection<? extends Entity> ecoll : EM.class2Entities.values()) {
+			if (ecoll instanceof PlayerEntityCollection) {
 				ecoll.get(event.getName());
 			}
 		}

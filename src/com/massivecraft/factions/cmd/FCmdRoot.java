@@ -4,8 +4,7 @@ import java.util.Collections;
 
 import com.massivecraft.factions.Conf;
 
-public class FCmdRoot extends FCommand
-{
+public class FCmdRoot extends FCommand {
 	public CmdAdmin cmdAdmin = new CmdAdmin();
 	public CmdAutoClaim cmdAutoClaim = new CmdAutoClaim();
 	public CmdBoom cmdBoom = new CmdBoom();
@@ -52,32 +51,35 @@ public class FCmdRoot extends FCommand
 	public CmdVersion cmdVersion = new CmdVersion();
 	public CmdWarunclaimall cmdWarunclaimall = new CmdWarunclaimall();
 	public CmdTaxation cmdTaxation = new CmdTaxation();
-	public CmdSaveBuilding cmdSaveBuilding = new CmdSaveBuilding();	
+	public CmdSaveBuilding cmdSaveBuilding = new CmdSaveBuilding();
 	public CmdWar cmdWar = new CmdWar();
 	public CmdInventory cmdInventory = new CmdInventory();
-	
-	public FCmdRoot()
-	{
+
+	public FCmdRoot() {
 		super();
 		this.aliases.addAll(Conf.baseCommandAliases);
-		this.aliases.removeAll(Collections.singletonList(null));  // remove any nulls from extra commas
+		this.aliases.removeAll(Collections.singletonList(null)); // remove any
+																	// nulls
+																	// from
+																	// extra
+																	// commas
 		this.allowNoSlashAccess = Conf.allowNoSlashCommand;
-		
-		//this.requiredArgs.add("");
-		//this.optionalArgs.put("","")
-		
+
+		// this.requiredArgs.add("");
+		// this.optionalArgs.put("","")
+
 		senderMustBePlayer = false;
 		senderMustBeMember = false;
 		senderMustBeModerator = false;
 		senderMustBeAdmin = false;
-		
+
 		this.disableOnLock = false;
-		
+
 		this.setHelpShort("The faction base command");
 		this.helpLong.add(p.txt.parseTags("<i>This command contains all faction stuff."));
-		
-		//this.subCommands.add(p.cmdHelp);
-		
+
+		// this.subCommands.add(p.cmdHelp);
+
 		this.addSubCommand(this.cmdAdmin);
 		this.addSubCommand(this.cmdAutoClaim);
 		this.addSubCommand(this.cmdBoom);
@@ -128,10 +130,9 @@ public class FCmdRoot extends FCommand
 		this.addSubCommand(this.cmdWar);
 		this.addSubCommand(this.cmdInventory);
 	}
-	
+
 	@Override
-	public void perform()
-	{
+	public void perform() {
 		this.commandChain.add(this);
 		this.cmdHelp.execute(this.sender, this.args, this.commandChain);
 	}

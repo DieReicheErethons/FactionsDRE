@@ -10,11 +10,8 @@ import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FWar;
 import com.massivecraft.factions.struct.Permission;
 
-
-public class CmdInventory extends FCommand
-{
-	public CmdInventory()
-	{
+public class CmdInventory extends FCommand {
+	public CmdInventory() {
 		super();
 		this.aliases.add("inventory");
 
@@ -29,24 +26,22 @@ public class CmdInventory extends FCommand
 
 	@Override
 	public void perform() {
-		if(Conf.fwarEnabled){
-			Inventory inv=Bukkit.createInventory(me, 54, "Faction "+fme.getFaction().getTag());
-			for(String matString:fme.getFaction().factionInventory.keySet()){
+		if (Conf.fwarEnabled) {
+			Inventory inv = Bukkit.createInventory(me, 54, "Faction " + fme.getFaction().getTag());
+			for (String matString : fme.getFaction().factionInventory.keySet()) {
 				MaterialData mat = FWar.convertStringToMaterialData(matString);
 
 				Integer args = fme.getFaction().factionInventory.get(matString);
 				int amount = args;
 
-
-				while(amount>0){
-					int tmpAmount=mat.toItemStack().getMaxStackSize();
-					if(mat.toItemStack().getMaxStackSize()>amount){
-						tmpAmount=amount;
+				while (amount > 0) {
+					int tmpAmount = mat.toItemStack().getMaxStackSize();
+					if (mat.toItemStack().getMaxStackSize() > amount) {
+						tmpAmount = amount;
 					}
-					amount=amount-mat.toItemStack().getMaxStackSize();
+					amount = amount - mat.toItemStack().getMaxStackSize();
 
-
-					ItemStack item = new ItemStack(mat.getItemType(),tmpAmount,mat.getData());
+					ItemStack item = new ItemStack(mat.getItemType(), tmpAmount, mat.getData());
 					inv.addItem(item);
 				}
 			}

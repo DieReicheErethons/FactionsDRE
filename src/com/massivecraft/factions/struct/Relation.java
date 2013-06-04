@@ -4,61 +4,47 @@ import org.bukkit.ChatColor;
 
 import com.massivecraft.factions.Conf;
 
+public enum Relation {
+	MEMBER(3, "member"), ALLY(2, "ally"), NEUTRAL(1, "neutral"), ENEMY(0, "enemy");
 
-public enum Relation
-{
-	MEMBER(3, "member"),
-	ALLY(2, "ally"),
-	NEUTRAL(1, "neutral"),
-	ENEMY(0, "enemy");
-	
 	public final int value;
 	public final String nicename;
-	
-	private Relation(final int value, final String nicename)
-	{
-        this.value = value;
-        this.nicename = nicename;
-    }
-	
+
+	private Relation(final int value, final String nicename) {
+		this.value = value;
+		this.nicename = nicename;
+	}
+
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		return this.nicename;
 	}
-	
-	public boolean isMember()
-	{
+
+	public boolean isMember() {
 		return this == MEMBER;
 	}
-	
-	public boolean isAlly()
-	{
+
+	public boolean isAlly() {
 		return this == ALLY;
 	}
-	
-	public boolean isNeutral()
-	{
+
+	public boolean isNeutral() {
 		return this == NEUTRAL;
 	}
-	
-	public boolean isEnemy()
-	{
+
+	public boolean isEnemy() {
 		return this == ENEMY;
 	}
-	
-	public boolean isAtLeast(Relation relation)
-	{
+
+	public boolean isAtLeast(Relation relation) {
 		return this.value >= relation.value;
 	}
-	
-	public boolean isAtMost(Relation relation)
-	{
+
+	public boolean isAtMost(Relation relation) {
 		return this.value <= relation.value;
 	}
-	
-	public ChatColor getColor()
-	{
+
+	public ChatColor getColor() {
 		if (this == MEMBER)
 			return Conf.colorMember;
 		else if (this == ALLY)
@@ -69,23 +55,20 @@ public enum Relation
 			return Conf.colorEnemy;
 	}
 
-	// return appropriate Conf setting for DenyBuild based on this relation and their online status
-	public boolean confDenyBuild(boolean online)
-	{
+	// return appropriate Conf setting for DenyBuild based on this relation and
+	// their online status
+	public boolean confDenyBuild(boolean online) {
 		if (isMember())
 			return false;
 
-		if (online)
-		{
+		if (online) {
 			if (isEnemy())
 				return Conf.territoryEnemyDenyBuild;
 			else if (isAlly())
 				return Conf.territoryAllyDenyBuild;
 			else
 				return Conf.territoryDenyBuild;
-		}
-		else
-		{
+		} else {
 			if (isEnemy())
 				return Conf.territoryEnemyDenyBuildWhenOffline;
 			else if (isAlly())
@@ -95,24 +78,21 @@ public enum Relation
 		}
 	}
 
-	// return appropriate Conf setting for PainBuild based on this relation and their online status
-	public boolean confPainBuild(boolean online)
-	{
+	// return appropriate Conf setting for PainBuild based on this relation and
+	// their online status
+	public boolean confPainBuild(boolean online) {
 		if (isMember())
 			return false;
 
-		if (online)
-		{
+		if (online) {
 			if (isEnemy())
 				return Conf.territoryEnemyPainBuild;
 			else if (isAlly())
 				return Conf.territoryAllyPainBuild;
 			else
 				return Conf.territoryPainBuild;
-		}
-		else
-		{
-			if (isEnemy()) 
+		} else {
+			if (isEnemy())
 				return Conf.territoryEnemyPainBuildWhenOffline;
 			else if (isAlly())
 				return Conf.territoryAllyPainBuildWhenOffline;
@@ -122,8 +102,7 @@ public enum Relation
 	}
 
 	// return appropriate Conf setting for DenyUseage based on this relation
-	public boolean confDenyUseage()
-	{
+	public boolean confDenyUseage() {
 		if (isMember())
 			return false;
 		else if (isEnemy())
@@ -133,9 +112,8 @@ public enum Relation
 		else
 			return Conf.territoryDenyUseage;
 	}
-	
-	public double getRelationCost()
-	{
+
+	public double getRelationCost() {
 		if (isEnemy())
 			return Conf.econCostEnemy;
 		else if (isAlly())

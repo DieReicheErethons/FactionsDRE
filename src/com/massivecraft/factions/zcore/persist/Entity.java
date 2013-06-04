@@ -1,65 +1,54 @@
 package com.massivecraft.factions.zcore.persist;
 
-public abstract class Entity
-{
-	public Entity()
-	{
-	
+public abstract class Entity {
+	public Entity() {
+
 	}
-	
+
 	protected transient String id = null;
-	
-	public String getId()
-	{
+
+	public String getId() {
 		return id;
 	}
-	
-	protected void setId(String id)
-	{
+
+	protected void setId(String id) {
 		this.id = id;
 	}
-	
-	public boolean shouldBeSaved()
-	{
+
+	public boolean shouldBeSaved() {
 		return true;
 	}
-	
+
 	// -------------------------------------------- //
 	// ATTACH AND DETACH
 	// -------------------------------------------- //
-	
-	public void attach()
-	{
+
+	public void attach() {
 		EM.attach(this);
 	}
-	
-	public void detach()
-	{
+
+	public void detach() {
 		EM.detach(this);
 	}
-	
-	public boolean attached()
-	{
+
+	public boolean attached() {
 		return EM.attached(this);
 	}
-	
-	public boolean detached()
-	{
+
+	public boolean detached() {
 		return EM.detached(this);
 	}
-	
+
 	// -------------------------------------------- //
 	// EVENTS
 	// -------------------------------------------- //
-	
-	public void preDetach()
-	{
-		
+
+	public void preDetach() {
+
 	}
-	
-	public void postDetach()
-	{
-		
+
+	public void postDetach() {
+
 	}
-	
+
 }

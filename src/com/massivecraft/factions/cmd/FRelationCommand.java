@@ -10,105 +10,95 @@ import com.massivecraft.factions.integration.spout.SpoutFeatures;
 import com.massivecraft.factions.struct.Permission;
 import com.massivecraft.factions.struct.Relation;
 
-public abstract class FRelationCommand extends FCommand
-{
+public abstract class FRelationCommand extends FCommand {
 	public Relation targetRelation;
-	
-	public FRelationCommand()
-	{
+
+	public FRelationCommand() {
 		super();
 		this.requiredArgs.add("faction tag");
-		//this.optionalArgs.put("player name", "you");
-		
+		// this.optionalArgs.put("player name", "you");
+
 		this.permission = Permission.RELATION.node;
 		this.disableOnLock = true;
-		
+
 		senderMustBePlayer = true;
 		senderMustBeMember = false;
 		senderMustBeModerator = true;
 		senderMustBeAdmin = false;
 	}
-	
+
 	@Override
-	public void perform()
-	{
+	public void perform() {
 		Faction them = this.argAsFaction(0);
-		if (them == null) return;
-		
-		if ( ! them.isNormal())
-		{
+		if (them == null)
+			return;
+
+		if (!them.isNormal()) {
 			msg("<b>Nope! You can't.");
 			return;
 		}
-		
-		if (them == myFaction)
-		{
+
+		if (them == myFaction) {
 			msg("<b>Nope! You can't declare a relation to yourself :)");
 			return;
 		}
-		
+
 		// if beginners protection on and relation is enemy, return
-		if(targetRelation.isEnemy()){
-			if(them.getBeginnerProtection()){
-				msg("<a>%s <b>has still beginners protection!",them.getTag());
+		if (targetRelation.isEnemy()) {
+			if (them.getBeginnerProtection()) {
+				msg("<a>%s <b>has still beginners protection!", them.getTag());
 				return;
-			}else if(myFaction.getBeginnerProtection()){
-				msg("<a>%s <b>has still beginners protection!",ChatColor.GREEN+"Your faction");
+			} else if (myFaction.getBeginnerProtection()) {
+				msg("<a>%s <b>has still beginners protection!", ChatColor.GREEN + "Your faction");
 				return;
 			}
 		}
-		//FWar Settings
-		if(targetRelation.isEnemy()){
-			if(Conf.fwarEnabled){
+		// FWar Settings
+		if (targetRelation.isEnemy()) {
+			if (Conf.fwarEnabled) {
 				msg("<a><b>Please use \"/f war <FactionName>\" instead!");
 				return;
 			}
 		}
-		
-		if(targetRelation.isNeutral()){
-			if(Conf.fwarEnabled){
-				for(FWar war:FWars.i.get()){
-					if(war.getAttackerFaction()==them && war.getTargetFaction()==myFaction){
+
+		if (targetRelation.isNeutral()) {
+			if (Conf.fwarEnabled) {
+				for (FWar war : FWars.i.get()) {
+					if (war.getAttackerFaction() == them && war.getTargetFaction() == myFaction) {
 						msg("<a><b>Please use \"/f war <FactionName> cancelwar\" instead!");
 						return;
 					}
-					if(war.getTargetFaction()==them && war.getAttackerFaction()==myFaction){
+					if (war.getTargetFaction() == them && war.getAttackerFaction() == myFaction) {
 						msg("<a><b>Please use \"/f war <FactionName> cancelwar\" instead!");
 						return;
 					}
 				}
 			}
 		}
-		
-		
-		// if economy is enabled, they're not on the bypass list, and this command has a cost set, make 'em pay
-		if ( ! payForCommand(targetRelation.getRelationCost(), "to change a relation wish", "for changing a relation wish")) return;
-		
-		
-		
+
+		// if economy is enabled, they're not on the bypass list, and this
+		// command has a cost set, make 'em pay
+		if (!payForCommand(targetRelation.getRelationCost(), "to change a relation wish", "for changing a relation wish"))
+			return;
+
 		myFaction.setRelationWish(them, targetRelation);
 		Relation currentRelation = myFaction.getRelationTo(them, true);
 		ChatColor currentRelationColor = currentRelation.getColor();
-		if (targetRelation.value == currentRelation.value)
-		{
-			them.msg("<i>Your faction is now "+currentRelationColor+targetRelation.toString()+"<i> to "+currentRelationColor+myFaction.getTag());
-			myFaction.msg("<i>Your faction is now "+currentRelationColor+targetRelation.toString()+"<i> to "+currentRelationColor+them.getTag());
+		if (targetRelation.value == currentRelation.value) {
+			them.msg("<i>Your faction is now " + currentRelationColor + targetRelation.toString() + "<i> to " + currentRelationColor + myFaction.getTag());
+			myFaction.msg("<i>Your faction is now " + currentRelationColor + targetRelation.toString() + "<i> to " + currentRelationColor + them.getTag());
+		} else {
+			them.msg(currentRelationColor + myFaction.getTag() + "<i> wishes to be your " + targetRelation.getColor() + targetRelation.toString());
+			them.msg("<i>Type <c>/" + Conf.baseCommandAliases.get(0) + " " + targetRelation + " " + myFaction.getTag() + "<i> to accept.");
+			myFaction.msg(currentRelationColor + them.getTag() + "<i> were informed that you wish to be " + targetRelation.getColor() + targetRelation);
 		}
-		else
-		{
-			them.msg(currentRelationColor+myFaction.getTag()+"<i> wishes to be your "+targetRelation.getColor()+targetRelation.toString());
-			them.msg("<i>Type <c>/"+Conf.baseCommandAliases.get(0)+" "+targetRelation+" "+myFaction.getTag()+"<i> to accept.");
-			myFaction.msg(currentRelationColor+them.getTag()+"<i> were informed that you wish to be "+targetRelation.getColor()+targetRelation);
-		}
-		
-		if ( ! targetRelation.isNeutral() && them.isPeaceful())
-		{
+
+		if (!targetRelation.isNeutral() && them.isPeaceful()) {
 			them.msg("<i>This will have no effect while your faction is peaceful.");
 			myFaction.msg("<i>This will have no effect while their faction is peaceful.");
 		}
-		
-		if ( ! targetRelation.isNeutral() && myFaction.isPeaceful())
-		{
+
+		if (!targetRelation.isNeutral() && myFaction.isPeaceful()) {
 			them.msg("<i>This will have no effect while their faction is peaceful.");
 			myFaction.msg("<i>This will have no effect while your faction is peaceful.");
 		}
