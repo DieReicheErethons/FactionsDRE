@@ -1,16 +1,22 @@
 package com.massivecraft.factions.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
 
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.Conf;
+import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.FPlayer;
 import com.massivecraft.factions.FPlayers;
 import com.massivecraft.factions.FWar;
@@ -24,6 +30,24 @@ public class FactionsInventoryListener implements Listener {
 		this.p = p;
 	}
 
+	public void onInventoryOpenEvent(InventoryOpenEvent event){
+		InventoryHolder holder = event.getInventory().getHolder();
+		
+		if(Conf.safeDenyChestsInWar){
+			if(holder instanceof Chest){
+				Chest chest = (Chest) holder;
+				
+				if(Board.getFactionAt(new FLocation(chest.getBlock())).isSafeZone()){
+					FPlayer me = FPlayers.i.get((Player) event.getPlayer());
+					if(me.getFaction().isInWar()){
+						event.setCancelled(true);
+						me.sendMessage("<i>You can not open chests in the safezone while you are in a war!");
+					}
+				}
+			}
+		}
+	}
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryClose(InventoryCloseEvent event) {
 		InventoryView inv = event.getView();

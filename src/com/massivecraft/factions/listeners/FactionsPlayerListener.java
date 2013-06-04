@@ -378,7 +378,6 @@ public class FactionsPlayerListener implements Listener {
 		Block block = event.getClickedBlock();
 		Player player = event.getPlayer();
 		if (block != null) {
-
 			if (LWCFeatures.getEnabled()) {
 				if (Conf.lwcAdminBypassRequiresLwcIntegration) {
 					FPlayer me = FPlayers.i.get(player);
@@ -390,7 +389,6 @@ public class FactionsPlayerListener implements Listener {
 						if (me.getRole() == Role.ADMIN) {
 							if (event.isCancelled()) {
 								event.setCancelled(false);
-
 							}
 						}
 					}
