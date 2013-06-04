@@ -326,9 +326,16 @@ public class FactionsEntityListener implements Listener
 		if (defLocFaction.noPvPInTerritory()) {
 			if (damager instanceof Player)
 			{
+				FPlayer attacker = FPlayers.i.get((Player)damager);
+				
+				if(Conf.safeZoneEnemysCanFight){
+					if(attacker.getFaction().getRelationTo(defender) == Relation.ENEMY){
+						return true;
+					}
+				}
+				
 				if (notify)
 				{
-					FPlayer attacker = FPlayers.i.get((Player)damager);
 					attacker.msg("<i>You can't hurt other players in "+(defLocFaction.isSafeZone() ? "a SafeZone." : "peaceful territory."));
 				}
 				return false;
