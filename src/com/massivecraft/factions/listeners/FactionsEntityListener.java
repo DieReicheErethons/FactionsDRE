@@ -167,7 +167,7 @@ public class FactionsEntityListener implements Listener {
 		if (event.isCancelled())
 			return;
 
-		EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(event.getCombuster(), event.getEntity(), EntityDamageEvent.DamageCause.FIRE, 0);
+		EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(event.getCombuster(), event.getEntity(), EntityDamageEvent.DamageCause.FIRE, 0D);
 		if (!this.canDamagerHurtDamagee(sub, false))
 			event.setCancelled(true);
 		sub = null;
@@ -200,7 +200,7 @@ public class FactionsEntityListener implements Listener {
 		Iterator<LivingEntity> iter = event.getAffectedEntities().iterator();
 		while (iter.hasNext()) {
 			LivingEntity target = iter.next();
-			EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(thrower, target, EntityDamageEvent.DamageCause.CUSTOM, 0);
+			EntityDamageByEntityEvent sub = new EntityDamageByEntityEvent(thrower, target, EntityDamageEvent.DamageCause.CUSTOM, 0D);
 			if (!this.canDamagerHurtDamagee(sub, true))
 				event.setIntensity(target, 0.0); // affected entity list doesn't
 													// accept modification (so
@@ -227,7 +227,7 @@ public class FactionsEntityListener implements Listener {
 	public boolean canDamagerHurtDamagee(EntityDamageByEntityEvent sub, boolean notify) {
 		Entity damager = sub.getDamager();
 		Entity damagee = sub.getEntity();
-		int damage = sub.getDamage();
+		double damage = sub.getDamage();
 
 		if (!(damagee instanceof Player))
 			return true;
