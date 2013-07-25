@@ -8,8 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryView;
-import org.getspout.spoutapi.player.SpoutPlayer;
-
+import org.getspout.spoutapi.SpoutManager;
 import com.massivecraft.factions.buildings.BuildingType;
 import com.massivecraft.factions.iface.EconomyParticipator;
 import com.massivecraft.factions.iface.RelationParticipator;
@@ -258,11 +257,12 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator {
 	}
 
 	// FIELD: Spoutfeatures by Frank
-	private transient SpoutPlayer sPlayer = null;
 	private transient SpoutMenu sMenu;
 
 	public void initSpoutMenu() {
-		setsMenu(new SpoutMenu(this, this.getsPlayer()));
+		if (SpoutFeatures.enabled()) {
+			setsMenu(new SpoutMenu(this, SpoutManager.getPlayer(this.getPlayer())));
+		}
 	}
 
 	// FIELD: Building by Frank
@@ -332,14 +332,6 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator {
 
 	public void setsMenu(SpoutMenu sMenu) {
 		this.sMenu = sMenu;
-	}
-
-	public SpoutPlayer getsPlayer() {
-		return sPlayer;
-	}
-
-	public void setsPlayer(SpoutPlayer sPlayer) {
-		this.sPlayer = sPlayer;
 	}
 
 	public long getBuildingticker() {

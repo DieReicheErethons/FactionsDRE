@@ -1,5 +1,5 @@
 name: FactionsDRE
-version: 1.7.3
+version: 1.7.4
 main: com.massivecraft.factions.P
 authors: [Olof Larsson, Brett Flannigan, Frank Baumann]
 softdepend: [PermissionsEx, Permissions, Essentials, EssentialsChat, HeroChat, iChat, LocalAreaChat, LWC, nChat, ChatManager, CAPI, AuthMe, Vault, Spout, WorldEdit, WorldGuard, AuthDB, CaptureThePoints, CombatTag]

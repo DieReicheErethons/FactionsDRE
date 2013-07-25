@@ -24,8 +24,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.getspout.spoutapi.SpoutManager;
-
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.Conf;
 import com.massivecraft.factions.FLocation;
@@ -144,7 +142,6 @@ public class FactionsPlayerListener implements Listener {
 
 		// Spout by Frank
 		if (SpoutFeatures.enabled()) {
-			me.setsPlayer(SpoutManager.getPlayer(event.getPlayer()));
 			me.initSpoutMenu();
 		}
 
