@@ -668,10 +668,13 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator {
 
 	protected void losePowerFromBeingOffline() {
 		if (Conf.powerOfflineLossPerDay > 0.0 && this.power > Conf.powerOfflineLossLimit) {
+			if((!this.getFaction().isInWar()) && (Conf.fwarOnlyPowerLossPerDayInWar)){
+				return;
+			}
 			long now = System.currentTimeMillis();
 			long millisPassed = now - this.lastPowerUpdateTime;
 			this.lastPowerUpdateTime = now;
-
+	
 			double loss = millisPassed * Conf.powerOfflineLossPerDay / (24 * 60 * 60 * 1000);
 			if (this.power - loss < Conf.powerOfflineLossLimit) {
 				loss = this.power;

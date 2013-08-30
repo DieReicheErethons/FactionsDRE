@@ -390,6 +390,7 @@ public class Conf {
 	public static int fwarHoursUntilWarStartsAfterDemand = 24;
 	public static boolean fwarDisablePowerRegen = false;
 	public static int fwarPowerRegenForEnemyKill = 0;
+	public static boolean fwarOnlyPowerLossPerDayInWar = false;
 
 	public static Set<String> fwarItemBlackList = new HashSet<String>();
 
