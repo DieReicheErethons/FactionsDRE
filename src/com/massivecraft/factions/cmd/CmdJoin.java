@@ -68,6 +68,11 @@ public class CmdJoin extends FCommand {
 				faction.msg("%s<i> tried to join your faction.", fplayer.describeTo(faction, true));
 			return;
 		}
+		
+		if(Conf.fwarDenyPlayerJoinInWar && faction.isInWar()){
+			msg("<b>%s cannot join a faction at war!", fplayer.describeTo(fme, true));
+			return;
+		}
 
 		// if economy is enabled, they're not on the bypass list, and this
 		// command has a cost set, make 'em pay
