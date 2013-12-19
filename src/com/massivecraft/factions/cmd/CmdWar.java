@@ -60,6 +60,16 @@ public class CmdWar extends FCommand {
 									if (!argFaction.getBeginnerProtection()) {
 										if (!fme.getFaction().getBeginnerProtection()) {
 											if (!argFaction.getTag().equalsIgnoreCase(fme.getFaction().getTag())) {
+												
+												int neededClaims = Conf.fwarMinClaimsForStartingWar + 
+														(fme.getFaction().getFPlayers().size()*Conf.fwarMinAdditionalClaimsPerPlayerForStartingWar);
+												if(neededClaims > fme.getFaction().getLandRounded()){
+													me.sendMessage(ChatColor.RED + "Your faction needs more then "+neededClaims+" to start a war!");
+												}
+												
+												
+												
+												
 												/* Start the demands */
 												new FWar(fme.getFaction(), argFaction);
 

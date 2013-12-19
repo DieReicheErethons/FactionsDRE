@@ -392,6 +392,8 @@ public class Conf {
 	public static int fwarPowerRegenForEnemyKill = 0;
 	public static boolean fwarOnlyPowerLossPerDayInWar = false;
 	public static boolean fwarDenyPlayerJoinInWar = false;
+	public static int fwarMinClaimsForStartingWar = 0;
+	public static int fwarMinAdditionalClaimsPerPlayerForStartingWar = 0;
 
 	public static Set<String> fwarItemBlackList = new HashSet<String>();
 
