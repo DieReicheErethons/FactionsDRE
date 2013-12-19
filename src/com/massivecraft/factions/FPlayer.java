@@ -672,6 +672,11 @@ public class FPlayer extends PlayerEntity implements EconomyParticipator {
 				return;
 			}
 			long now = System.currentTimeMillis();
+			if(Conf.hoursBeforePowerOfflineLossPerDayIsActive > 0.0){
+				if(now < lastLoginTime+(Conf.hoursBeforePowerOfflineLossPerDayIsActive * 60 * 60 * 1000))
+					return;
+			}
+			
 			long millisPassed = now - this.lastPowerUpdateTime;
 			this.lastPowerUpdateTime = now;
 	

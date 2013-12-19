@@ -32,6 +32,7 @@ public class Conf {
 	public static double powerOfflineLossPerDay = 0.0; // players will lose this
 														// much power per day
 														// offline
+	public static double hoursBeforePowerOfflineLossPerDayIsActive = 0.0;
 	public static double powerOfflineLossLimit = 0.0; // players will no longer
 														// lose power from being
 														// offline once their
