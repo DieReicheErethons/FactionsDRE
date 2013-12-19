@@ -186,6 +186,24 @@ public class FWar extends Entity {
 			}
 		}
 	}
+	
+	public static void checkForDefendersWin(){
+		if(Conf.fwarEndWarIfAttackerHasNoPower){
+			for (FWar war : FWars.i.get()) {
+				if (war.isWar) {
+					if(war.getAttackerFaction().getPower() <= 0.0){
+						war.getTargetFaction().factionsAfterWarProtection.put(war.getAttackerFaction().getId(), System.currentTimeMillis());
+						war.remove();
+						war.getAttackerFaction().sendMessage(
+								"Der Krieg gegen " + war.getTargetFaction().getTag() + " wurde beendet! Ihr habt keine Power mehr!");
+						war.getTargetFaction().sendMessage(
+								"Der Krieg gegen " + war.getAttackerFaction().getTag() + " wurde beendet! Ihr habt dem Gegner alle Power genommen.");
+					
+					}
+				}
+			}
+		}
+	}
 
 	public void addTempInventory(InventoryView inv) {
 		tempInvs.add(inv);

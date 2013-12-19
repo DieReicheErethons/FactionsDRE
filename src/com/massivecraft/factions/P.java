@@ -138,6 +138,7 @@ public class P extends MPlugin {
 				Board.updateNZone();
 
 				FWar.checkForDeleteFWars();
+				FWar.checkForDefendersWin();
 				FWar.setRelationshipWhenTimeToWarIsOver();
 				// Taxation Update
 				for (FPlayer fplayer : FPlayers.i.getOnline()) {
