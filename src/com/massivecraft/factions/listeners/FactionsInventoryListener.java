@@ -30,6 +30,7 @@ public class FactionsInventoryListener implements Listener {
 		this.p = p;
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onInventoryOpenEvent(InventoryOpenEvent event){
 		InventoryHolder holder = event.getInventory().getHolder();
 		
