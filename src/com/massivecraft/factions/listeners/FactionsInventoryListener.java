@@ -2,6 +2,11 @@ package com.massivecraft.factions.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Dropper;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,7 +40,9 @@ public class FactionsInventoryListener implements Listener {
 		InventoryHolder holder = event.getInventory().getHolder();
 		
 		if(Conf.safeDenyChestsInWar){
-			if(holder instanceof Chest){
+			if((holder instanceof Chest) || (holder instanceof DoubleChest) 
+					|| (holder instanceof Furnace) || (holder instanceof Dispenser) 
+					|| (holder instanceof Dropper) || (holder instanceof Hopper)){
 				Chest chest = (Chest) holder;
 				
 				if(Board.getFactionAt(new FLocation(chest.getBlock())).isSafeZone()){
