@@ -1,6 +1,7 @@
 package com.massivecraft.factions.cmd;
 
 import com.massivecraft.factions.struct.Permission;
+import com.massivecraft.factions.struct.Role;
 
 public class CmdLeave extends FCommand {
 
@@ -22,6 +23,15 @@ public class CmdLeave extends FCommand {
 
 	@Override
 	public void perform() {
+		
+		if(fme.getRole() == Role.ADMIN){
+			if(fme.getFaction().isInWar()){
+				fme.sendMessage("You cant leave your Faction in war, as Leader!");
+				return;
+			}
+		}
+				
+		
 		fme.leave(true);
 	}
 
