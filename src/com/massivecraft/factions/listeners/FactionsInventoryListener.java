@@ -1,6 +1,7 @@
 package com.massivecraft.factions.listeners;
 
 import org.bukkit.ChatColor;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
@@ -43,7 +44,11 @@ public class FactionsInventoryListener implements Listener {
 			if((holder instanceof Chest) || (holder instanceof DoubleChest) 
 					|| (holder instanceof Furnace) || (holder instanceof Dispenser) 
 					|| (holder instanceof Dropper) || (holder instanceof Hopper)){
-				Chest chest = (Chest) holder;
+				if (holder instanceof DoubleChest){
+					holder = ((DoubleChest) holder).getLeftSide();
+				}
+				
+				BlockState chest = (BlockState) holder;
 				
 				if(Board.getFactionAt(new FLocation(chest.getBlock())).isSafeZone()){
 					FPlayer me = FPlayers.i.get((Player) event.getPlayer());
